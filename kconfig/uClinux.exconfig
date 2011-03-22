@@ -1,0 +1,1577 @@
+config DISTVERSION string {
+ default ["4.0"] if []
+}
+menu "Vendor/Product Selection" {
+ choice boolean {
+  prompt "Vendor" if []
+  default [DEFAULTS_MCAFEE] if []
+  config DEFAULTS_3COM boolean {
+   prompt "3com" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_ACTIONTEC boolean {
+   prompt "Actiontec" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_ADI boolean {
+   prompt "ADI" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_AKIZUKI boolean {
+   prompt "Akizuki" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_ALTERA boolean {
+   prompt "Altera" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_APPLE boolean {
+   prompt "Apple" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_ARCTURUS boolean {
+   prompt "Arcturus" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_ARNEWSH boolean {
+   prompt "Arnewsh" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_ATHEROS boolean {
+   prompt "Atheros" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_ATMARKTECHNO boolean {
+   prompt "AtmarkTechno" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_ATMEL boolean {
+   prompt "Atmel" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_AVNET boolean {
+   prompt "Avnet" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_CIRRUS boolean {
+   prompt "Cirrus" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_COGENT boolean {
+   prompt "Cogent" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_CONEXANT boolean {
+   prompt "Conexant" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_CWLINUX boolean {
+   prompt "Cwlinux" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_CYBERGUARD boolean {
+   prompt "CyberGuard" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_CYTEK boolean {
+   prompt "Cytek" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_EMAC boolean {
+   prompt "EMAC" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_ESPD boolean {
+   prompt "ESPD" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_ETSEC boolean {
+   prompt "ETSec" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_EXYS boolean {
+   prompt "Exys" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_FEITH boolean {
+   prompt "Feith" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_FREESCALE boolean {
+   prompt "Freescale" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_FUTURE boolean {
+   prompt "Future" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_GDB boolean {
+   prompt "GDB" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_HITACHI boolean {
+   prompt "Hitachi" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_IMT boolean {
+   prompt "Imt" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_INSIGHT boolean {
+   prompt "Insight" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_INTEC boolean {
+   prompt "Intec" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_INTEL boolean {
+   prompt "Intel" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_LEOX boolean {
+   prompt "LEOX" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_MCAFEE boolean {
+   prompt "McAfee" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_MECEL boolean {
+   prompt "Mecel" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_MICREL boolean {
+   prompt "Micrel" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_MIDAS boolean {
+   prompt "Midas" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_NEC boolean {
+   prompt "NEC" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_NETBURNER boolean {
+   prompt "Netburner" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_NETSILICON boolean {
+   prompt "NetSilicon" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_NINTENDO boolean {
+   prompt "Nintendo" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_NXP boolean {
+   prompt "NXP" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_OPENCORES boolean {
+   prompt "OPENcores" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_OPENGEAR boolean {
+   prompt "OpenGear" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_PHILIPS boolean {
+   prompt "Philips" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_PROMISE boolean {
+   prompt "Promise" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SAMSUNG boolean {
+   prompt "Samsung" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SAVANT boolean {
+   prompt "Savant" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SECURECOMPUTING boolean {
+   prompt "SecureComputing" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SECUREEDGE boolean {
+   prompt "SecureEdge" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SENTEC boolean {
+   prompt "senTec" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SERRA boolean {
+   prompt "Serra" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SIGNAL boolean {
+   prompt "Signal" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SIMTEC boolean {
+   prompt "Simtec" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SNAPGEAR boolean {
+   prompt "SnapGear" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SNEHA boolean {
+   prompt "SNEHA" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SOEKRIS boolean {
+   prompt "Soekris" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SONY boolean {
+   prompt "Sony" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SSV boolean {
+   prompt "SSV" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_STRAWBERRYLINUX boolean {
+   prompt "StrawberryLinux" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SWARM boolean {
+   prompt "SWARM" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_TELEIP boolean {
+   prompt "TeleIP" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_TI boolean {
+   prompt "TI" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_TRISCEND boolean {
+   prompt "Triscend" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_UNITAB boolean {
+   prompt "UNiTAB" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_VIA boolean {
+   prompt "Via" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_WEISS boolean {
+   prompt "Weiss" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_XILINX boolean {
+   prompt "Xilinx" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ config VENDOR string {
+ }
+ choice boolean {
+  prompt "3com Products" if [DEFAULTS_3COM]
+  depends on [DEFAULTS_3COM]
+  default [DEFAULTS_3COM_PALMIIIX] if [DEFAULTS_3COM]
+  config DEFAULTS_3COM_PALMIIIX boolean {
+   prompt "PalmIIIx" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_3COM_XCOPILOT boolean {
+   prompt "Xcopilot" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Actiontec Products" if [DEFAULTS_ACTIONTEC]
+  depends on [DEFAULTS_ACTIONTEC]
+  default [DEFAULTS_ACTIONTEC_DPCM] if [DEFAULTS_ACTIONTEC]
+  config DEFAULTS_ACTIONTEC_DPCM boolean {
+   prompt "DPCM" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "ADI Products" if [DEFAULTS_ADI]
+  depends on [DEFAULTS_ADI]
+  default [DEFAULTS_ADI_COYOTE] if [DEFAULTS_ADI]
+  config DEFAULTS_ADI_COYOTE boolean {
+   prompt "Coyote" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Akizuki Products" if [DEFAULTS_AKIZUKI]
+  depends on [DEFAULTS_AKIZUKI]
+  default [DEFAULTS_AKIZUKI_AE3068] if [DEFAULTS_AKIZUKI]
+  config DEFAULTS_AKIZUKI_AE3068 boolean {
+   prompt "AE3068" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Altera Products" if [DEFAULTS_ALTERA]
+  depends on [DEFAULTS_ALTERA]
+  default [DEFAULTS_ALTERA_NIOS2NOMMU] if [DEFAULTS_ALTERA]
+  config DEFAULTS_ALTERA_NIOS2NOMMU boolean {
+   prompt "nios2nommu" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Apple Products" if [DEFAULTS_APPLE]
+  depends on [DEFAULTS_APPLE]
+  default [DEFAULTS_APPLE_IPOD] if [DEFAULTS_APPLE]
+  config DEFAULTS_APPLE_IPOD boolean {
+   prompt "iPod" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Arcturus Products" if [DEFAULTS_ARCTURUS]
+  depends on [DEFAULTS_ARCTURUS]
+  default [DEFAULTS_ARCTURUS_UC5272] if [DEFAULTS_ARCTURUS]
+  config DEFAULTS_ARCTURUS_UC5272 boolean {
+   prompt "uC5272" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_ARCTURUS_UC5272_4EE32U66 boolean {
+   prompt "uC5272-4EE32U66" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_ARCTURUS_UC5272_8EE32U66 boolean {
+   prompt "uC5272-8EE32U66" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_ARCTURUS_UC5272_XEE16U48 boolean {
+   prompt "uC5272-xEE16U48" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_ARCTURUS_UC5272_XEE16U66 boolean {
+   prompt "uC5272-xEE16U66" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_ARCTURUS_UC5272_XEE8U48 boolean {
+   prompt "uC5272-xEE8U48" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_ARCTURUS_UC5272_XEE8U66 boolean {
+   prompt "uC5272-xEE8U66" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_ARCTURUS_UC5275_16E32U150 boolean {
+   prompt "uC5275-16E32U150" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_ARCTURUS_UC5282_XE16C64 boolean {
+   prompt "uC5282-xE16C64" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_ARCTURUS_UC5282_XE16C80 boolean {
+   prompt "uC5282-xE16C80" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_ARCTURUS_UC532X boolean {
+   prompt "uC532x" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_ARCTURUS_UC68VZ328_4E8L33 boolean {
+   prompt "uC68VZ328-4E8L33" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_ARCTURUS_UC68VZ328_8E8L33 boolean {
+   prompt "uC68VZ328-8E8L33" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_ARCTURUS_UCDIMM boolean {
+   prompt "uCdimm" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_ARCTURUS_UCDIMM_MTD boolean {
+   prompt "uCdimm+mtd" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_ARCTURUS_UCQUICC boolean {
+   prompt "uCquicc" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_ARCTURUS_UCSIMM boolean {
+   prompt "uCsimm" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_ARCTURUS_UCTI5471_XE8D50 boolean {
+   prompt "uCTI5471-xE8D50" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Arnewsh Products" if [DEFAULTS_ARNEWSH]
+  depends on [DEFAULTS_ARNEWSH]
+  default [DEFAULTS_ARNEWSH_M5206] if [DEFAULTS_ARNEWSH]
+  config DEFAULTS_ARNEWSH_M5206 boolean {
+   prompt "M5206" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_ARNEWSH_M5307 boolean {
+   prompt "M5307" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Atheros Products" if [DEFAULTS_ATHEROS]
+  depends on [DEFAULTS_ATHEROS]
+  default [DEFAULTS_ATHEROS_PB42] if [DEFAULTS_ATHEROS]
+  config DEFAULTS_ATHEROS_PB42 boolean {
+   prompt "PB42" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "AtmarkTechno Products" if [DEFAULTS_ATMARKTECHNO]
+  depends on [DEFAULTS_ATMARKTECHNO]
+  default [DEFAULTS_ATMARKTECHNO_SUZAKU] if [DEFAULTS_ATMARKTECHNO]
+  config DEFAULTS_ATMARKTECHNO_SUZAKU boolean {
+   prompt "SUZAKU" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_ATMARKTECHNO_SUZAKU_UQ_XUP boolean {
+   prompt "SUZAKU-UQ-XUP" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Atmel Products" if [DEFAULTS_ATMEL]
+  depends on [DEFAULTS_ATMEL]
+  default [DEFAULTS_ATMEL_AT91] if [DEFAULTS_ATMEL]
+  config DEFAULTS_ATMEL_AT91 boolean {
+   prompt "AT91" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Avnet Products" if [DEFAULTS_AVNET]
+  depends on [DEFAULTS_AVNET]
+  default [DEFAULTS_AVNET_AVNET5282] if [DEFAULTS_AVNET]
+  config DEFAULTS_AVNET_AVNET5282 boolean {
+   prompt "AVNET5282" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Cirrus Products" if [DEFAULTS_CIRRUS]
+  depends on [DEFAULTS_CIRRUS]
+  default [DEFAULTS_CIRRUS_EDB9312] if [DEFAULTS_CIRRUS]
+  config DEFAULTS_CIRRUS_EDB9312 boolean {
+   prompt "EDB9312" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Cogent Products" if [DEFAULTS_COGENT]
+  depends on [DEFAULTS_COGENT]
+  default [DEFAULTS_COGENT_CSB337] if [DEFAULTS_COGENT]
+  config DEFAULTS_COGENT_CSB337 boolean {
+   prompt "CSB337" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Conexant Products" if [DEFAULTS_CONEXANT]
+  depends on [DEFAULTS_CONEXANT]
+  default [DEFAULTS_CONEXANT_HUMBER] if [DEFAULTS_CONEXANT]
+  config DEFAULTS_CONEXANT_HUMBER boolean {
+   prompt "Humber" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_CONEXANT_P52 boolean {
+   prompt "P52" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Cwlinux Products" if [DEFAULTS_CWLINUX]
+  depends on [DEFAULTS_CWLINUX]
+  default [DEFAULTS_CWLINUX_CWEZ328] if [DEFAULTS_CWLINUX]
+  config DEFAULTS_CWLINUX_CWEZ328 boolean {
+   prompt "cwez328" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_CWLINUX_CWVZ328 boolean {
+   prompt "cwvz328" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "CyberGuard Products" if [DEFAULTS_CYBERGUARD]
+  depends on [DEFAULTS_CYBERGUARD]
+  default [DEFAULTS_CYBERGUARD_SE4200] if [DEFAULTS_CYBERGUARD]
+  config DEFAULTS_CYBERGUARD_SE4200 boolean {
+   prompt "SE4200" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_CYBERGUARD_SE4500 boolean {
+   prompt "SE4500" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_CYBERGUARD_SE4700 boolean {
+   prompt "SE4700" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_CYBERGUARD_SE5000 boolean {
+   prompt "SE5000" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_CYBERGUARD_SE5100 boolean {
+   prompt "SE5100" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_CYBERGUARD_SE7100 boolean {
+   prompt "SE7100" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_CYBERGUARD_SG300 boolean {
+   prompt "SG300" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_CYBERGUARD_SG530 boolean {
+   prompt "SG530" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_CYBERGUARD_SG550 boolean {
+   prompt "SG550" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_CYBERGUARD_SG560 boolean {
+   prompt "SG560" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_CYBERGUARD_SG565 boolean {
+   prompt "SG565" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_CYBERGUARD_SG570 boolean {
+   prompt "SG570" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_CYBERGUARD_SG575 boolean {
+   prompt "SG575" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_CYBERGUARD_SG580 boolean {
+   prompt "SG580" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_CYBERGUARD_SG630 boolean {
+   prompt "SG630" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_CYBERGUARD_SG635 boolean {
+   prompt "SG635" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_CYBERGUARD_SG710 boolean {
+   prompt "SG710" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_CYBERGUARD_SG810 boolean {
+   prompt "SG810" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_CYBERGUARD_SVPN boolean {
+   prompt "sVPN" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Cytek Products" if [DEFAULTS_CYTEK]
+  depends on [DEFAULTS_CYTEK]
+  default [DEFAULTS_CYTEK_NETMP3] if [DEFAULTS_CYTEK]
+  config DEFAULTS_CYTEK_NETMP3 boolean {
+   prompt "NETmp3" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "EMAC Products" if [DEFAULTS_EMAC]
+  depends on [DEFAULTS_EMAC]
+  default [DEFAULTS_EMAC_SOM5282EM] if [DEFAULTS_EMAC]
+  config DEFAULTS_EMAC_SOM5282EM boolean {
+   prompt "SOM5282EM" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "ESPD Products" if [DEFAULTS_ESPD]
+  depends on [DEFAULTS_ESPD]
+  default [DEFAULTS_ESPD_4510B] if [DEFAULTS_ESPD]
+  config DEFAULTS_ESPD_4510B boolean {
+   prompt "4510B" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "ETSec Products" if [DEFAULTS_ETSEC]
+  depends on [DEFAULTS_ETSEC]
+  default [DEFAULTS_ETSEC_GATEWAY] if [DEFAULTS_ETSEC]
+  config DEFAULTS_ETSEC_GATEWAY boolean {
+   prompt "Gateway" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Exys Products" if [DEFAULTS_EXYS]
+  depends on [DEFAULTS_EXYS]
+  default [DEFAULTS_EXYS_DE2] if [DEFAULTS_EXYS]
+  config DEFAULTS_EXYS_DE2 boolean {
+   prompt "de2" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Feith Products" if [DEFAULTS_FEITH]
+  depends on [DEFAULTS_FEITH]
+  default [DEFAULTS_FEITH_CANCAM] if [DEFAULTS_FEITH]
+  config DEFAULTS_FEITH_CANCAM boolean {
+   prompt "CANCam" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_FEITH_CLEOPATRA boolean {
+   prompt "Cleopatra" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_FEITH_CLEOPATRA2 boolean {
+   prompt "Cleopatra2" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_FEITH_SCALES boolean {
+   prompt "SCALES" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Freescale Products" if [DEFAULTS_FREESCALE]
+  depends on [DEFAULTS_FREESCALE]
+  default [DEFAULTS_FREESCALE_M5206EC3] if [DEFAULTS_FREESCALE]
+  config DEFAULTS_FREESCALE_M5206EC3 boolean {
+   prompt "M5206eC3" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_FREESCALE_M5206ELITE boolean {
+   prompt "M5206eLITE" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_FREESCALE_M5208EVB boolean {
+   prompt "M5208EVB" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_FREESCALE_M5235EVB boolean {
+   prompt "M5235EVB" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_FREESCALE_M5249C3 boolean {
+   prompt "M5249C3" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_FREESCALE_M5271EVB boolean {
+   prompt "M5271EVB" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_FREESCALE_M5272C3 boolean {
+   prompt "M5272C3" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_FREESCALE_M5275EVB boolean {
+   prompt "M5275EVB" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_FREESCALE_M5282EVB boolean {
+   prompt "M5282EVB" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_FREESCALE_M5282LITE boolean {
+   prompt "M5282LITE" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_FREESCALE_M5307C3 boolean {
+   prompt "M5307C3" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_FREESCALE_M5329EVB boolean {
+   prompt "M5329EVB" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_FREESCALE_M5407C3 boolean {
+   prompt "M5407C3" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_FREESCALE_M5475EVB boolean {
+   prompt "M5475EVB" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Future Products" if [DEFAULTS_FUTURE]
+  depends on [DEFAULTS_FUTURE]
+  default [DEFAULTS_FUTURE_FUTURENETBURNER5282BADGE] if [DEFAULTS_FUTURE]
+  config DEFAULTS_FUTURE_FUTURENETBURNER5282BADGE boolean {
+   prompt "FutureNetburner5282Badge" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "GDB Products" if [DEFAULTS_GDB]
+  depends on [DEFAULTS_GDB]
+  default [DEFAULTS_GDB_ARMULATOR] if [DEFAULTS_GDB]
+  config DEFAULTS_GDB_ARMULATOR boolean {
+   prompt "ARMulator" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_GDB_ARMULATOR_EB boolean {
+   prompt "ARMulator-EB" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_GDB_SKYEYE boolean {
+   prompt "SkyEye" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Hitachi Products" if [DEFAULTS_HITACHI]
+  depends on [DEFAULTS_HITACHI]
+  default [DEFAULTS_HITACHI_BIGSURIV] if [DEFAULTS_HITACHI]
+  config DEFAULTS_HITACHI_BIGSURIV boolean {
+   prompt "BigSurIV" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_HITACHI_EDOSK2674 boolean {
+   prompt "EDOSK2674" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_HITACHI_KEYWEST boolean {
+   prompt "KeyWest" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Imt Products" if [DEFAULTS_IMT]
+  depends on [DEFAULTS_IMT]
+  default [DEFAULTS_IMT_MWI] if [DEFAULTS_IMT]
+  config DEFAULTS_IMT_MWI boolean {
+   prompt "mwi" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Insight Products" if [DEFAULTS_INSIGHT]
+  depends on [DEFAULTS_INSIGHT]
+  default [DEFAULTS_INSIGHT_MBVANILLA_NET] if [DEFAULTS_INSIGHT]
+  config DEFAULTS_INSIGHT_MBVANILLA_NET boolean {
+   prompt "mbvanilla_net" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_INSIGHT_XC2V1K_MICROBLAZE boolean {
+   prompt "XC2V1K_Microblaze" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_INSIGHT_XC2VP7_MICROBLAZE boolean {
+   prompt "XC2VP7_Microblaze" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Intec Products" if [DEFAULTS_INTEC]
+  depends on [DEFAULTS_INTEC]
+  default [DEFAULTS_INTEC_WILDFIRE] if [DEFAULTS_INTEC]
+  config DEFAULTS_INTEC_WILDFIRE boolean {
+   prompt "WildFire" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_INTEC_WILDFIREMOD boolean {
+   prompt "WildFireMod" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Intel Products" if [DEFAULTS_INTEL]
+  depends on [DEFAULTS_INTEL]
+  default [DEFAULTS_INTEL_IXDP2800] if [DEFAULTS_INTEL]
+  config DEFAULTS_INTEL_IXDP2800 boolean {
+   prompt "IXDP2800" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_INTEL_IXDP425 boolean {
+   prompt "IXDP425" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_INTEL_IXDP465 boolean {
+   prompt "IXDP465" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_INTEL_IXDPG425 boolean {
+   prompt "IXDPG425" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_INTEL_MONTEJADE boolean {
+   prompt "MonteJade" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_INTEL_TOLAPAI_EP80579 boolean {
+   prompt "Tolapai-EP80579" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "LEOX Products" if [DEFAULTS_LEOX]
+  depends on [DEFAULTS_LEOX]
+  default [DEFAULTS_LEOX_TSIM] if [DEFAULTS_LEOX]
+  config DEFAULTS_LEOX_TSIM boolean {
+   prompt "TSIM" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "McAfee Products" if [DEFAULTS_MCAFEE]
+  depends on [DEFAULTS_MCAFEE]
+  default [DEFAULTS_MCAFEE_AUDIOPHILE] if [DEFAULTS_MCAFEE]
+  config DEFAULTS_MCAFEE_AUDIOPHILE boolean {
+   prompt "audiophile" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_MCAFEE_SG310 boolean {
+   prompt "SG310" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_MCAFEE_SG560 boolean {
+   prompt "SG560" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_MCAFEE_SG560D boolean {
+   prompt "SG560D" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_MCAFEE_SG560U boolean {
+   prompt "SG560U" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_MCAFEE_SG560U_RECOVER boolean {
+   prompt "SG560U-Recover" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_MCAFEE_SG565 boolean {
+   prompt "SG565" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_MCAFEE_SG580 boolean {
+   prompt "SG580" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_MCAFEE_SG590 boolean {
+   prompt "SG590" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_MCAFEE_SG640 boolean {
+   prompt "SG640" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_MCAFEE_SG720 boolean {
+   prompt "SG720" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_MCAFEE_SG770 boolean {
+   prompt "SG770" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_MCAFEE_SG8100 boolean {
+   prompt "SG8100" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_MCAFEE_SG8200 boolean {
+   prompt "SG8200" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Mecel Products" if [DEFAULTS_MECEL]
+  depends on [DEFAULTS_MECEL]
+  default [DEFAULTS_MECEL_FR1000] if [DEFAULTS_MECEL]
+  config DEFAULTS_MECEL_FR1000 boolean {
+   prompt "FR1000" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Micrel Products" if [DEFAULTS_MICREL]
+  depends on [DEFAULTS_MICREL]
+  default [DEFAULTS_MICREL_KS8695] if [DEFAULTS_MICREL]
+  config DEFAULTS_MICREL_KS8695 boolean {
+   prompt "KS8695" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_MICREL_KSZ9692 boolean {
+   prompt "KSZ9692" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Midas Products" if [DEFAULTS_MIDAS]
+  depends on [DEFAULTS_MIDAS]
+  default [DEFAULTS_MIDAS_RTE_NB85E_CB] if [DEFAULTS_MIDAS]
+  config DEFAULTS_MIDAS_RTE_NB85E_CB boolean {
+   prompt "RTE-NB85E-CB" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_MIDAS_RTE_V850E_MA1_CB boolean {
+   prompt "RTE-V850E-MA1-CB" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_MIDAS_RTE_V850E_ME2_CB boolean {
+   prompt "RTE-V850E-ME2-CB" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "NEC Products" if [DEFAULTS_NEC]
+  depends on [DEFAULTS_NEC]
+  default [DEFAULTS_NEC_ANNA] if [DEFAULTS_NEC]
+  config DEFAULTS_NEC_ANNA boolean {
+   prompt "Anna" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_NEC_COMMON boolean {
+   prompt "common" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_NEC_V850E_SIM_GDB boolean {
+   prompt "v850e-sim-gdb" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Netburner Products" if [DEFAULTS_NETBURNER]
+  depends on [DEFAULTS_NETBURNER]
+  default [DEFAULTS_NETBURNER_CFV240] if [DEFAULTS_NETBURNER]
+  config DEFAULTS_NETBURNER_CFV240 boolean {
+   prompt "CFV240" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_NETBURNER_MOD5272 boolean {
+   prompt "MOD5272" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_NETBURNER_MOD5282 boolean {
+   prompt "MOD5282" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "NetSilicon Products" if [DEFAULTS_NETSILICON]
+  depends on [DEFAULTS_NETSILICON]
+  default [DEFAULTS_NETSILICON_NET_ARM] if [DEFAULTS_NETSILICON]
+  config DEFAULTS_NETSILICON_NET_ARM boolean {
+   prompt "NET+ARM" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Nintendo Products" if [DEFAULTS_NINTENDO]
+  depends on [DEFAULTS_NINTENDO]
+  default [DEFAULTS_NINTENDO_GBA] if [DEFAULTS_NINTENDO]
+  config DEFAULTS_NINTENDO_GBA boolean {
+   prompt "GBA" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "NXP Products" if [DEFAULTS_NXP]
+  depends on [DEFAULTS_NXP]
+  default [DEFAULTS_NXP_LPC28XX] if [DEFAULTS_NXP]
+  config DEFAULTS_NXP_LPC28XX boolean {
+   prompt "LPC28xx" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "OPENcores Products" if [DEFAULTS_OPENCORES]
+  depends on [DEFAULTS_OPENCORES]
+  default [DEFAULTS_OPENCORES_OR32] if [DEFAULTS_OPENCORES]
+  config DEFAULTS_OPENCORES_OR32 boolean {
+   prompt "or32" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "OpenGear Products" if [DEFAULTS_OPENGEAR]
+  depends on [DEFAULTS_OPENGEAR]
+  default [DEFAULTS_OPENGEAR_CM4008] if [DEFAULTS_OPENGEAR]
+  config DEFAULTS_OPENGEAR_CM4008 boolean {
+   prompt "CM4008" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_OPENGEAR_CM41XX boolean {
+   prompt "CM41xx" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_OPENGEAR_IM4004 boolean {
+   prompt "IM4004" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_OPENGEAR_IM42XX boolean {
+   prompt "IM42xx" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_OPENGEAR_SD4002 boolean {
+   prompt "SD4002" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Philips Products" if [DEFAULTS_PHILIPS]
+  depends on [DEFAULTS_PHILIPS]
+  default [DEFAULTS_PHILIPS_LPC2200] if [DEFAULTS_PHILIPS]
+  config DEFAULTS_PHILIPS_LPC2200 boolean {
+   prompt "LPC2200" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_PHILIPS_LPC2294 boolean {
+   prompt "LPC2294" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_PHILIPS_LPC22XX boolean {
+   prompt "LPC22xx" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Promise Products" if [DEFAULTS_PROMISE]
+  depends on [DEFAULTS_PROMISE]
+  default [DEFAULTS_PROMISE_SX6] if [DEFAULTS_PROMISE]
+  config DEFAULTS_PROMISE_SX6 boolean {
+   prompt "SX6" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Samsung Products" if [DEFAULTS_SAMSUNG]
+  depends on [DEFAULTS_SAMSUNG]
+  default [DEFAULTS_SAMSUNG_4510B] if [DEFAULTS_SAMSUNG]
+  config DEFAULTS_SAMSUNG_4510B boolean {
+   prompt "4510B" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Savant Products" if [DEFAULTS_SAVANT]
+  depends on [DEFAULTS_SAVANT]
+  default [DEFAULTS_SAVANT_ROSIE1] if [DEFAULTS_SAVANT]
+  config DEFAULTS_SAVANT_ROSIE1 boolean {
+   prompt "Rosie1" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "SecureComputing Products" if [DEFAULTS_SECURECOMPUTING]
+  depends on [DEFAULTS_SECURECOMPUTING]
+  default [DEFAULTS_SECURECOMPUTING_AUDIOPHILE] if [DEFAULTS_SECURECOMPUTING]
+  config DEFAULTS_SECURECOMPUTING_AUDIOPHILE boolean {
+   prompt "audiophile" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SECURECOMPUTING_SE4200 boolean {
+   prompt "SE4200" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SECURECOMPUTING_SE4500 boolean {
+   prompt "SE4500" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SECURECOMPUTING_SE4700 boolean {
+   prompt "SE4700" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SECURECOMPUTING_SE5000 boolean {
+   prompt "SE5000" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SECURECOMPUTING_SE5100 boolean {
+   prompt "SE5100" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SECURECOMPUTING_SE5100_FLASH boolean {
+   prompt "SE5100-Flash" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SECURECOMPUTING_SE7100 boolean {
+   prompt "SE7100" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SECURECOMPUTING_SG300 boolean {
+   prompt "SG300" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SECURECOMPUTING_SG310 boolean {
+   prompt "SG310" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SECURECOMPUTING_SG530 boolean {
+   prompt "SG530" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SECURECOMPUTING_SG550 boolean {
+   prompt "SG550" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SECURECOMPUTING_SG560 boolean {
+   prompt "SG560" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SECURECOMPUTING_SG560D boolean {
+   prompt "SG560D" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SECURECOMPUTING_SG560U boolean {
+   prompt "SG560U" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SECURECOMPUTING_SG565 boolean {
+   prompt "SG565" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SECURECOMPUTING_SG570 boolean {
+   prompt "SG570" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SECURECOMPUTING_SG575 boolean {
+   prompt "SG575" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SECURECOMPUTING_SG580 boolean {
+   prompt "SG580" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SECURECOMPUTING_SG590 boolean {
+   prompt "SG590" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SECURECOMPUTING_SG630 boolean {
+   prompt "SG630" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SECURECOMPUTING_SG635 boolean {
+   prompt "SG635" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SECURECOMPUTING_SG640 boolean {
+   prompt "SG640" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SECURECOMPUTING_SG710 boolean {
+   prompt "SG710" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SECURECOMPUTING_SG720 boolean {
+   prompt "SG720" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SECURECOMPUTING_SG810 boolean {
+   prompt "SG810" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SECURECOMPUTING_SG8100 boolean {
+   prompt "SG8100" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SECURECOMPUTING_SVPN boolean {
+   prompt "sVPN" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "SecureEdge Products" if [DEFAULTS_SECUREEDGE]
+  depends on [DEFAULTS_SECUREEDGE]
+  default [DEFAULTS_SECUREEDGE_DISKTEL] if [DEFAULTS_SECUREEDGE]
+  config DEFAULTS_SECUREEDGE_DISKTEL boolean {
+   prompt "DISKtel" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SECUREEDGE_ELIA boolean {
+   prompt "eLIA" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SECUREEDGE_MP3 boolean {
+   prompt "MP3" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SECUREEDGE_NETTEL1500 boolean {
+   prompt "NETtel1500" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SECUREEDGE_NETTEL3540 boolean {
+   prompt "NETtel3540" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SECUREEDGE_SECUREEDGE1100 boolean {
+   prompt "SecureEdge1100" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SECUREEDGE_SECUREEDGE2540 boolean {
+   prompt "SecureEdge2540" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SECUREEDGE_SECUREEDGE2570 boolean {
+   prompt "SecureEdge2570" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SECUREEDGE_SECUREEDGE2580 boolean {
+   prompt "SecureEdge2580" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SECUREEDGE_SECUREEDGE2580_JFFS boolean {
+   prompt "SecureEdge2580-JFFS" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SECUREEDGE_SECUREEDGEEDNA boolean {
+   prompt "SecureEdgeEdna" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SECUREEDGE_SECUREEDGENAS boolean {
+   prompt "SecureEdgeNAS" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SECUREEDGE_SECUREEDGEPCMCIA boolean {
+   prompt "SecureEdgePCMCIA" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SECUREEDGE_SECUREEDGEVPN boolean {
+   prompt "SecureEdgeVPN" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "senTec Products" if [DEFAULTS_SENTEC]
+  depends on [DEFAULTS_SENTEC]
+  default [DEFAULTS_SENTEC_COBRA5272] if [DEFAULTS_SENTEC]
+  config DEFAULTS_SENTEC_COBRA5272 boolean {
+   prompt "COBRA5272" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SENTEC_COBRA5282 boolean {
+   prompt "COBRA5282" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SENTEC_COBRA5329 boolean {
+   prompt "COBRA5329" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Serra Products" if [DEFAULTS_SERRA]
+  depends on [DEFAULTS_SERRA]
+  default [DEFAULTS_SERRA_MFC3000] if [DEFAULTS_SERRA]
+  config DEFAULTS_SERRA_MFC3000 boolean {
+   prompt "MFC3000" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Signal Products" if [DEFAULTS_SIGNAL]
+  depends on [DEFAULTS_SIGNAL]
+  default [DEFAULTS_SIGNAL_MCP751] if [DEFAULTS_SIGNAL]
+  config DEFAULTS_SIGNAL_MCP751 boolean {
+   prompt "MCP751" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Simtec Products" if [DEFAULTS_SIMTEC]
+  depends on [DEFAULTS_SIMTEC]
+  default [DEFAULTS_SIMTEC_EB675001DIP] if [DEFAULTS_SIMTEC]
+  config DEFAULTS_SIMTEC_EB675001DIP boolean {
+   prompt "EB675001DIP" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SIMTEC_EB675001DIP_SSH boolean {
+   prompt "EB675001DIP-ssh" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "SnapGear Products" if [DEFAULTS_SNAPGEAR]
+  depends on [DEFAULTS_SNAPGEAR]
+  default [DEFAULTS_SNAPGEAR_LITE] if [DEFAULTS_SNAPGEAR]
+  config DEFAULTS_SNAPGEAR_LITE boolean {
+   prompt "LITE" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SNAPGEAR_LITE300 boolean {
+   prompt "LITE300" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SNAPGEAR_PRO boolean {
+   prompt "PRO" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SNAPGEAR_SE2580 boolean {
+   prompt "SE2580" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SNAPGEAR_SE2580_JFFS boolean {
+   prompt "SE2580-JFFS" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SNAPGEAR_SE2900 boolean {
+   prompt "SE2900" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SNAPGEAR_SE2910_CF boolean {
+   prompt "SE2910-CF" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SNAPGEAR_SE2910_INTEL boolean {
+   prompt "SE2910-Intel" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SNAPGEAR_SE3400 boolean {
+   prompt "SE3400" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SNAPGEAR_SE4000 boolean {
+   prompt "SE4000" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SNAPGEAR_SE5000 boolean {
+   prompt "SE5000" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SNAPGEAR_SME530 boolean {
+   prompt "SME530" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SNAPGEAR_SME550 boolean {
+   prompt "SME550" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SNAPGEAR_SME570 boolean {
+   prompt "SME570" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SNAPGEAR_SME575 boolean {
+   prompt "SME575" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_SNAPGEAR_SOHO_ boolean {
+   prompt "SOHO+" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "SNEHA Products" if [DEFAULTS_SNEHA]
+  depends on [DEFAULTS_SNEHA]
+  default [DEFAULTS_SNEHA_CPU16B] if [DEFAULTS_SNEHA]
+  config DEFAULTS_SNEHA_CPU16B boolean {
+   prompt "CPU16B" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Soekris Products" if [DEFAULTS_SOEKRIS]
+  depends on [DEFAULTS_SOEKRIS]
+  default [DEFAULTS_SOEKRIS_NET4801] if [DEFAULTS_SOEKRIS]
+  config DEFAULTS_SOEKRIS_NET4801 boolean {
+   prompt "net4801" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Sony Products" if [DEFAULTS_SONY]
+  depends on [DEFAULTS_SONY]
+  default [DEFAULTS_SONY_CLIE] if [DEFAULTS_SONY]
+  config DEFAULTS_SONY_CLIE boolean {
+   prompt "Clie" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "SSV Products" if [DEFAULTS_SSV]
+  depends on [DEFAULTS_SSV]
+  default [DEFAULTS_SSV_DNP5280] if [DEFAULTS_SSV]
+  config DEFAULTS_SSV_DNP5280 boolean {
+   prompt "DNP5280" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "StrawberryLinux Products" if [DEFAULTS_STRAWBERRYLINUX]
+  depends on [DEFAULTS_STRAWBERRYLINUX]
+  default [DEFAULTS_STRAWBERRYLINUX_H8MAX] if [DEFAULTS_STRAWBERRYLINUX]
+  config DEFAULTS_STRAWBERRYLINUX_H8MAX boolean {
+   prompt "H8MAX" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "SWARM Products" if [DEFAULTS_SWARM]
+  depends on [DEFAULTS_SWARM]
+  default [DEFAULTS_SWARM_SWARM] if [DEFAULTS_SWARM]
+  config DEFAULTS_SWARM_SWARM boolean {
+   prompt "SWARM" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "TeleIP Products" if [DEFAULTS_TELEIP]
+  depends on [DEFAULTS_TELEIP]
+  default [DEFAULTS_TELEIP_RSC] if [DEFAULTS_TELEIP]
+  config DEFAULTS_TELEIP_RSC boolean {
+   prompt "rsc" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "TI Products" if [DEFAULTS_TI]
+  depends on [DEFAULTS_TI]
+  default [DEFAULTS_TI_DM270] if [DEFAULTS_TI]
+  config DEFAULTS_TI_DM270 boolean {
+   prompt "dm270" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_TI_VC547X boolean {
+   prompt "vc547x" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Triscend Products" if [DEFAULTS_TRISCEND]
+  depends on [DEFAULTS_TRISCEND]
+  default [DEFAULTS_TRISCEND_A7DB] if [DEFAULTS_TRISCEND]
+  config DEFAULTS_TRISCEND_A7DB boolean {
+   prompt "A7DB" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_TRISCEND_DEVA7 boolean {
+   prompt "DevA7" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "UNiTAB Products" if [DEFAULTS_UNITAB]
+  depends on [DEFAULTS_UNITAB]
+  default [DEFAULTS_UNITAB_SG310] if [DEFAULTS_UNITAB]
+  config DEFAULTS_UNITAB_SG310 boolean {
+   prompt "SG310" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Via Products" if [DEFAULTS_VIA]
+  depends on [DEFAULTS_VIA]
+  default [DEFAULTS_VIA_EPIA] if [DEFAULTS_VIA]
+  config DEFAULTS_VIA_EPIA boolean {
+   prompt "EPIA" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Weiss Products" if [DEFAULTS_WEISS]
+  depends on [DEFAULTS_WEISS]
+  default [DEFAULTS_WEISS_SM2010] if [DEFAULTS_WEISS]
+  config DEFAULTS_WEISS_SM2010 boolean {
+   prompt "SM2010" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Xilinx Products" if [DEFAULTS_XILINX]
+  depends on [DEFAULTS_XILINX]
+  default [DEFAULTS_XILINX_COMMON] if [DEFAULTS_XILINX]
+  config DEFAULTS_XILINX_COMMON boolean {
+   prompt "common" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_XILINX_ML401 boolean {
+   prompt "ml401" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_XILINX_UCLINUX_AUTO boolean {
+   prompt "uclinux-auto" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+}
+config PRODUCT string {
+}
+menu "Kernel/Library/Defaults Selection" {
+ choice boolean {
+  prompt "Kernel Version" if []
+  default [DEFAULTS_KERNEL_2_6] if []
+  config DEFAULTS_KERNEL_2_6 boolean {
+   prompt "linux-2.6.x" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_KERNEL_2_4 boolean {
+   prompt "linux-2.4.x" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_KERNEL_2_0 boolean {
+   prompt "linux-2.0.x" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ config LINUXDIR string {
+ }
+ choice boolean {
+  prompt "Libc Version" if []
+  default [DEFAULTS_LIBC_UCLIBC] if []
+  config DEFAULTS_LIBC_UCLIBC boolean {
+   prompt "uClibc" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_LIBC_UC_LIBC boolean {
+   prompt "uC-libc" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_LIBC_GLIBC boolean {
+   prompt "glibc" if [<choice>]
+   inherited [<choice>]
+  }
+  config DEFAULTS_LIBC_NONE boolean {
+   prompt "None" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ menu "glibc Library Configuration (if selected)" {
+  choice boolean {
+   prompt "Which glibc version ?" if [DEFAULTS_LIBC_GLIBC]
+   default [GLIBC_2_3_6] if [DEFAULTS_LIBC_GLIBC]
+   depends on [DEFAULTS_LIBC_GLIBC]
+   config GLIBC_2_3_6 boolean {
+    prompt "glibc-2.3.6" if [<choice>]
+    inherited [<choice>]
+   }
+   config GLIBC_2_5 boolean {
+    prompt "glibc-2.5" if [<choice>]
+    inherited [<choice>]
+   }
+  }
+ }
+ config LIBCDIR string {
+ }
+ config DEFAULTS_OVERRIDE boolean {
+  prompt "Default all settings (lose changes)" if []
+ }
+ config DEFAULTS_KERNEL boolean {
+  prompt "Customize Kernel Settings" if []
+ }
+ config DEFAULTS_VENDOR boolean {
+  prompt "Customize Application/Library Settings" if []
+ }
+ config DEFAULTS_VENDOR_UPDATE boolean {
+  prompt "Update Default Vendor Settings" if []
+ }
+}

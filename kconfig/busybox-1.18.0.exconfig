@@ -1,0 +1,4597 @@
+config HAVE_DOT_CONFIG boolean {
+ default [y] if []
+}
+menu "Busybox Settings" {
+ menu "General Configuration" {
+  config DESKTOP boolean {
+   prompt "Enable options for full-blown desktop systems" if []
+   default [y] if []
+  }
+  config EXTRA_COMPAT boolean {
+   prompt "Provide compatible behavior for rare corner cases (bigger code)" if []
+   default [n] if []
+  }
+  config INCLUDE_SUSv2 boolean {
+   prompt "Enable obsolete features removed before SUSv3" if []
+   default [y] if []
+  }
+  config USE_PORTABLE_CODE boolean {
+   prompt "Avoid using GCC-specific code constructs" if []
+   default [n] if []
+  }
+  config PLATFORM_LINUX boolean {
+   prompt "Enable Linux-specific applets and features" if []
+   default [y] if []
+  }
+  choice boolean {
+   prompt "Buffer allocation policy" if []
+   default [FEATURE_BUFFERS_USE_MALLOC] if []
+   config FEATURE_BUFFERS_USE_MALLOC boolean {
+    prompt "Allocate with Malloc" if [<choice>]
+    inherited [<choice>]
+   }
+   config FEATURE_BUFFERS_GO_ON_STACK boolean {
+    prompt "Allocate on the Stack" if [<choice>]
+    inherited [<choice>]
+   }
+   config FEATURE_BUFFERS_GO_IN_BSS boolean {
+    prompt "Allocate in the .bss section" if [<choice>]
+    inherited [<choice>]
+   }
+  }
+  config SHOW_USAGE boolean {
+   prompt "Show terse applet usage messages" if []
+   default [y] if []
+   config FEATURE_VERBOSE_USAGE boolean {
+    prompt "Show verbose applet usage messages" if [SHOW_USAGE]
+    default [y] if [SHOW_USAGE]
+    depends on [SHOW_USAGE]
+    inherited [SHOW_USAGE]
+   }
+   config FEATURE_COMPRESS_USAGE boolean {
+    prompt "Store applet usage messages in compressed form" if [SHOW_USAGE]
+    default [y] if [SHOW_USAGE]
+    depends on [SHOW_USAGE]
+    inherited [SHOW_USAGE]
+   }
+  }
+  config FEATURE_INSTALLER boolean {
+   prompt "Support --install [-s] to install applet links at runtime" if []
+   default [y] if []
+   config INSTALL_NO_USR boolean {
+    prompt "Don't use /usr" if [FEATURE_INSTALLER]
+    default [n] if [FEATURE_INSTALLER]
+    depends on [FEATURE_INSTALLER]
+    inherited [FEATURE_INSTALLER]
+   }
+  }
+  config LOCALE_SUPPORT boolean {
+   prompt "Enable locale support (system needs locale for this to work)" if []
+   default [n] if []
+  }
+  config UNICODE_SUPPORT boolean {
+   prompt "Support Unicode" if []
+   default [y] if []
+   config UNICODE_USING_LOCALE boolean {
+    prompt "Use libc routines for Unicode (else uses internal ones)" if [UNICODE_SUPPORT && LOCALE_SUPPORT]
+    default [n] if [UNICODE_SUPPORT && LOCALE_SUPPORT]
+    depends on [UNICODE_SUPPORT && LOCALE_SUPPORT]
+    inherited [UNICODE_SUPPORT && LOCALE_SUPPORT]
+   }
+   config FEATURE_CHECK_UNICODE_IN_ENV boolean {
+    prompt "Check $LANG environment variable" if [UNICODE_SUPPORT && !UNICODE_USING_LOCALE]
+    default [n] if [UNICODE_SUPPORT && !UNICODE_USING_LOCALE]
+    depends on [UNICODE_SUPPORT && !UNICODE_USING_LOCALE]
+    inherited [UNICODE_SUPPORT && !UNICODE_USING_LOCALE]
+   }
+   config SUBST_WCHAR integer {
+    prompt "Character code to substitute unprintable characters with" if [UNICODE_SUPPORT]
+    depends on [UNICODE_SUPPORT]
+    default [63] if [UNICODE_SUPPORT]
+    inherited [UNICODE_SUPPORT]
+   }
+   config LAST_SUPPORTED_WCHAR integer {
+    prompt "Range of supported Unicode characters" if [UNICODE_SUPPORT]
+    depends on [UNICODE_SUPPORT]
+    default [767] if [UNICODE_SUPPORT]
+    inherited [UNICODE_SUPPORT]
+   }
+   config UNICODE_COMBINING_WCHARS boolean {
+    prompt "Allow zero-width Unicode characters on output" if [UNICODE_SUPPORT]
+    default [n] if [UNICODE_SUPPORT]
+    depends on [UNICODE_SUPPORT]
+    inherited [UNICODE_SUPPORT]
+   }
+   config UNICODE_WIDE_WCHARS boolean {
+    prompt "Allow wide Unicode characters on output" if [UNICODE_SUPPORT]
+    default [n] if [UNICODE_SUPPORT]
+    depends on [UNICODE_SUPPORT]
+    inherited [UNICODE_SUPPORT]
+   }
+   config UNICODE_BIDI_SUPPORT boolean {
+    prompt "Bidirectional character-aware line input" if [UNICODE_SUPPORT && !UNICODE_USING_LOCALE]
+    default [n] if [UNICODE_SUPPORT && !UNICODE_USING_LOCALE]
+    depends on [UNICODE_SUPPORT && !UNICODE_USING_LOCALE]
+    inherited [UNICODE_SUPPORT && !UNICODE_USING_LOCALE]
+    config UNICODE_NEUTRAL_TABLE boolean {
+     prompt "In bidi input, support non-ASCII neutral chars too" if [UNICODE_BIDI_SUPPORT]
+     default [n] if [UNICODE_BIDI_SUPPORT]
+     depends on [UNICODE_BIDI_SUPPORT]
+     inherited [UNICODE_BIDI_SUPPORT]
+    }
+   }
+   config UNICODE_PRESERVE_BROKEN boolean {
+    prompt "Make it possible to enter sequences of chars which are not Unicode" if [UNICODE_SUPPORT]
+    default [n] if [UNICODE_SUPPORT]
+    depends on [UNICODE_SUPPORT]
+    inherited [UNICODE_SUPPORT]
+   }
+  }
+  config LONG_OPTS boolean {
+   prompt "Support for --long-options" if []
+   default [y] if []
+  }
+  config FEATURE_DEVPTS boolean {
+   prompt "Use the devpts filesystem for Unix98 PTYs" if []
+   default [y] if []
+  }
+  config FEATURE_CLEAN_UP boolean {
+   prompt "Clean up all memory before exiting (usually not needed)" if []
+   default [n] if []
+  }
+  config FEATURE_WTMP boolean {
+   prompt "Support wtmp file" if []
+   default [y] if []
+   select FEATURE_UTMP if []
+  }
+  config FEATURE_UTMP boolean {
+   prompt "Support utmp file" if []
+   default [y] if []
+  }
+  config FEATURE_PIDFILE boolean {
+   prompt "Support writing pidfiles" if []
+   default [y] if []
+  }
+  config FEATURE_SUID boolean {
+   prompt "Support for SUID/SGID handling" if []
+   default [y] if []
+   config FEATURE_SUID_CONFIG boolean {
+    prompt "Runtime SUID/SGID configuration via /etc/busybox.conf" if [FEATURE_SUID]
+    default [y] if [FEATURE_SUID]
+    depends on [FEATURE_SUID]
+    inherited [FEATURE_SUID]
+    config FEATURE_SUID_CONFIG_QUIET boolean {
+     prompt "Suppress warning message if /etc/busybox.conf is not readable" if [FEATURE_SUID_CONFIG]
+     default [y] if [FEATURE_SUID_CONFIG]
+     depends on [FEATURE_SUID_CONFIG]
+     inherited [FEATURE_SUID_CONFIG]
+    }
+   }
+  }
+  config SELINUX boolean {
+   prompt "Support NSA Security Enhanced Linux" if [PLATFORM_LINUX]
+   default [n] if [PLATFORM_LINUX]
+   depends on [PLATFORM_LINUX]
+   inherited [PLATFORM_LINUX]
+  }
+  config FEATURE_PREFER_APPLETS boolean {
+   prompt "exec prefers applets" if []
+   default [n] if []
+  }
+  config BUSYBOX_EXEC_PATH string {
+   prompt "Path to BusyBox executable" if []
+   default ["/proc/self/exe"] if []
+  }
+  config FEATURE_SYSLOG boolean {
+   default [n] if []
+  }
+  config FEATURE_HAVE_RPC boolean {
+   default [n] if []
+  }
+ }
+ menu "Build Options" {
+  config STATIC boolean {
+   prompt "Build BusyBox as a static binary (no shared libs)" if []
+   default [n] if []
+   config PIE boolean {
+    prompt "Build BusyBox as a position independent executable" if [!STATIC]
+    default [n] if [!STATIC]
+    depends on [!STATIC]
+    inherited [!STATIC]
+   }
+  }
+  config NOMMU boolean {
+   prompt "Force NOMMU build" if []
+   default [n] if []
+  }
+  config BUILD_LIBBUSYBOX boolean {
+   prompt "Build shared libbusybox" if [!FEATURE_PREFER_APPLETS && !PIE && !STATIC]
+   default [n] if [!FEATURE_PREFER_APPLETS && !PIE && !STATIC]
+   depends on [!FEATURE_PREFER_APPLETS && !PIE && !STATIC]
+   inherited [!FEATURE_PREFER_APPLETS && !PIE && !STATIC]
+   config FEATURE_INDIVIDUAL boolean {
+    prompt "Produce a binary for each applet, linked against libbusybox" if [BUILD_LIBBUSYBOX]
+    default [y] if [BUILD_LIBBUSYBOX]
+    depends on [BUILD_LIBBUSYBOX]
+    inherited [BUILD_LIBBUSYBOX]
+   }
+   config FEATURE_SHARED_BUSYBOX boolean {
+    prompt "Produce additional busybox binary linked against libbusybox" if [BUILD_LIBBUSYBOX]
+    default [y] if [BUILD_LIBBUSYBOX]
+    depends on [BUILD_LIBBUSYBOX]
+    inherited [BUILD_LIBBUSYBOX]
+   }
+  }
+  config LFS boolean {
+   prompt "Build with Large File Support (for accessing files > 2 GB)" if []
+   default [y] if []
+   select FDISK_SUPPORT_LARGE_DISKS if []
+  }
+  config CROSS_COMPILER_PREFIX string {
+   prompt "Cross Compiler prefix" if []
+   default [""] if []
+  }
+  config EXTRA_CFLAGS string {
+   prompt "Additional CFLAGS" if []
+   default [""] if []
+  }
+ }
+ menu "Debugging Options" {
+  config DEBUG boolean {
+   prompt "Build BusyBox with extra Debugging symbols" if []
+   default [n] if []
+   config DEBUG_PESSIMIZE boolean {
+    prompt "Disable compiler optimizations" if [DEBUG]
+    default [n] if [DEBUG]
+    depends on [DEBUG]
+    inherited [DEBUG]
+   }
+  }
+  config WERROR boolean {
+   prompt "Abort compilation on any warning" if []
+   default [n] if []
+  }
+  choice boolean {
+   prompt "Additional debugging library" if []
+   default [NO_DEBUG_LIB] if []
+   config NO_DEBUG_LIB boolean {
+    prompt "None" if [<choice>]
+    inherited [<choice>]
+   }
+   config DMALLOC boolean {
+    prompt "Dmalloc" if [<choice>]
+    inherited [<choice>]
+   }
+   config EFENCE boolean {
+    prompt "Electric-fence" if [<choice>]
+    inherited [<choice>]
+   }
+  }
+ }
+ menu "Installation Options (make install behavior)" {
+  choice boolean {
+   prompt "What kind of applet links to install" if []
+   default [INSTALL_APPLET_SYMLINKS] if []
+   config INSTALL_APPLET_SYMLINKS boolean {
+    prompt "as soft-links" if [<choice>]
+    inherited [<choice>]
+   }
+   config INSTALL_APPLET_HARDLINKS boolean {
+    prompt "as hard-links" if [<choice>]
+    inherited [<choice>]
+   }
+   config INSTALL_APPLET_SCRIPT_WRAPPERS boolean {
+    prompt "as script wrappers" if [<choice>]
+    inherited [<choice>]
+   }
+   config INSTALL_APPLET_DONT boolean {
+    prompt "not installed" if [<choice> && (FEATURE_INSTALLER || FEATURE_SH_STANDALONE || FEATURE_PREFER_APPLETS)]
+    depends on [FEATURE_INSTALLER || FEATURE_SH_STANDALONE || FEATURE_PREFER_APPLETS]
+    inherited [<choice> && (FEATURE_INSTALLER || FEATURE_SH_STANDALONE || FEATURE_PREFER_APPLETS)]
+   }
+  }
+  choice boolean {
+   prompt "/bin/sh applet link" if [INSTALL_APPLET_SCRIPT_WRAPPERS]
+   default [INSTALL_SH_APPLET_SYMLINK] if [INSTALL_APPLET_SCRIPT_WRAPPERS]
+   depends on [INSTALL_APPLET_SCRIPT_WRAPPERS]
+   config INSTALL_SH_APPLET_SYMLINK boolean {
+    prompt "as soft-link" if [<choice>]
+    inherited [<choice>]
+   }
+   config INSTALL_SH_APPLET_HARDLINK boolean {
+    prompt "as hard-link" if [<choice>]
+    inherited [<choice>]
+   }
+   config INSTALL_SH_APPLET_SCRIPT_WRAPPER boolean {
+    prompt "as script wrapper" if [<choice>]
+    inherited [<choice>]
+   }
+  }
+  config PREFIX string {
+   prompt "BusyBox installation prefix" if []
+   default ["./_install"] if []
+  }
+ }
+ menu "Busybox Library Tuning" {
+  config PASSWORD_MINLEN integer {
+   prompt "Minimum password length" if []
+   default [6] if []
+   range [5 32] if []
+  }
+  config MD5_SIZE_VS_SPEED integer {
+   prompt "MD5: Trade bytes for speed (0:fast, 3:slow)" if []
+   default [2] if []
+   range [0 3] if []
+  }
+  config FEATURE_FAST_TOP boolean {
+   prompt "Faster /proc scanning code (+100 bytes)" if []
+   default [y] if []
+  }
+  config FEATURE_ETC_NETWORKS boolean {
+   prompt "Support for /etc/networks" if []
+   default [n] if []
+  }
+  config FEATURE_USE_TERMIOS boolean {
+   prompt "Use termios to manipulate the screen" if [MORE || TOP || POWERTOP]
+   default [y] if [MORE || TOP || POWERTOP]
+   depends on [MORE || TOP || POWERTOP]
+   inherited [MORE || TOP || POWERTOP]
+  }
+  config FEATURE_EDITING boolean {
+   prompt "Command line editing" if []
+   default [y] if []
+   config FEATURE_EDITING_MAX_LEN integer {
+    prompt "Maximum length of input" if [FEATURE_EDITING]
+    range [128 8192] if [FEATURE_EDITING]
+    default [1024] if [FEATURE_EDITING]
+    depends on [FEATURE_EDITING]
+    inherited [FEATURE_EDITING]
+   }
+   config FEATURE_EDITING_VI boolean {
+    prompt "vi-style line editing commands" if [FEATURE_EDITING]
+    default [n] if [FEATURE_EDITING]
+    depends on [FEATURE_EDITING]
+    inherited [FEATURE_EDITING]
+   }
+   config FEATURE_EDITING_HISTORY integer {
+    prompt "History size" if [FEATURE_EDITING]
+    range [0 99999] if [FEATURE_EDITING]
+    default [255] if [FEATURE_EDITING]
+    depends on [FEATURE_EDITING]
+    inherited [FEATURE_EDITING]
+   }
+   config FEATURE_EDITING_SAVEHISTORY boolean {
+    prompt "History saving" if [FEATURE_EDITING]
+    default [y] if [FEATURE_EDITING]
+    depends on [FEATURE_EDITING]
+    inherited [FEATURE_EDITING]
+   }
+   config FEATURE_TAB_COMPLETION boolean {
+    prompt "Tab completion" if [FEATURE_EDITING]
+    default [y] if [FEATURE_EDITING]
+    depends on [FEATURE_EDITING]
+    inherited [FEATURE_EDITING]
+    config FEATURE_USERNAME_COMPLETION boolean {
+     prompt "Username completion" if [FEATURE_TAB_COMPLETION]
+     default [n] if [FEATURE_TAB_COMPLETION]
+     depends on [FEATURE_TAB_COMPLETION]
+     inherited [FEATURE_TAB_COMPLETION]
+    }
+   }
+   config FEATURE_EDITING_FANCY_PROMPT boolean {
+    prompt "Fancy shell prompts" if [FEATURE_EDITING]
+    default [y] if [FEATURE_EDITING]
+    depends on [FEATURE_EDITING]
+    inherited [FEATURE_EDITING]
+   }
+   config FEATURE_EDITING_ASK_TERMINAL boolean {
+    prompt "Query cursor position from terminal" if [FEATURE_EDITING]
+    default [n] if [FEATURE_EDITING]
+    depends on [FEATURE_EDITING]
+    inherited [FEATURE_EDITING]
+   }
+  }
+  config FEATURE_NON_POSIX_CP boolean {
+   prompt "Non-POSIX, but safer, copying to special nodes" if []
+   default [y] if []
+  }
+  config FEATURE_VERBOSE_CP_MESSAGE boolean {
+   prompt "Give more precise messages when copy fails (cp, mv etc)" if []
+   default [n] if []
+  }
+  config FEATURE_COPYBUF_KB integer {
+   prompt "Copy buffer size, in kilobytes" if []
+   range [1 1024] if []
+   default [4] if []
+  }
+  config MONOTONIC_SYSCALL boolean {
+   prompt "Use clock_gettime(CLOCK_MONOTONIC) syscall" if [PLATFORM_LINUX]
+   default [n] if [PLATFORM_LINUX]
+   depends on [PLATFORM_LINUX]
+   inherited [PLATFORM_LINUX]
+  }
+  config IOCTL_HEX2STR_ERROR boolean {
+   prompt "Use ioctl names rather than hex values in error messages" if []
+   default [y] if []
+  }
+  config FEATURE_HWIB boolean {
+   prompt "Support infiniband HW" if []
+   default [y] if []
+  }
+ }
+}
+menu "Archival Utilities" {
+ config FEATURE_SEAMLESS_XZ boolean {
+  prompt "Make tar, rpm, modprobe etc understand .xz data" if []
+  default [y] if []
+ }
+ config FEATURE_SEAMLESS_LZMA boolean {
+  prompt "Make tar, rpm, modprobe etc understand .lzma data" if []
+  default [y] if []
+ }
+ config FEATURE_SEAMLESS_BZ2 boolean {
+  prompt "Make tar, rpm, modprobe etc understand .bz2 data" if []
+  default [y] if []
+ }
+ config FEATURE_SEAMLESS_GZ boolean {
+  prompt "Make tar, rpm, modprobe etc understand .gz data" if []
+  default [y] if []
+ }
+ config FEATURE_SEAMLESS_Z boolean {
+  prompt "Make tar and gunzip understand .Z data" if []
+  default [n] if []
+ }
+ config AR boolean {
+  prompt "ar" if []
+  default [n] if []
+  config FEATURE_AR_LONG_FILENAMES boolean {
+   prompt "Support for long filenames (not needed for debs)" if [AR]
+   default [y] if [AR]
+   depends on [AR]
+   inherited [AR]
+  }
+  config FEATURE_AR_CREATE boolean {
+   prompt "Support archive creation" if [AR]
+   default [y] if [AR]
+   depends on [AR]
+   inherited [AR]
+  }
+ }
+ config BUNZIP2 boolean {
+  prompt "bunzip2" if []
+  default [y] if []
+ }
+ config BZIP2 boolean {
+  prompt "bzip2" if []
+  default [y] if []
+ }
+ config CPIO boolean {
+  prompt "cpio" if []
+  default [y] if []
+  config FEATURE_CPIO_O boolean {
+   prompt "Support for archive creation" if [CPIO]
+   default [y] if [CPIO]
+   depends on [CPIO]
+   inherited [CPIO]
+   config FEATURE_CPIO_P boolean {
+    prompt "Support for passthrough mode" if [FEATURE_CPIO_O]
+    default [y] if [FEATURE_CPIO_O]
+    depends on [FEATURE_CPIO_O]
+    inherited [FEATURE_CPIO_O]
+   }
+  }
+ }
+ config DPKG boolean {
+  prompt "dpkg" if []
+  default [n] if []
+  select FEATURE_SEAMLESS_GZ if []
+ }
+ config DPKG_DEB boolean {
+  prompt "dpkg_deb" if []
+  default [n] if []
+  select FEATURE_SEAMLESS_GZ if []
+  config FEATURE_DPKG_DEB_EXTRACT_ONLY boolean {
+   prompt "Extract only (-x)" if [DPKG_DEB]
+   default [n] if [DPKG_DEB]
+   depends on [DPKG_DEB]
+   inherited [DPKG_DEB]
+  }
+ }
+ config GUNZIP boolean {
+  prompt "gunzip" if []
+  default [y] if []
+ }
+ config GZIP boolean {
+  prompt "gzip" if []
+  default [y] if []
+  config FEATURE_GZIP_LONG_OPTIONS boolean {
+   prompt "Enable long options" if [GZIP && LONG_OPTS]
+   default [y] if [GZIP && LONG_OPTS]
+   depends on [GZIP && LONG_OPTS]
+   inherited [GZIP && LONG_OPTS]
+  }
+ }
+ config LZOP boolean {
+  prompt "lzop" if []
+  default [y] if []
+  config LZOP_COMPR_HIGH boolean {
+   prompt "lzop compression levels 7,8,9 (not very useful)" if [LZOP]
+   default [n] if [LZOP]
+   depends on [LZOP]
+   inherited [LZOP]
+  }
+ }
+ config RPM2CPIO boolean {
+  prompt "rpm2cpio" if []
+  default [y] if []
+ }
+ config RPM boolean {
+  prompt "rpm" if []
+  default [y] if []
+ }
+ config TAR boolean {
+  prompt "tar" if []
+  default [y] if []
+  config FEATURE_TAR_CREATE boolean {
+   prompt "Enable archive creation" if [TAR]
+   default [y] if [TAR]
+   depends on [TAR]
+   inherited [TAR]
+  }
+  config FEATURE_TAR_AUTODETECT boolean {
+   prompt "Autodetect compressed tarballs" if [TAR && (FEATURE_SEAMLESS_Z || FEATURE_SEAMLESS_GZ || FEATURE_SEAMLESS_BZ2 || FEATURE_SEAMLESS_LZMA || FEATURE_SEAMLESS_XZ)]
+   default [y] if [TAR && (FEATURE_SEAMLESS_Z || FEATURE_SEAMLESS_GZ || FEATURE_SEAMLESS_BZ2 || FEATURE_SEAMLESS_LZMA || FEATURE_SEAMLESS_XZ)]
+   depends on [TAR && (FEATURE_SEAMLESS_Z || FEATURE_SEAMLESS_GZ || FEATURE_SEAMLESS_BZ2 || FEATURE_SEAMLESS_LZMA || FEATURE_SEAMLESS_XZ)]
+   inherited [TAR && (FEATURE_SEAMLESS_Z || FEATURE_SEAMLESS_GZ || FEATURE_SEAMLESS_BZ2 || FEATURE_SEAMLESS_LZMA || FEATURE_SEAMLESS_XZ)]
+  }
+  config FEATURE_TAR_FROM boolean {
+   prompt "Enable -X (exclude from) and -T (include from) options)" if [TAR]
+   default [y] if [TAR]
+   depends on [TAR]
+   inherited [TAR]
+  }
+  config FEATURE_TAR_OLDGNU_COMPATIBILITY boolean {
+   prompt "Support for old tar header format" if [TAR || DPKG]
+   default [y] if [TAR || DPKG]
+   depends on [TAR || DPKG]
+   inherited [TAR || DPKG]
+  }
+  config FEATURE_TAR_OLDSUN_COMPATIBILITY boolean {
+   prompt "Enable untarring of tarballs with checksums produced by buggy Sun tar" if [TAR || DPKG]
+   default [y] if [TAR || DPKG]
+   depends on [TAR || DPKG]
+   inherited [TAR || DPKG]
+  }
+  config FEATURE_TAR_GNU_EXTENSIONS boolean {
+   prompt "Support for GNU tar extensions (long filenames)" if [TAR || DPKG]
+   default [y] if [TAR || DPKG]
+   depends on [TAR || DPKG]
+   inherited [TAR || DPKG]
+  }
+  config FEATURE_TAR_LONG_OPTIONS boolean {
+   prompt "Enable long options" if [TAR && LONG_OPTS]
+   default [y] if [TAR && LONG_OPTS]
+   depends on [TAR && LONG_OPTS]
+   inherited [TAR && LONG_OPTS]
+   config FEATURE_TAR_TO_COMMAND boolean {
+    prompt "Support for writing to an external program" if [TAR && FEATURE_TAR_LONG_OPTIONS]
+    default [y] if [TAR && FEATURE_TAR_LONG_OPTIONS]
+    depends on [TAR && FEATURE_TAR_LONG_OPTIONS]
+    inherited [TAR && FEATURE_TAR_LONG_OPTIONS]
+   }
+  }
+  config FEATURE_TAR_UNAME_GNAME boolean {
+   prompt "Enable use of user and group names" if [TAR]
+   default [y] if [TAR]
+   depends on [TAR]
+   inherited [TAR]
+  }
+  config FEATURE_TAR_NOPRESERVE_TIME boolean {
+   prompt "Enable -m (do not preserve time) option" if [TAR]
+   default [y] if [TAR]
+   depends on [TAR]
+   inherited [TAR]
+  }
+  config FEATURE_TAR_SELINUX boolean {
+   prompt "Support for extracting SELinux labels" if [TAR && SELINUX]
+   default [n] if [TAR && SELINUX]
+   depends on [TAR && SELINUX]
+   inherited [TAR && SELINUX]
+  }
+ }
+ config UNCOMPRESS boolean {
+  prompt "uncompress" if []
+  default [n] if []
+ }
+ config UNLZMA boolean {
+  prompt "unlzma" if []
+  default [y] if []
+  config FEATURE_LZMA_FAST boolean {
+   prompt "Optimize unlzma for speed" if [UNLZMA]
+   default [y] if [UNLZMA]
+   depends on [UNLZMA]
+   inherited [UNLZMA]
+  }
+  config LZMA boolean {
+   prompt "Provide lzma alias which supports only unpacking" if [UNLZMA]
+   default [y] if [UNLZMA]
+   depends on [UNLZMA]
+   inherited [UNLZMA]
+  }
+ }
+ config UNXZ boolean {
+  prompt "unxz" if []
+  default [y] if []
+  config XZ boolean {
+   prompt "Provide xz alias which supports only unpacking" if [UNXZ]
+   default [y] if [UNXZ]
+   depends on [UNXZ]
+   inherited [UNXZ]
+  }
+ }
+ config UNZIP boolean {
+  prompt "unzip" if []
+  default [y] if []
+ }
+}
+menu "Coreutils" {
+ config BASENAME boolean {
+  prompt "basename" if []
+  default [y] if []
+ }
+ config CAT boolean {
+  prompt "cat" if []
+  default [y] if []
+ }
+ config DATE boolean {
+  prompt "date" if []
+  default [y] if []
+  config FEATURE_DATE_ISOFMT boolean {
+   prompt "Enable ISO date format output (-I)" if [DATE]
+   default [y] if [DATE]
+   depends on [DATE]
+   inherited [DATE]
+  }
+  config FEATURE_DATE_NANO boolean {
+   prompt "Support %[num]N nanosecond format specifier" if [DATE && PLATFORM_LINUX]
+   default [n] if [DATE && PLATFORM_LINUX]
+   depends on [DATE && PLATFORM_LINUX]
+   inherited [DATE && PLATFORM_LINUX]
+  }
+  config FEATURE_DATE_COMPAT boolean {
+   prompt "Support weird 'date MMDDhhmm[[YY]YY][.ss]' format" if [DATE]
+   default [y] if [DATE]
+   depends on [DATE]
+   inherited [DATE]
+  }
+ }
+ config TEST boolean {
+  prompt "test" if []
+  default [y] if []
+  config FEATURE_TEST_64 boolean {
+   prompt "Extend test to 64 bit" if [TEST || ASH_BUILTIN_TEST || HUSH]
+   default [y] if [TEST || ASH_BUILTIN_TEST || HUSH]
+   depends on [TEST || ASH_BUILTIN_TEST || HUSH]
+   inherited [TEST || ASH_BUILTIN_TEST || HUSH]
+  }
+ }
+ config TR boolean {
+  prompt "tr" if []
+  default [y] if []
+  config FEATURE_TR_CLASSES boolean {
+   prompt "Enable character classes (such as [:upper:])" if [TR]
+   default [y] if [TR]
+   depends on [TR]
+   inherited [TR]
+  }
+  config FEATURE_TR_EQUIV boolean {
+   prompt "Enable equivalence classes" if [TR]
+   default [y] if [TR]
+   depends on [TR]
+   inherited [TR]
+  }
+ }
+ config BASE64 boolean {
+  prompt "base64" if []
+  default [y] if []
+ }
+ config CAL boolean {
+  prompt "cal" if []
+  default [y] if []
+ }
+ config CATV boolean {
+  prompt "catv" if []
+  default [y] if []
+ }
+ config CHGRP boolean {
+  prompt "chgrp" if []
+  default [y] if []
+ }
+ config CHMOD boolean {
+  prompt "chmod" if []
+  default [y] if []
+ }
+ config CHOWN boolean {
+  prompt "chown" if []
+  default [y] if []
+  config FEATURE_CHOWN_LONG_OPTIONS boolean {
+   prompt "Enable long options" if [CHOWN && LONG_OPTS]
+   default [y] if [CHOWN && LONG_OPTS]
+   depends on [CHOWN && LONG_OPTS]
+   inherited [CHOWN && LONG_OPTS]
+  }
+ }
+ config CHROOT boolean {
+  prompt "chroot" if []
+  default [y] if []
+ }
+ config CKSUM boolean {
+  prompt "cksum" if []
+  default [y] if []
+ }
+ config COMM boolean {
+  prompt "comm" if []
+  default [y] if []
+ }
+ config CP boolean {
+  prompt "cp" if []
+  default [y] if []
+  config FEATURE_CP_LONG_OPTIONS boolean {
+   prompt "Enable long options for cp" if [CP && LONG_OPTS]
+   default [y] if [CP && LONG_OPTS]
+   depends on [CP && LONG_OPTS]
+   inherited [CP && LONG_OPTS]
+  }
+ }
+ config CUT boolean {
+  prompt "cut" if []
+  default [y] if []
+ }
+ config DD boolean {
+  prompt "dd" if []
+  default [y] if []
+  config FEATURE_DD_SIGNAL_HANDLING boolean {
+   prompt "Enable DD signal handling for status reporting" if [DD]
+   default [y] if [DD]
+   depends on [DD]
+   inherited [DD]
+   config FEATURE_DD_THIRD_STATUS_LINE boolean {
+    prompt "Enable the third status line upon signal" if [DD && FEATURE_DD_SIGNAL_HANDLING]
+    default [y] if [DD && FEATURE_DD_SIGNAL_HANDLING]
+    depends on [DD && FEATURE_DD_SIGNAL_HANDLING]
+    inherited [DD && FEATURE_DD_SIGNAL_HANDLING]
+   }
+  }
+  config FEATURE_DD_IBS_OBS boolean {
+   prompt "Enable ibs, obs and conv options" if [DD]
+   default [y] if [DD]
+   depends on [DD]
+   inherited [DD]
+  }
+ }
+ config DF boolean {
+  prompt "df" if []
+  default [y] if []
+  config FEATURE_DF_FANCY boolean {
+   prompt "Enable -a, -i, -B" if [DF]
+   default [y] if [DF]
+   depends on [DF]
+   inherited [DF]
+  }
+ }
+ config DIRNAME boolean {
+  prompt "dirname" if []
+  default [y] if []
+ }
+ config DOS2UNIX boolean {
+  prompt "dos2unix/unix2dos" if []
+  default [y] if []
+  config UNIX2DOS boolean {
+   default [y] if [DOS2UNIX]
+   depends on [DOS2UNIX]
+   inherited [DOS2UNIX]
+  }
+ }
+ config DU boolean {
+  prompt "du (default blocksize of 512 bytes)" if []
+  default [y] if []
+  config FEATURE_DU_DEFAULT_BLOCKSIZE_1K boolean {
+   prompt "Use a default blocksize of 1024 bytes (1K)" if [DU]
+   default [y] if [DU]
+   depends on [DU]
+   inherited [DU]
+  }
+ }
+ config ECHO boolean {
+  prompt "echo (basic SuSv3 version taking no options)" if []
+  default [y] if []
+  config FEATURE_FANCY_ECHO boolean {
+   prompt "Enable echo options (-n and -e)" if [ECHO || ASH_BUILTIN_ECHO || HUSH]
+   default [y] if [ECHO || ASH_BUILTIN_ECHO || HUSH]
+   depends on [ECHO || ASH_BUILTIN_ECHO || HUSH]
+   inherited [ECHO || ASH_BUILTIN_ECHO || HUSH]
+  }
+ }
+ config ENV boolean {
+  prompt "env" if []
+  default [y] if []
+  config FEATURE_ENV_LONG_OPTIONS boolean {
+   prompt "Enable long options" if [ENV && LONG_OPTS]
+   default [y] if [ENV && LONG_OPTS]
+   depends on [ENV && LONG_OPTS]
+   inherited [ENV && LONG_OPTS]
+  }
+ }
+ config EXPAND boolean {
+  prompt "expand" if []
+  default [y] if []
+  config FEATURE_EXPAND_LONG_OPTIONS boolean {
+   prompt "Enable long options" if [EXPAND && LONG_OPTS]
+   default [y] if [EXPAND && LONG_OPTS]
+   depends on [EXPAND && LONG_OPTS]
+   inherited [EXPAND && LONG_OPTS]
+  }
+ }
+ config EXPR boolean {
+  prompt "expr" if []
+  default [y] if []
+  config EXPR_MATH_SUPPORT_64 boolean {
+   prompt "Extend Posix numbers support to 64 bit" if [EXPR]
+   default [y] if [EXPR]
+   depends on [EXPR]
+   inherited [EXPR]
+  }
+ }
+ config FALSE boolean {
+  prompt "false" if []
+  default [y] if []
+ }
+ config FOLD boolean {
+  prompt "fold" if []
+  default [y] if []
+ }
+ config FSYNC boolean {
+  prompt "fsync" if []
+  default [y] if []
+ }
+ config HEAD boolean {
+  prompt "head" if []
+  default [y] if []
+  config FEATURE_FANCY_HEAD boolean {
+   prompt "Enable head options (-c, -q, and -v)" if [HEAD]
+   default [y] if [HEAD]
+   depends on [HEAD]
+   inherited [HEAD]
+  }
+ }
+ config HOSTID boolean {
+  prompt "hostid" if []
+  default [y] if []
+ }
+ config ID boolean {
+  prompt "id" if []
+  default [y] if []
+ }
+ config INSTALL boolean {
+  prompt "install" if []
+  default [y] if []
+  config FEATURE_INSTALL_LONG_OPTIONS boolean {
+   prompt "Enable long options" if [INSTALL && LONG_OPTS]
+   default [y] if [INSTALL && LONG_OPTS]
+   depends on [INSTALL && LONG_OPTS]
+   inherited [INSTALL && LONG_OPTS]
+  }
+ }
+ config LENGTH boolean {
+  prompt "length" if []
+  default [y] if []
+ }
+ config LN boolean {
+  prompt "ln" if []
+  default [y] if []
+ }
+ config LOGNAME boolean {
+  prompt "logname" if []
+  default [y] if []
+ }
+ config LS boolean {
+  prompt "ls" if []
+  default [y] if []
+  config FEATURE_LS_FILETYPES boolean {
+   prompt "Enable filetyping options (-p and -F)" if [LS]
+   default [y] if [LS]
+   depends on [LS]
+   inherited [LS]
+  }
+  config FEATURE_LS_FOLLOWLINKS boolean {
+   prompt "Enable symlinks dereferencing (-L)" if [LS]
+   default [y] if [LS]
+   depends on [LS]
+   inherited [LS]
+  }
+  config FEATURE_LS_RECURSIVE boolean {
+   prompt "Enable recursion (-R)" if [LS]
+   default [y] if [LS]
+   depends on [LS]
+   inherited [LS]
+  }
+  config FEATURE_LS_SORTFILES boolean {
+   prompt "Sort the file names" if [LS]
+   default [y] if [LS]
+   depends on [LS]
+   inherited [LS]
+  }
+  config FEATURE_LS_TIMESTAMPS boolean {
+   prompt "Show file timestamps" if [LS]
+   default [y] if [LS]
+   depends on [LS]
+   inherited [LS]
+  }
+  config FEATURE_LS_USERNAME boolean {
+   prompt "Show username/groupnames" if [LS]
+   default [y] if [LS]
+   depends on [LS]
+   inherited [LS]
+  }
+  config FEATURE_LS_COLOR boolean {
+   prompt "Allow use of color to identify file types" if [LS && LONG_OPTS]
+   default [y] if [LS && LONG_OPTS]
+   depends on [LS && LONG_OPTS]
+   inherited [LS && LONG_OPTS]
+   config FEATURE_LS_COLOR_IS_DEFAULT boolean {
+    prompt "Produce colored ls output by default" if [FEATURE_LS_COLOR]
+    default [y] if [FEATURE_LS_COLOR]
+    depends on [FEATURE_LS_COLOR]
+    inherited [FEATURE_LS_COLOR]
+   }
+  }
+ }
+ config MD5SUM boolean {
+  prompt "md5sum" if []
+  default [y] if []
+ }
+ config MKDIR boolean {
+  prompt "mkdir" if []
+  default [y] if []
+  config FEATURE_MKDIR_LONG_OPTIONS boolean {
+   prompt "Enable long options" if [MKDIR && LONG_OPTS]
+   default [y] if [MKDIR && LONG_OPTS]
+   depends on [MKDIR && LONG_OPTS]
+   inherited [MKDIR && LONG_OPTS]
+  }
+ }
+ config MKFIFO boolean {
+  prompt "mkfifo" if []
+  default [y] if []
+ }
+ config MKNOD boolean {
+  prompt "mknod" if []
+  default [y] if []
+ }
+ config MV boolean {
+  prompt "mv" if []
+  default [y] if []
+  config FEATURE_MV_LONG_OPTIONS boolean {
+   prompt "Enable long options" if [MV && LONG_OPTS]
+   default [y] if [MV && LONG_OPTS]
+   depends on [MV && LONG_OPTS]
+   inherited [MV && LONG_OPTS]
+  }
+ }
+ config NICE boolean {
+  prompt "nice" if []
+  default [y] if []
+ }
+ config NOHUP boolean {
+  prompt "nohup" if []
+  default [y] if []
+ }
+ config OD boolean {
+  prompt "od" if []
+  default [y] if []
+ }
+ config PRINTENV boolean {
+  prompt "printenv" if []
+  default [y] if []
+ }
+ config PRINTF boolean {
+  prompt "printf" if []
+  default [y] if []
+ }
+ config PWD boolean {
+  prompt "pwd" if []
+  default [y] if []
+ }
+ config READLINK boolean {
+  prompt "readlink" if []
+  default [y] if []
+  config FEATURE_READLINK_FOLLOW boolean {
+   prompt "Enable canonicalization by following all symlinks (-f)" if [READLINK]
+   default [y] if [READLINK]
+   depends on [READLINK]
+   inherited [READLINK]
+  }
+ }
+ config REALPATH boolean {
+  prompt "realpath" if []
+  default [y] if []
+ }
+ config RM boolean {
+  prompt "rm" if []
+  default [y] if []
+ }
+ config RMDIR boolean {
+  prompt "rmdir" if []
+  default [y] if []
+  config FEATURE_RMDIR_LONG_OPTIONS boolean {
+   prompt "Enable long options" if [RMDIR && LONG_OPTS]
+   default [y] if [RMDIR && LONG_OPTS]
+   depends on [RMDIR && LONG_OPTS]
+   inherited [RMDIR && LONG_OPTS]
+  }
+ }
+ config SEQ boolean {
+  prompt "seq" if []
+  default [y] if []
+ }
+ config SHA1SUM boolean {
+  prompt "sha1sum" if []
+  default [y] if []
+ }
+ config SHA256SUM boolean {
+  prompt "sha256sum" if []
+  default [y] if []
+ }
+ config SHA512SUM boolean {
+  prompt "sha512sum" if []
+  default [y] if []
+ }
+ config SLEEP boolean {
+  prompt "sleep" if []
+  default [y] if []
+  config FEATURE_FANCY_SLEEP boolean {
+   prompt "Enable multiple arguments and s/m/h/d suffixes" if [SLEEP]
+   default [y] if [SLEEP]
+   depends on [SLEEP]
+   inherited [SLEEP]
+   config FEATURE_FLOAT_SLEEP boolean {
+    prompt "Enable fractional arguments" if [FEATURE_FANCY_SLEEP]
+    default [y] if [FEATURE_FANCY_SLEEP]
+    depends on [FEATURE_FANCY_SLEEP]
+    inherited [FEATURE_FANCY_SLEEP]
+   }
+  }
+ }
+ config SORT boolean {
+  prompt "sort" if []
+  default [y] if []
+  config FEATURE_SORT_BIG boolean {
+   prompt "Full SuSv3 compliant sort (support -ktcsbdfiozgM)" if [SORT]
+   default [y] if [SORT]
+   depends on [SORT]
+   inherited [SORT]
+  }
+ }
+ config SPLIT boolean {
+  prompt "split" if []
+  default [y] if []
+  config FEATURE_SPLIT_FANCY boolean {
+   prompt "Fancy extensions" if [SPLIT]
+   default [y] if [SPLIT]
+   depends on [SPLIT]
+   inherited [SPLIT]
+  }
+ }
+ config STAT boolean {
+  prompt "stat" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+  config FEATURE_STAT_FORMAT boolean {
+   prompt "Enable custom formats (-c)" if [STAT]
+   default [y] if [STAT]
+   depends on [STAT]
+   inherited [STAT]
+  }
+ }
+ config STTY boolean {
+  prompt "stty" if []
+  default [y] if []
+ }
+ config SUM boolean {
+  prompt "sum" if []
+  default [y] if []
+ }
+ config SYNC boolean {
+  prompt "sync" if []
+  default [y] if []
+ }
+ config TAC boolean {
+  prompt "tac" if []
+  default [y] if []
+ }
+ config TAIL boolean {
+  prompt "tail" if []
+  default [y] if []
+  config FEATURE_FANCY_TAIL boolean {
+   prompt "Enable extra tail options (-q, -s, -v, and -F)" if [TAIL]
+   default [y] if [TAIL]
+   depends on [TAIL]
+   inherited [TAIL]
+  }
+ }
+ config TEE boolean {
+  prompt "tee" if []
+  default [y] if []
+  config FEATURE_TEE_USE_BLOCK_IO boolean {
+   prompt "Enable block I/O (larger/faster) instead of byte I/O" if [TEE]
+   default [y] if [TEE]
+   depends on [TEE]
+   inherited [TEE]
+  }
+ }
+ config TOUCH boolean {
+  prompt "touch" if []
+  default [y] if []
+ }
+ config TRUE boolean {
+  prompt "true" if []
+  default [y] if []
+ }
+ config TTY boolean {
+  prompt "tty" if []
+  default [y] if []
+ }
+ config UNAME boolean {
+  prompt "uname" if []
+  default [y] if []
+ }
+ config UNEXPAND boolean {
+  prompt "unexpand" if []
+  default [y] if []
+  config FEATURE_UNEXPAND_LONG_OPTIONS boolean {
+   prompt "Enable long options" if [UNEXPAND && LONG_OPTS]
+   default [y] if [UNEXPAND && LONG_OPTS]
+   depends on [UNEXPAND && LONG_OPTS]
+   inherited [UNEXPAND && LONG_OPTS]
+  }
+ }
+ config UNIQ boolean {
+  prompt "uniq" if []
+  default [y] if []
+ }
+ config USLEEP boolean {
+  prompt "usleep" if []
+  default [y] if []
+ }
+ config UUDECODE boolean {
+  prompt "uudecode" if []
+  default [y] if []
+ }
+ config UUENCODE boolean {
+  prompt "uuencode" if []
+  default [y] if []
+ }
+ config WC boolean {
+  prompt "wc" if []
+  default [y] if []
+  config FEATURE_WC_LARGE boolean {
+   prompt "Support very large files in wc" if [WC]
+   default [y] if [WC]
+   depends on [WC]
+   inherited [WC]
+  }
+ }
+ config WHO boolean {
+  prompt "who" if [FEATURE_UTMP]
+  default [y] if [FEATURE_UTMP]
+  depends on [FEATURE_UTMP]
+  inherited [FEATURE_UTMP]
+ }
+ config WHOAMI boolean {
+  prompt "whoami" if []
+  default [y] if []
+ }
+ config YES boolean {
+  prompt "yes" if []
+  default [y] if []
+ }
+ config FEATURE_PRESERVE_HARDLINKS boolean {
+  prompt "Preserve hard links" if [CP || MV]
+  default [y] if [CP || MV]
+  depends on [CP || MV]
+  inherited [CP || MV]
+ }
+ config FEATURE_AUTOWIDTH boolean {
+  prompt "Calculate terminal & column widths" if [LS || MORE || TELNET]
+  default [y] if [LS || MORE || TELNET]
+  depends on [LS || MORE || TELNET]
+  inherited [LS || MORE || TELNET]
+ }
+ config FEATURE_HUMAN_READABLE boolean {
+  prompt "Support for human readable output (example 13k, 23M, 235G)" if [DF || DU || LS]
+  default [y] if [DF || DU || LS]
+  depends on [DF || DU || LS]
+  inherited [DF || DU || LS]
+ }
+ config FEATURE_MD5_SHA1_SUM_CHECK boolean {
+  prompt "Enable -c, -s and -w options" if [MD5SUM || SHA1SUM || SHA256SUM || SHA512SUM]
+  default [y] if [MD5SUM || SHA1SUM || SHA256SUM || SHA512SUM]
+  depends on [MD5SUM || SHA1SUM || SHA256SUM || SHA512SUM]
+  inherited [MD5SUM || SHA1SUM || SHA256SUM || SHA512SUM]
+ }
+}
+menu "Console Utilities" {
+ config CHVT boolean {
+  prompt "chvt" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config FGCONSOLE boolean {
+  prompt "fgconsole" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config CLEAR boolean {
+  prompt "clear" if []
+  default [y] if []
+ }
+ config DEALLOCVT boolean {
+  prompt "deallocvt" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config DUMPKMAP boolean {
+  prompt "dumpkmap" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config KBD_MODE boolean {
+  prompt "kbd_mode" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config LOADFONT boolean {
+  prompt "loadfont" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config LOADKMAP boolean {
+  prompt "loadkmap" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config OPENVT boolean {
+  prompt "openvt" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config RESET boolean {
+  prompt "reset" if []
+  default [y] if []
+ }
+ config RESIZE boolean {
+  prompt "resize" if []
+  default [y] if []
+  config FEATURE_RESIZE_PRINT boolean {
+   prompt "Print environment variables" if [RESIZE]
+   default [y] if [RESIZE]
+   depends on [RESIZE]
+   inherited [RESIZE]
+  }
+ }
+ config SETCONSOLE boolean {
+  prompt "setconsole" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+  config FEATURE_SETCONSOLE_LONG_OPTIONS boolean {
+   prompt "Enable long options" if [SETCONSOLE && LONG_OPTS]
+   default [y] if [SETCONSOLE && LONG_OPTS]
+   depends on [SETCONSOLE && LONG_OPTS]
+   inherited [SETCONSOLE && LONG_OPTS]
+  }
+ }
+ config SETFONT boolean {
+  prompt "setfont" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+  config FEATURE_SETFONT_TEXTUAL_MAP boolean {
+   prompt "Support reading textual screen maps" if [SETFONT]
+   default [y] if [SETFONT]
+   depends on [SETFONT]
+   inherited [SETFONT]
+  }
+  config DEFAULT_SETFONT_DIR string {
+   prompt "Default directory for console-tools files" if [SETFONT]
+   default [""] if [SETFONT]
+   depends on [SETFONT]
+   inherited [SETFONT]
+  }
+ }
+ config SETKEYCODES boolean {
+  prompt "setkeycodes" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config SETLOGCONS boolean {
+  prompt "setlogcons" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config SHOWKEY boolean {
+  prompt "showkey" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config FEATURE_LOADFONT_PSF2 boolean {
+  prompt "Support for PSF2 console fonts" if [LOADFONT || SETFONT]
+  default [y] if [LOADFONT || SETFONT]
+  depends on [LOADFONT || SETFONT]
+  inherited [LOADFONT || SETFONT]
+ }
+ config FEATURE_LOADFONT_RAW boolean {
+  prompt "Support for old (raw) console fonts" if [LOADFONT || SETFONT]
+  default [y] if [LOADFONT || SETFONT]
+  depends on [LOADFONT || SETFONT]
+  inherited [LOADFONT || SETFONT]
+ }
+}
+menu "Debian Utilities" {
+ config MKTEMP boolean {
+  prompt "mktemp" if []
+  default [y] if []
+ }
+ config PIPE_PROGRESS boolean {
+  prompt "pipe_progress" if []
+  default [y] if []
+ }
+ config RUN_PARTS boolean {
+  prompt "run-parts" if []
+  default [y] if []
+  config FEATURE_RUN_PARTS_LONG_OPTIONS boolean {
+   prompt "Enable long options" if [RUN_PARTS && LONG_OPTS]
+   default [y] if [RUN_PARTS && LONG_OPTS]
+   depends on [RUN_PARTS && LONG_OPTS]
+   inherited [RUN_PARTS && LONG_OPTS]
+  }
+  config FEATURE_RUN_PARTS_FANCY boolean {
+   prompt "Support additional arguments" if [RUN_PARTS]
+   default [y] if [RUN_PARTS]
+   depends on [RUN_PARTS]
+   inherited [RUN_PARTS]
+  }
+ }
+ config START_STOP_DAEMON boolean {
+  prompt "start-stop-daemon" if []
+  default [y] if []
+  config FEATURE_START_STOP_DAEMON_FANCY boolean {
+   prompt "Support additional arguments" if [START_STOP_DAEMON]
+   default [y] if [START_STOP_DAEMON]
+   depends on [START_STOP_DAEMON]
+   inherited [START_STOP_DAEMON]
+  }
+  config FEATURE_START_STOP_DAEMON_LONG_OPTIONS boolean {
+   prompt "Enable long options" if [START_STOP_DAEMON && LONG_OPTS]
+   default [y] if [START_STOP_DAEMON && LONG_OPTS]
+   depends on [START_STOP_DAEMON && LONG_OPTS]
+   inherited [START_STOP_DAEMON && LONG_OPTS]
+  }
+ }
+ config WHICH boolean {
+  prompt "which" if []
+  default [y] if []
+ }
+}
+menu "Editors" {
+ config PATCH boolean {
+  prompt "patch" if []
+  default [y] if []
+ }
+ config AWK boolean {
+  prompt "awk" if []
+  default [y] if []
+  config FEATURE_AWK_LIBM boolean {
+   prompt "Enable math functions (requires libm)" if [AWK]
+   default [y] if [AWK]
+   depends on [AWK]
+   inherited [AWK]
+  }
+ }
+ config CMP boolean {
+  prompt "cmp" if []
+  default [y] if []
+ }
+ config DIFF boolean {
+  prompt "diff" if []
+  default [y] if []
+  config FEATURE_DIFF_LONG_OPTIONS boolean {
+   prompt "Enable long options" if [DIFF && LONG_OPTS]
+   default [y] if [DIFF && LONG_OPTS]
+   depends on [DIFF && LONG_OPTS]
+   inherited [DIFF && LONG_OPTS]
+  }
+  config FEATURE_DIFF_DIR boolean {
+   prompt "Enable directory support" if [DIFF]
+   default [y] if [DIFF]
+   depends on [DIFF]
+   inherited [DIFF]
+  }
+ }
+ config ED boolean {
+  prompt "ed" if []
+  default [y] if []
+ }
+ config SED boolean {
+  prompt "sed" if []
+  default [y] if []
+ }
+ config VI boolean {
+  prompt "vi" if []
+  default [y] if []
+  config FEATURE_VI_MAX_LEN integer {
+   prompt "Maximum screen width in vi" if [VI]
+   range [256 16384] if [VI]
+   default [4096] if [VI]
+   depends on [VI]
+   inherited [VI]
+  }
+  config FEATURE_VI_8BIT boolean {
+   prompt "Allow vi to display 8-bit chars (otherwise shows dots)" if [VI]
+   default [n] if [VI]
+   depends on [VI]
+   inherited [VI]
+  }
+  config FEATURE_VI_COLON boolean {
+   prompt "Enable \":\" colon commands (no \"ex\" mode)" if [VI]
+   default [y] if [VI]
+   depends on [VI]
+   inherited [VI]
+  }
+  config FEATURE_VI_YANKMARK boolean {
+   prompt "Enable yank/put commands and mark cmds" if [VI]
+   default [y] if [VI]
+   depends on [VI]
+   inherited [VI]
+  }
+  config FEATURE_VI_SEARCH boolean {
+   prompt "Enable search and replace cmds" if [VI]
+   default [y] if [VI]
+   depends on [VI]
+   inherited [VI]
+  }
+  config FEATURE_VI_USE_SIGNALS boolean {
+   prompt "Catch signals" if [VI]
+   default [y] if [VI]
+   depends on [VI]
+   inherited [VI]
+  }
+  config FEATURE_VI_DOT_CMD boolean {
+   prompt "Remember previous cmd and \".\" cmd" if [VI]
+   default [y] if [VI]
+   depends on [VI]
+   inherited [VI]
+  }
+  config FEATURE_VI_READONLY boolean {
+   prompt "Enable -R option and \"view\" mode" if [VI]
+   default [y] if [VI]
+   depends on [VI]
+   inherited [VI]
+  }
+  config FEATURE_VI_SETOPTS boolean {
+   prompt "Enable set-able options, ai ic showmatch" if [VI]
+   default [y] if [VI]
+   depends on [VI]
+   inherited [VI]
+  }
+  config FEATURE_VI_SET boolean {
+   prompt "Support for :set" if [VI]
+   default [y] if [VI]
+   depends on [VI]
+   inherited [VI]
+  }
+  config FEATURE_VI_WIN_RESIZE boolean {
+   prompt "Handle window resize" if [VI]
+   default [y] if [VI]
+   depends on [VI]
+   inherited [VI]
+  }
+  config FEATURE_VI_ASK_TERMINAL boolean {
+   prompt "Use 'tell me cursor position' ESC sequence to measure window" if [VI]
+   default [y] if [VI]
+   depends on [VI]
+   inherited [VI]
+  }
+  config FEATURE_VI_OPTIMIZE_CURSOR boolean {
+   prompt "Optimize cursor movement" if [VI]
+   default [y] if [VI]
+   depends on [VI]
+   inherited [VI]
+  }
+  config FEATURE_ALLOW_EXEC boolean {
+   prompt "Allow vi and awk to execute shell commands" if [VI || AWK]
+   default [y] if [VI || AWK]
+   depends on [VI || AWK]
+   inherited [VI || AWK]
+  }
+ }
+}
+menu "Finding Utilities" {
+ config FIND boolean {
+  prompt "find" if []
+  default [y] if []
+  config FEATURE_FIND_PRINT0 boolean {
+   prompt "Enable -print0: NUL-terminated output" if [FIND]
+   default [y] if [FIND]
+   depends on [FIND]
+   inherited [FIND]
+  }
+  config FEATURE_FIND_MTIME boolean {
+   prompt "Enable -mtime: modified time matching" if [FIND]
+   default [y] if [FIND]
+   depends on [FIND]
+   inherited [FIND]
+  }
+  config FEATURE_FIND_MMIN boolean {
+   prompt "Enable -mmin: modified time matching by minutes" if [FIND]
+   default [y] if [FIND]
+   depends on [FIND]
+   inherited [FIND]
+  }
+  config FEATURE_FIND_PERM boolean {
+   prompt "Enable -perm: permissions matching" if [FIND]
+   default [y] if [FIND]
+   depends on [FIND]
+   inherited [FIND]
+  }
+  config FEATURE_FIND_TYPE boolean {
+   prompt "Enable -type: file type matching (file/dir/link/...)" if [FIND]
+   default [y] if [FIND]
+   depends on [FIND]
+   inherited [FIND]
+  }
+  config FEATURE_FIND_XDEV boolean {
+   prompt "Enable -xdev: 'stay in filesystem'" if [FIND]
+   default [y] if [FIND]
+   depends on [FIND]
+   inherited [FIND]
+  }
+  config FEATURE_FIND_MAXDEPTH boolean {
+   prompt "Enable -maxdepth N" if [FIND]
+   default [y] if [FIND]
+   depends on [FIND]
+   inherited [FIND]
+  }
+  config FEATURE_FIND_NEWER boolean {
+   prompt "Enable -newer: compare file modification times" if [FIND]
+   default [y] if [FIND]
+   depends on [FIND]
+   inherited [FIND]
+  }
+  config FEATURE_FIND_INUM boolean {
+   prompt "Enable -inum: inode number matching" if [FIND]
+   default [y] if [FIND]
+   depends on [FIND]
+   inherited [FIND]
+  }
+  config FEATURE_FIND_EXEC boolean {
+   prompt "Enable -exec: execute commands" if [FIND]
+   default [y] if [FIND]
+   depends on [FIND]
+   inherited [FIND]
+  }
+  config FEATURE_FIND_USER boolean {
+   prompt "Enable -user: username/uid matching" if [FIND]
+   default [y] if [FIND]
+   depends on [FIND]
+   inherited [FIND]
+  }
+  config FEATURE_FIND_GROUP boolean {
+   prompt "Enable -group: group/gid matching" if [FIND]
+   default [y] if [FIND]
+   depends on [FIND]
+   inherited [FIND]
+  }
+  config FEATURE_FIND_NOT boolean {
+   prompt "Enable the 'not' (!) operator" if [FIND]
+   default [y] if [FIND]
+   depends on [FIND]
+   inherited [FIND]
+  }
+  config FEATURE_FIND_DEPTH boolean {
+   prompt "Enable -depth" if [FIND]
+   default [y] if [FIND]
+   depends on [FIND]
+   inherited [FIND]
+  }
+  config FEATURE_FIND_PAREN boolean {
+   prompt "Enable parens in options" if [FIND]
+   default [y] if [FIND]
+   depends on [FIND]
+   inherited [FIND]
+  }
+  config FEATURE_FIND_SIZE boolean {
+   prompt "Enable -size: file size matching" if [FIND]
+   default [y] if [FIND]
+   depends on [FIND]
+   inherited [FIND]
+  }
+  config FEATURE_FIND_PRUNE boolean {
+   prompt "Enable -prune: exclude subdirectories" if [FIND]
+   default [y] if [FIND]
+   depends on [FIND]
+   inherited [FIND]
+  }
+  config FEATURE_FIND_DELETE boolean {
+   prompt "Enable -delete: delete files/dirs" if [FIND && FEATURE_FIND_DEPTH]
+   default [y] if [FIND && FEATURE_FIND_DEPTH]
+   depends on [FIND && FEATURE_FIND_DEPTH]
+   inherited [FIND && FEATURE_FIND_DEPTH]
+  }
+  config FEATURE_FIND_PATH boolean {
+   prompt "Enable -path: match pathname with shell pattern" if [FIND]
+   default [y] if [FIND]
+   depends on [FIND]
+   inherited [FIND]
+  }
+  config FEATURE_FIND_REGEX boolean {
+   prompt "Enable -regex: match pathname with regex" if [FIND]
+   default [y] if [FIND]
+   depends on [FIND]
+   inherited [FIND]
+  }
+  config FEATURE_FIND_CONTEXT boolean {
+   prompt "Enable -context: security context matching" if [FIND && SELINUX]
+   default [n] if [FIND && SELINUX]
+   depends on [FIND && SELINUX]
+   inherited [FIND && SELINUX]
+  }
+  config FEATURE_FIND_LINKS boolean {
+   prompt "Enable -links: link count matching" if [FIND]
+   default [y] if [FIND]
+   depends on [FIND]
+   inherited [FIND]
+  }
+ }
+ config GREP boolean {
+  prompt "grep" if []
+  default [y] if []
+  config FEATURE_GREP_EGREP_ALIAS boolean {
+   prompt "Enable extended regular expressions (egrep & grep -E)" if [GREP]
+   default [y] if [GREP]
+   depends on [GREP]
+   inherited [GREP]
+  }
+  config FEATURE_GREP_FGREP_ALIAS boolean {
+   prompt "Alias fgrep to grep -F" if [GREP]
+   default [y] if [GREP]
+   depends on [GREP]
+   inherited [GREP]
+  }
+  config FEATURE_GREP_CONTEXT boolean {
+   prompt "Enable before and after context flags (-A, -B and -C)" if [GREP]
+   default [y] if [GREP]
+   depends on [GREP]
+   inherited [GREP]
+  }
+ }
+ config XARGS boolean {
+  prompt "xargs" if []
+  default [y] if []
+  config FEATURE_XARGS_SUPPORT_CONFIRMATION boolean {
+   prompt "Enable -p: prompt and confirmation" if [XARGS]
+   default [y] if [XARGS]
+   depends on [XARGS]
+   inherited [XARGS]
+  }
+  config FEATURE_XARGS_SUPPORT_QUOTES boolean {
+   prompt "Enable single and double quotes and backslash" if [XARGS]
+   default [y] if [XARGS]
+   depends on [XARGS]
+   inherited [XARGS]
+  }
+  config FEATURE_XARGS_SUPPORT_TERMOPT boolean {
+   prompt "Enable -x: exit if -s or -n is exceeded" if [XARGS]
+   default [y] if [XARGS]
+   depends on [XARGS]
+   inherited [XARGS]
+  }
+  config FEATURE_XARGS_SUPPORT_ZERO_TERM boolean {
+   prompt "Enable -0: NUL-terminated input" if [XARGS]
+   default [y] if [XARGS]
+   depends on [XARGS]
+   inherited [XARGS]
+  }
+ }
+}
+menu "Init Utilities" {
+ config BOOTCHARTD boolean {
+  prompt "bootchartd" if []
+  default [y] if []
+  config FEATURE_BOOTCHARTD_BLOATED_HEADER boolean {
+   prompt "Compatible, bloated header" if [BOOTCHARTD]
+   default [y] if [BOOTCHARTD]
+   depends on [BOOTCHARTD]
+   inherited [BOOTCHARTD]
+  }
+  config FEATURE_BOOTCHARTD_CONFIG_FILE boolean {
+   prompt "Support bootchartd.conf" if [BOOTCHARTD]
+   default [y] if [BOOTCHARTD]
+   depends on [BOOTCHARTD]
+   inherited [BOOTCHARTD]
+  }
+ }
+ config HALT boolean {
+  prompt "poweroff, halt, and reboot" if []
+  default [y] if []
+  config FEATURE_CALL_TELINIT boolean {
+   prompt "Call telinit on shutdown and reboot" if [HALT && !INIT]
+   default [y] if [HALT && !INIT]
+   depends on [HALT && !INIT]
+   inherited [HALT && !INIT]
+   config TELINIT_PATH string {
+    prompt "Path to telinit executable" if [FEATURE_CALL_TELINIT]
+    default ["/sbin/telinit"] if [FEATURE_CALL_TELINIT]
+    depends on [FEATURE_CALL_TELINIT]
+    inherited [FEATURE_CALL_TELINIT]
+   }
+  }
+ }
+ config INIT boolean {
+  prompt "init" if []
+  default [y] if []
+  select FEATURE_SYSLOG if []
+  config FEATURE_USE_INITTAB boolean {
+   prompt "Support reading an inittab file" if [INIT]
+   default [y] if [INIT]
+   depends on [INIT]
+   inherited [INIT]
+   config FEATURE_KILL_REMOVED boolean {
+    prompt "Support killing processes that have been removed from inittab" if [FEATURE_USE_INITTAB]
+    default [n] if [FEATURE_USE_INITTAB]
+    depends on [FEATURE_USE_INITTAB]
+    inherited [FEATURE_USE_INITTAB]
+    config FEATURE_KILL_DELAY integer {
+     prompt "How long to wait between TERM and KILL (0 - send TERM only)" if [FEATURE_KILL_REMOVED]
+     range [0 1024] if [FEATURE_KILL_REMOVED]
+     default [0] if [FEATURE_KILL_REMOVED]
+     depends on [FEATURE_KILL_REMOVED]
+     inherited [FEATURE_KILL_REMOVED]
+    }
+   }
+  }
+  config FEATURE_INIT_SCTTY boolean {
+   prompt "Run commands with leading dash with controlling tty" if [INIT]
+   default [y] if [INIT]
+   depends on [INIT]
+   inherited [INIT]
+  }
+  config FEATURE_INIT_SYSLOG boolean {
+   prompt "Enable init to write to syslog" if [INIT]
+   default [y] if [INIT]
+   depends on [INIT]
+   inherited [INIT]
+  }
+  config FEATURE_EXTRA_QUIET boolean {
+   prompt "Be _extra_ quiet on boot" if [INIT]
+   default [y] if [INIT]
+   depends on [INIT]
+   inherited [INIT]
+  }
+  config FEATURE_INIT_COREDUMPS boolean {
+   prompt "Support dumping core for child processes (debugging only)" if [INIT]
+   default [y] if [INIT]
+   depends on [INIT]
+   inherited [INIT]
+  }
+  config FEATURE_INITRD boolean {
+   prompt "Support running init from within an initrd (not initramfs)" if [INIT]
+   default [y] if [INIT]
+   depends on [INIT]
+   inherited [INIT]
+  }
+  config INIT_TERMINAL_TYPE string {
+   prompt "Initial terminal type" if [INIT]
+   default ["linux"] if [INIT]
+   depends on [INIT]
+   inherited [INIT]
+  }
+ }
+ config MESG boolean {
+  prompt "mesg" if []
+  default [y] if []
+ }
+}
+menu "Login/Password Management Utilities" {
+ config ADD_SHELL boolean {
+  prompt "add-shell" if []
+  default [y] if [DESKTOP]
+ }
+ config REMOVE_SHELL boolean {
+  prompt "remove-shell" if []
+  default [y] if [DESKTOP]
+ }
+ config FEATURE_SHADOWPASSWDS boolean {
+  prompt "Support for shadow passwords" if []
+  default [y] if []
+ }
+ config USE_BB_PWD_GRP boolean {
+  prompt "Use internal password and group functions rather than system functions" if []
+  default [y] if []
+  config USE_BB_SHADOW boolean {
+   prompt "Use internal shadow password functions" if [USE_BB_PWD_GRP && FEATURE_SHADOWPASSWDS]
+   default [y] if [USE_BB_PWD_GRP && FEATURE_SHADOWPASSWDS]
+   depends on [USE_BB_PWD_GRP && FEATURE_SHADOWPASSWDS]
+   inherited [USE_BB_PWD_GRP && FEATURE_SHADOWPASSWDS]
+  }
+ }
+ config USE_BB_CRYPT boolean {
+  prompt "Use internal crypt functions" if []
+  default [y] if []
+  config USE_BB_CRYPT_SHA boolean {
+   prompt "Enable SHA256/512 crypt functions" if [USE_BB_CRYPT]
+   default [y] if [USE_BB_CRYPT]
+   depends on [USE_BB_CRYPT]
+   inherited [USE_BB_CRYPT]
+  }
+ }
+ config ADDUSER boolean {
+  prompt "adduser" if []
+  default [y] if []
+  config FEATURE_ADDUSER_LONG_OPTIONS boolean {
+   prompt "Enable long options" if [ADDUSER && LONG_OPTS]
+   default [y] if [ADDUSER && LONG_OPTS]
+   depends on [ADDUSER && LONG_OPTS]
+   inherited [ADDUSER && LONG_OPTS]
+  }
+  config FEATURE_CHECK_NAMES boolean {
+   prompt "Enable sanity check on user/group names in adduser and addgroup" if [ADDUSER || ADDGROUP]
+   default [n] if [ADDUSER || ADDGROUP]
+   depends on [ADDUSER || ADDGROUP]
+   inherited [ADDUSER || ADDGROUP]
+  }
+  config FIRST_SYSTEM_ID integer {
+   prompt "First valid system uid or gid for adduser and addgroup" if [ADDUSER || ADDGROUP]
+   depends on [ADDUSER || ADDGROUP]
+   range [0 64900] if [ADDUSER || ADDGROUP]
+   default [100] if [ADDUSER || ADDGROUP]
+   inherited [ADDUSER || ADDGROUP]
+  }
+  config LAST_SYSTEM_ID integer {
+   prompt "Last valid system uid or gid for adduser and addgroup" if [ADDUSER || ADDGROUP]
+   depends on [ADDUSER || ADDGROUP]
+   range [0 64900] if [ADDUSER || ADDGROUP]
+   default [999] if [ADDUSER || ADDGROUP]
+   inherited [ADDUSER || ADDGROUP]
+  }
+ }
+ config ADDGROUP boolean {
+  prompt "addgroup" if []
+  default [y] if []
+  config FEATURE_ADDGROUP_LONG_OPTIONS boolean {
+   prompt "Enable long options" if [ADDGROUP && LONG_OPTS]
+   default [y] if [ADDGROUP && LONG_OPTS]
+   depends on [ADDGROUP && LONG_OPTS]
+   inherited [ADDGROUP && LONG_OPTS]
+  }
+  config FEATURE_ADDUSER_TO_GROUP boolean {
+   prompt "Support for adding users to groups" if [ADDGROUP]
+   default [y] if [ADDGROUP]
+   depends on [ADDGROUP]
+   inherited [ADDGROUP]
+  }
+ }
+ config DELUSER boolean {
+  prompt "deluser" if []
+  default [y] if []
+ }
+ config DELGROUP boolean {
+  prompt "delgroup" if []
+  default [y] if []
+  config FEATURE_DEL_USER_FROM_GROUP boolean {
+   prompt "Support for removing users from groups" if [DELGROUP]
+   default [y] if [DELGROUP]
+   depends on [DELGROUP]
+   inherited [DELGROUP]
+  }
+ }
+ config GETTY boolean {
+  prompt "getty" if []
+  default [y] if []
+  select FEATURE_SYSLOG if []
+ }
+ config LOGIN boolean {
+  prompt "login" if []
+  default [y] if []
+  select FEATURE_SUID if []
+  select FEATURE_SYSLOG if []
+  config PAM boolean {
+   prompt "Support for PAM (Pluggable Authentication Modules)" if [LOGIN]
+   default [n] if [LOGIN]
+   depends on [LOGIN]
+   inherited [LOGIN]
+  }
+  config LOGIN_SCRIPTS boolean {
+   prompt "Support for login scripts" if [LOGIN]
+   depends on [LOGIN]
+   default [y] if [LOGIN]
+   inherited [LOGIN]
+  }
+  config FEATURE_NOLOGIN boolean {
+   prompt "Support for /etc/nologin" if [LOGIN]
+   default [y] if [LOGIN]
+   depends on [LOGIN]
+   inherited [LOGIN]
+  }
+  config FEATURE_SECURETTY boolean {
+   prompt "Support for /etc/securetty" if [LOGIN]
+   default [y] if [LOGIN]
+   depends on [LOGIN]
+   inherited [LOGIN]
+  }
+ }
+ config PASSWD boolean {
+  prompt "passwd" if []
+  default [y] if []
+  select FEATURE_SUID if []
+  select FEATURE_SYSLOG if []
+  config FEATURE_PASSWD_WEAK_CHECK boolean {
+   prompt "Check new passwords for weakness" if [PASSWD]
+   default [y] if [PASSWD]
+   depends on [PASSWD]
+   inherited [PASSWD]
+  }
+ }
+ config CRYPTPW boolean {
+  prompt "cryptpw" if []
+  default [y] if []
+ }
+ config CHPASSWD boolean {
+  prompt "chpasswd" if []
+  default [y] if []
+ }
+ config SU boolean {
+  prompt "su" if []
+  default [y] if []
+  select FEATURE_SUID if []
+  select FEATURE_SYSLOG if []
+  config FEATURE_SU_SYSLOG boolean {
+   prompt "Enable su to write to syslog" if [SU]
+   default [y] if [SU]
+   depends on [SU]
+   inherited [SU]
+  }
+  config FEATURE_SU_CHECKS_SHELLS boolean {
+   prompt "Enable su to check user's shell to be listed in /etc/shells" if [SU]
+   depends on [SU]
+   default [y] if [SU]
+   inherited [SU]
+  }
+ }
+ config SULOGIN boolean {
+  prompt "sulogin" if []
+  default [y] if []
+  select FEATURE_SYSLOG if []
+ }
+ config VLOCK boolean {
+  prompt "vlock" if []
+  default [y] if []
+  select FEATURE_SUID if []
+ }
+}
+menu "Linux Ext2 FS Progs" {
+ config CHATTR boolean {
+  prompt "chattr" if []
+  default [y] if []
+ }
+ config FSCK boolean {
+  prompt "fsck" if []
+  default [y] if []
+ }
+ config LSATTR boolean {
+  prompt "lsattr" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config TUNE2FS boolean {
+  prompt "tune2fs" if []
+  default [n] if []
+ }
+}
+menu "Linux Module Utilities" {
+ depends on [PLATFORM_LINUX]
+ config MODINFO boolean {
+  prompt "modinfo" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config MODPROBE_SMALL boolean {
+  prompt "Simplified modutils" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+  config FEATURE_MODPROBE_SMALL_OPTIONS_ON_CMDLINE boolean {
+   prompt "Accept module options on modprobe command line" if [PLATFORM_LINUX && MODPROBE_SMALL]
+   default [y] if [PLATFORM_LINUX && MODPROBE_SMALL]
+   depends on [MODPROBE_SMALL]
+   inherited [PLATFORM_LINUX && MODPROBE_SMALL]
+  }
+  config FEATURE_MODPROBE_SMALL_CHECK_ALREADY_LOADED boolean {
+   prompt "Skip loading of already loaded modules" if [PLATFORM_LINUX && MODPROBE_SMALL]
+   default [y] if [PLATFORM_LINUX && MODPROBE_SMALL]
+   depends on [MODPROBE_SMALL]
+   inherited [PLATFORM_LINUX && MODPROBE_SMALL]
+  }
+  config INSMOD boolean {
+   prompt "insmod" if [PLATFORM_LINUX && !MODPROBE_SMALL]
+   default [n] if [PLATFORM_LINUX && !MODPROBE_SMALL]
+   depends on [!MODPROBE_SMALL]
+   inherited [PLATFORM_LINUX && !MODPROBE_SMALL]
+  }
+  config RMMOD boolean {
+   prompt "rmmod" if [PLATFORM_LINUX && !MODPROBE_SMALL]
+   default [n] if [PLATFORM_LINUX && !MODPROBE_SMALL]
+   depends on [!MODPROBE_SMALL]
+   inherited [PLATFORM_LINUX && !MODPROBE_SMALL]
+  }
+  config LSMOD boolean {
+   prompt "lsmod" if [PLATFORM_LINUX && !MODPROBE_SMALL]
+   default [n] if [PLATFORM_LINUX && !MODPROBE_SMALL]
+   depends on [!MODPROBE_SMALL]
+   inherited [PLATFORM_LINUX && !MODPROBE_SMALL]
+   config FEATURE_LSMOD_PRETTY_2_6_OUTPUT boolean {
+    prompt "Pretty output" if [PLATFORM_LINUX && LSMOD]
+    default [n] if [PLATFORM_LINUX && LSMOD]
+    depends on [LSMOD]
+    inherited [PLATFORM_LINUX && LSMOD]
+   }
+  }
+  config MODPROBE boolean {
+   prompt "modprobe" if [PLATFORM_LINUX && !MODPROBE_SMALL]
+   default [n] if [PLATFORM_LINUX && !MODPROBE_SMALL]
+   depends on [!MODPROBE_SMALL]
+   inherited [PLATFORM_LINUX && !MODPROBE_SMALL]
+   config FEATURE_MODPROBE_BLACKLIST boolean {
+    prompt "Blacklist support" if [PLATFORM_LINUX && MODPROBE]
+    default [n] if [PLATFORM_LINUX && MODPROBE]
+    depends on [MODPROBE]
+    inherited [PLATFORM_LINUX && MODPROBE]
+   }
+  }
+  config DEPMOD boolean {
+   prompt "depmod" if [PLATFORM_LINUX && !MODPROBE_SMALL]
+   default [n] if [PLATFORM_LINUX && !MODPROBE_SMALL]
+   depends on [!MODPROBE_SMALL]
+   inherited [PLATFORM_LINUX && !MODPROBE_SMALL]
+  }
+ }
+ config FEATURE_2_4_MODULES boolean {
+  prompt "Support version 2.2/2.4 Linux kernels" if [PLATFORM_LINUX && (INSMOD || RMMOD || LSMOD)]
+  default [n] if [PLATFORM_LINUX && (INSMOD || RMMOD || LSMOD)]
+  depends on [INSMOD || RMMOD || LSMOD]
+  inherited [PLATFORM_LINUX && (INSMOD || RMMOD || LSMOD)]
+ }
+ config FEATURE_INSMOD_TRY_MMAP boolean {
+  prompt "Try to load module from a mmap'ed area" if [PLATFORM_LINUX && (INSMOD || MODPROBE_SMALL)]
+  default [n] if [PLATFORM_LINUX && (INSMOD || MODPROBE_SMALL)]
+  depends on [INSMOD || MODPROBE_SMALL]
+  inherited [PLATFORM_LINUX && (INSMOD || MODPROBE_SMALL)]
+ }
+ config FEATURE_INSMOD_VERSION_CHECKING boolean {
+  prompt "Enable module version checking" if [PLATFORM_LINUX && FEATURE_2_4_MODULES && (INSMOD || MODPROBE)]
+  default [n] if [PLATFORM_LINUX && FEATURE_2_4_MODULES && (INSMOD || MODPROBE)]
+  depends on [FEATURE_2_4_MODULES && (INSMOD || MODPROBE)]
+  inherited [PLATFORM_LINUX && FEATURE_2_4_MODULES && (INSMOD || MODPROBE)]
+ }
+ config FEATURE_INSMOD_KSYMOOPS_SYMBOLS boolean {
+  prompt "Add module symbols to kernel symbol table" if [PLATFORM_LINUX && FEATURE_2_4_MODULES && (INSMOD || MODPROBE)]
+  default [n] if [PLATFORM_LINUX && FEATURE_2_4_MODULES && (INSMOD || MODPROBE)]
+  depends on [FEATURE_2_4_MODULES && (INSMOD || MODPROBE)]
+  inherited [PLATFORM_LINUX && FEATURE_2_4_MODULES && (INSMOD || MODPROBE)]
+ }
+ config FEATURE_INSMOD_LOADINKMEM boolean {
+  prompt "In kernel memory optimization (uClinux only)" if [PLATFORM_LINUX && FEATURE_2_4_MODULES && (INSMOD || MODPROBE)]
+  default [n] if [PLATFORM_LINUX && FEATURE_2_4_MODULES && (INSMOD || MODPROBE)]
+  depends on [FEATURE_2_4_MODULES && (INSMOD || MODPROBE)]
+  inherited [PLATFORM_LINUX && FEATURE_2_4_MODULES && (INSMOD || MODPROBE)]
+ }
+ config FEATURE_INSMOD_LOAD_MAP boolean {
+  prompt "Enable insmod load map (-m) option" if [PLATFORM_LINUX && FEATURE_2_4_MODULES && INSMOD]
+  default [n] if [PLATFORM_LINUX && FEATURE_2_4_MODULES && INSMOD]
+  depends on [FEATURE_2_4_MODULES && INSMOD]
+  inherited [PLATFORM_LINUX && FEATURE_2_4_MODULES && INSMOD]
+  config FEATURE_INSMOD_LOAD_MAP_FULL boolean {
+   prompt "Symbols in load map" if [PLATFORM_LINUX && FEATURE_INSMOD_LOAD_MAP && !MODPROBE_SMALL]
+   default [y] if [PLATFORM_LINUX && FEATURE_INSMOD_LOAD_MAP && !MODPROBE_SMALL]
+   depends on [FEATURE_INSMOD_LOAD_MAP && !MODPROBE_SMALL]
+   inherited [PLATFORM_LINUX && FEATURE_INSMOD_LOAD_MAP && !MODPROBE_SMALL]
+  }
+ }
+ config FEATURE_CHECK_TAINTED_MODULE boolean {
+  prompt "Support tainted module checking with new kernels" if [PLATFORM_LINUX && (LSMOD || FEATURE_2_4_MODULES) && !MODPROBE_SMALL]
+  default [y] if [PLATFORM_LINUX && (LSMOD || FEATURE_2_4_MODULES) && !MODPROBE_SMALL]
+  depends on [(LSMOD || FEATURE_2_4_MODULES) && !MODPROBE_SMALL]
+  inherited [PLATFORM_LINUX && (LSMOD || FEATURE_2_4_MODULES) && !MODPROBE_SMALL]
+ }
+ config FEATURE_MODUTILS_ALIAS boolean {
+  prompt "Support for module.aliases file" if [PLATFORM_LINUX && (DEPMOD || MODPROBE)]
+  default [y] if [PLATFORM_LINUX && (DEPMOD || MODPROBE)]
+  depends on [DEPMOD || MODPROBE]
+  inherited [PLATFORM_LINUX && (DEPMOD || MODPROBE)]
+ }
+ config FEATURE_MODUTILS_SYMBOLS boolean {
+  prompt "Support for module.symbols file" if [PLATFORM_LINUX && (DEPMOD || MODPROBE)]
+  default [y] if [PLATFORM_LINUX && (DEPMOD || MODPROBE)]
+  depends on [DEPMOD || MODPROBE]
+  inherited [PLATFORM_LINUX && (DEPMOD || MODPROBE)]
+ }
+ config DEFAULT_MODULES_DIR string {
+  prompt "Default directory containing modules" if [PLATFORM_LINUX && (DEPMOD || MODPROBE || MODPROBE_SMALL || MODINFO)]
+  default ["/lib/modules"] if [PLATFORM_LINUX && (DEPMOD || MODPROBE || MODPROBE_SMALL || MODINFO)]
+  depends on [DEPMOD || MODPROBE || MODPROBE_SMALL || MODINFO]
+  inherited [PLATFORM_LINUX && (DEPMOD || MODPROBE || MODPROBE_SMALL || MODINFO)]
+ }
+ config DEFAULT_DEPMOD_FILE string {
+  prompt "Default name of modules.dep" if [PLATFORM_LINUX && (DEPMOD || MODPROBE || MODPROBE_SMALL || MODINFO)]
+  default ["modules.dep"] if [PLATFORM_LINUX && (DEPMOD || MODPROBE || MODPROBE_SMALL || MODINFO)]
+  depends on [DEPMOD || MODPROBE || MODPROBE_SMALL || MODINFO]
+  inherited [PLATFORM_LINUX && (DEPMOD || MODPROBE || MODPROBE_SMALL || MODINFO)]
+ }
+}
+menu "Linux System Utilities" {
+ config BLOCKDEV boolean {
+  prompt "blockdev" if []
+  default [y] if []
+ }
+ config REV boolean {
+  prompt "rev" if []
+  default [y] if []
+ }
+ config ACPID boolean {
+  prompt "acpid" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+  config FEATURE_ACPID_COMPAT boolean {
+   prompt "Accept and ignore redundant options" if [ACPID]
+   default [y] if [ACPID]
+   depends on [ACPID]
+   inherited [ACPID]
+  }
+ }
+ config BLKID boolean {
+  prompt "blkid" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  select VOLUMEID if [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config DMESG boolean {
+  prompt "dmesg" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+  config FEATURE_DMESG_PRETTY boolean {
+   prompt "Pretty dmesg output" if [DMESG]
+   default [y] if [DMESG]
+   depends on [DMESG]
+   inherited [DMESG]
+  }
+ }
+ config FBSET boolean {
+  prompt "fbset" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+  config FEATURE_FBSET_FANCY boolean {
+   prompt "Turn on extra fbset options" if [FBSET]
+   default [y] if [FBSET]
+   depends on [FBSET]
+   inherited [FBSET]
+  }
+  config FEATURE_FBSET_READMODE boolean {
+   prompt "Turn on fbset readmode support" if [FBSET]
+   default [y] if [FBSET]
+   depends on [FBSET]
+   inherited [FBSET]
+  }
+ }
+ config FDFLUSH boolean {
+  prompt "fdflush" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config FDFORMAT boolean {
+  prompt "fdformat" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config FDISK boolean {
+  prompt "fdisk" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+  config FDISK_SUPPORT_LARGE_DISKS boolean {
+   prompt "Support over 4GB disks" if [FDISK]
+   default [y] if [FDISK]
+   depends on [FDISK]
+   inherited [FDISK]
+  }
+  config FEATURE_FDISK_WRITABLE boolean {
+   prompt "Write support" if [FDISK]
+   default [y] if [FDISK]
+   depends on [FDISK]
+   inherited [FDISK]
+   config FEATURE_AIX_LABEL boolean {
+    prompt "Support AIX disklabels" if [FDISK && FEATURE_FDISK_WRITABLE]
+    default [n] if [FDISK && FEATURE_FDISK_WRITABLE]
+    depends on [FDISK && FEATURE_FDISK_WRITABLE]
+    inherited [FDISK && FEATURE_FDISK_WRITABLE]
+   }
+   config FEATURE_SGI_LABEL boolean {
+    prompt "Support SGI disklabels" if [FDISK && FEATURE_FDISK_WRITABLE]
+    default [n] if [FDISK && FEATURE_FDISK_WRITABLE]
+    depends on [FDISK && FEATURE_FDISK_WRITABLE]
+    inherited [FDISK && FEATURE_FDISK_WRITABLE]
+   }
+   config FEATURE_SUN_LABEL boolean {
+    prompt "Support SUN disklabels" if [FDISK && FEATURE_FDISK_WRITABLE]
+    default [n] if [FDISK && FEATURE_FDISK_WRITABLE]
+    depends on [FDISK && FEATURE_FDISK_WRITABLE]
+    inherited [FDISK && FEATURE_FDISK_WRITABLE]
+   }
+   config FEATURE_OSF_LABEL boolean {
+    prompt "Support BSD disklabels" if [FDISK && FEATURE_FDISK_WRITABLE]
+    default [n] if [FDISK && FEATURE_FDISK_WRITABLE]
+    depends on [FDISK && FEATURE_FDISK_WRITABLE]
+    inherited [FDISK && FEATURE_FDISK_WRITABLE]
+   }
+   config FEATURE_GPT_LABEL boolean {
+    prompt "Support GPT disklabels" if [FDISK && FEATURE_FDISK_WRITABLE]
+    default [n] if [FDISK && FEATURE_FDISK_WRITABLE]
+    depends on [FDISK && FEATURE_FDISK_WRITABLE]
+    inherited [FDISK && FEATURE_FDISK_WRITABLE]
+   }
+   config FEATURE_FDISK_ADVANCED boolean {
+    prompt "Support expert mode" if [FDISK && FEATURE_FDISK_WRITABLE]
+    default [y] if [FDISK && FEATURE_FDISK_WRITABLE]
+    depends on [FDISK && FEATURE_FDISK_WRITABLE]
+    inherited [FDISK && FEATURE_FDISK_WRITABLE]
+   }
+  }
+ }
+ config FINDFS boolean {
+  prompt "findfs" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  select VOLUMEID if [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config FLOCK boolean {
+  prompt "flock" if []
+  default [y] if []
+ }
+ config FREERAMDISK boolean {
+  prompt "freeramdisk" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config FSCK_MINIX boolean {
+  prompt "fsck_minix" if []
+  default [y] if []
+ }
+ config MKFS_EXT2 boolean {
+  prompt "mkfs_ext2" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config MKFS_MINIX boolean {
+  prompt "mkfs_minix" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config FEATURE_MINIX2 boolean {
+  prompt "Support Minix fs v2 (fsck_minix/mkfs_minix)" if [FSCK_MINIX || MKFS_MINIX]
+  default [y] if [FSCK_MINIX || MKFS_MINIX]
+  depends on [FSCK_MINIX || MKFS_MINIX]
+  inherited [FSCK_MINIX || MKFS_MINIX]
+ }
+ config MKFS_REISER boolean {
+  prompt "mkfs_reiser" if [PLATFORM_LINUX]
+  default [n] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config MKFS_VFAT boolean {
+  prompt "mkfs_vfat" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config GETOPT boolean {
+  prompt "getopt" if []
+  default [y] if []
+  config FEATURE_GETOPT_LONG boolean {
+   prompt "Support option -l" if [GETOPT]
+   default [y] if [GETOPT && LONG_OPTS]
+   depends on [GETOPT]
+   inherited [GETOPT]
+  }
+ }
+ config HEXDUMP boolean {
+  prompt "hexdump" if []
+  default [y] if []
+  config FEATURE_HEXDUMP_REVERSE boolean {
+   prompt "Support -R, reverse of 'hexdump -Cv'" if [HEXDUMP]
+   default [y] if [HEXDUMP]
+   depends on [HEXDUMP]
+   inherited [HEXDUMP]
+  }
+  config HD boolean {
+   prompt "hd" if [HEXDUMP]
+   default [y] if [HEXDUMP]
+   depends on [HEXDUMP]
+   inherited [HEXDUMP]
+  }
+ }
+ config HWCLOCK boolean {
+  prompt "hwclock" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+  config FEATURE_HWCLOCK_LONG_OPTIONS boolean {
+   prompt "Support long options (--hctosys,...)" if [HWCLOCK && LONG_OPTS]
+   default [y] if [HWCLOCK && LONG_OPTS]
+   depends on [HWCLOCK && LONG_OPTS]
+   inherited [HWCLOCK && LONG_OPTS]
+  }
+  config FEATURE_HWCLOCK_ADJTIME_FHS boolean {
+   prompt "Use FHS /var/lib/hwclock/adjtime" if [HWCLOCK]
+   default [n] if [HWCLOCK]
+   depends on [HWCLOCK]
+   inherited [HWCLOCK]
+  }
+ }
+ config IPCRM boolean {
+  prompt "ipcrm" if []
+  default [y] if []
+  select FEATURE_SUID if []
+ }
+ config IPCS boolean {
+  prompt "ipcs" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  select FEATURE_SUID if [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config LOSETUP boolean {
+  prompt "losetup" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config LSPCI boolean {
+  prompt "lspci" if []
+  default [y] if []
+ }
+ config LSUSB boolean {
+  prompt "lsusb" if []
+  default [y] if []
+ }
+ config MDEV boolean {
+  prompt "mdev" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+  config FEATURE_MDEV_CONF boolean {
+   prompt "Support /etc/mdev.conf" if [MDEV]
+   default [y] if [MDEV]
+   depends on [MDEV]
+   inherited [MDEV]
+   config FEATURE_MDEV_RENAME boolean {
+    prompt "Support subdirs/symlinks" if [FEATURE_MDEV_CONF]
+    default [y] if [FEATURE_MDEV_CONF]
+    depends on [FEATURE_MDEV_CONF]
+    inherited [FEATURE_MDEV_CONF]
+    config FEATURE_MDEV_RENAME_REGEXP boolean {
+     prompt "Support regular expressions substitutions when renaming device" if [FEATURE_MDEV_RENAME]
+     default [y] if [FEATURE_MDEV_RENAME]
+     depends on [FEATURE_MDEV_RENAME]
+     inherited [FEATURE_MDEV_RENAME]
+    }
+   }
+   config FEATURE_MDEV_EXEC boolean {
+    prompt "Support command execution at device addition/removal" if [FEATURE_MDEV_CONF]
+    default [y] if [FEATURE_MDEV_CONF]
+    depends on [FEATURE_MDEV_CONF]
+    inherited [FEATURE_MDEV_CONF]
+   }
+  }
+  config FEATURE_MDEV_LOAD_FIRMWARE boolean {
+   prompt "Support loading of firmwares" if [MDEV]
+   default [y] if [MDEV]
+   depends on [MDEV]
+   inherited [MDEV]
+  }
+ }
+ config MKSWAP boolean {
+  prompt "mkswap" if []
+  default [y] if []
+  config FEATURE_MKSWAP_UUID boolean {
+   prompt "UUID support" if [MKSWAP]
+   default [y] if [MKSWAP]
+   depends on [MKSWAP]
+   inherited [MKSWAP]
+  }
+ }
+ config MORE boolean {
+  prompt "more" if []
+  default [y] if []
+ }
+ config MOUNT boolean {
+  prompt "mount" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+  config FEATURE_MOUNT_FAKE boolean {
+   prompt "Support option -f" if [MOUNT]
+   default [y] if [MOUNT]
+   depends on [MOUNT]
+   inherited [MOUNT]
+  }
+  config FEATURE_MOUNT_VERBOSE boolean {
+   prompt "Support option -v" if [MOUNT]
+   default [y] if [MOUNT]
+   depends on [MOUNT]
+   inherited [MOUNT]
+  }
+  config FEATURE_MOUNT_HELPERS boolean {
+   prompt "Support mount helpers" if [MOUNT]
+   default [n] if [MOUNT]
+   depends on [MOUNT]
+   inherited [MOUNT]
+  }
+  config FEATURE_MOUNT_LABEL boolean {
+   prompt "Support specifying devices by label or UUID" if [MOUNT]
+   default [y] if [MOUNT]
+   depends on [MOUNT]
+   select VOLUMEID if [MOUNT]
+   inherited [MOUNT]
+  }
+  config FEATURE_MOUNT_NFS boolean {
+   prompt "Support mounting NFS file systems" if [MOUNT]
+   default [y] if [MOUNT]
+   depends on [MOUNT]
+   select FEATURE_HAVE_RPC if [MOUNT]
+   select FEATURE_SYSLOG if [MOUNT]
+   inherited [MOUNT]
+  }
+  config FEATURE_MOUNT_CIFS boolean {
+   prompt "Support mounting CIFS/SMB file systems" if [MOUNT]
+   default [y] if [MOUNT]
+   depends on [MOUNT]
+   inherited [MOUNT]
+  }
+  config FEATURE_MOUNT_FLAGS boolean {
+   depends on [MOUNT]
+   prompt "Support lots of -o flags in mount" if [MOUNT]
+   default [y] if [MOUNT]
+   inherited [MOUNT]
+  }
+  config FEATURE_MOUNT_FSTAB boolean {
+   depends on [MOUNT]
+   prompt "Support /etc/fstab and -a" if [MOUNT]
+   default [y] if [MOUNT]
+   inherited [MOUNT]
+  }
+ }
+ config PIVOT_ROOT boolean {
+  prompt "pivot_root" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config RDATE boolean {
+  prompt "rdate" if []
+  default [y] if []
+ }
+ config RDEV boolean {
+  prompt "rdev" if []
+  default [y] if []
+ }
+ config READPROFILE boolean {
+  prompt "readprofile" if []
+  default [y] if []
+ }
+ config RTCWAKE boolean {
+  prompt "rtcwake" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config SCRIPT boolean {
+  prompt "script" if []
+  default [y] if []
+ }
+ config SCRIPTREPLAY boolean {
+  prompt "scriptreplay" if []
+  default [y] if []
+ }
+ config SETARCH boolean {
+  prompt "setarch" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config SWAPONOFF boolean {
+  prompt "swaponoff" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+  config FEATURE_SWAPON_PRI boolean {
+   prompt "Support priority option -p" if [SWAPONOFF]
+   default [y] if [SWAPONOFF]
+   depends on [SWAPONOFF]
+   inherited [SWAPONOFF]
+  }
+ }
+ config SWITCH_ROOT boolean {
+  prompt "switch_root" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config UMOUNT boolean {
+  prompt "umount" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+  config FEATURE_UMOUNT_ALL boolean {
+   prompt "Support option -a" if [UMOUNT]
+   default [y] if [UMOUNT]
+   depends on [UMOUNT]
+   inherited [UMOUNT]
+  }
+ }
+ config FEATURE_MOUNT_LOOP boolean {
+  prompt "Support loopback mounts" if [MOUNT || UMOUNT]
+  default [y] if [MOUNT || UMOUNT]
+  depends on [MOUNT || UMOUNT]
+  inherited [MOUNT || UMOUNT]
+  config FEATURE_MOUNT_LOOP_CREATE boolean {
+   prompt "Create new loopback devices if needed" if [FEATURE_MOUNT_LOOP]
+   default [y] if [FEATURE_MOUNT_LOOP]
+   depends on [FEATURE_MOUNT_LOOP]
+   inherited [FEATURE_MOUNT_LOOP]
+  }
+ }
+ config FEATURE_MTAB_SUPPORT boolean {
+  prompt "Support for the old /etc/mtab file" if [MOUNT || UMOUNT]
+  default [n] if [MOUNT || UMOUNT]
+  depends on [MOUNT || UMOUNT]
+  select FEATURE_MOUNT_FAKE if [MOUNT || UMOUNT]
+  inherited [MOUNT || UMOUNT]
+ }
+ config VOLUMEID boolean {
+  default [n] if []
+ }
+ menu "Filesystem/Volume identification" {
+  depends on [VOLUMEID]
+  config FEATURE_VOLUMEID_EXT boolean {
+   prompt "Ext filesystem" if [VOLUMEID]
+   default [y] if [VOLUMEID]
+   depends on [VOLUMEID]
+   inherited [VOLUMEID]
+  }
+  config FEATURE_VOLUMEID_BTRFS boolean {
+   prompt "btrfs filesystem" if [VOLUMEID]
+   default [y] if [VOLUMEID]
+   depends on [VOLUMEID]
+   inherited [VOLUMEID]
+  }
+  config FEATURE_VOLUMEID_REISERFS boolean {
+   prompt "Reiser filesystem" if [VOLUMEID]
+   default [y] if [VOLUMEID]
+   depends on [VOLUMEID]
+   inherited [VOLUMEID]
+  }
+  config FEATURE_VOLUMEID_FAT boolean {
+   prompt "fat filesystem" if [VOLUMEID]
+   default [y] if [VOLUMEID]
+   depends on [VOLUMEID]
+   inherited [VOLUMEID]
+  }
+  config FEATURE_VOLUMEID_HFS boolean {
+   prompt "hfs filesystem" if [VOLUMEID]
+   default [y] if [VOLUMEID]
+   depends on [VOLUMEID]
+   inherited [VOLUMEID]
+  }
+  config FEATURE_VOLUMEID_JFS boolean {
+   prompt "jfs filesystem" if [VOLUMEID]
+   default [y] if [VOLUMEID]
+   depends on [VOLUMEID]
+   inherited [VOLUMEID]
+  }
+  config FEATURE_VOLUMEID_XFS boolean {
+   prompt "xfs filesystem" if [VOLUMEID]
+   default [y] if [VOLUMEID]
+   depends on [VOLUMEID]
+   inherited [VOLUMEID]
+  }
+  config FEATURE_VOLUMEID_NTFS boolean {
+   prompt "ntfs filesystem" if [VOLUMEID]
+   default [y] if [VOLUMEID]
+   depends on [VOLUMEID]
+   inherited [VOLUMEID]
+  }
+  config FEATURE_VOLUMEID_ISO9660 boolean {
+   prompt "iso9660 filesystem" if [VOLUMEID]
+   default [y] if [VOLUMEID]
+   depends on [VOLUMEID]
+   inherited [VOLUMEID]
+  }
+  config FEATURE_VOLUMEID_UDF boolean {
+   prompt "udf filesystem" if [VOLUMEID]
+   default [y] if [VOLUMEID]
+   depends on [VOLUMEID]
+   inherited [VOLUMEID]
+  }
+  config FEATURE_VOLUMEID_LUKS boolean {
+   prompt "luks filesystem" if [VOLUMEID]
+   default [y] if [VOLUMEID]
+   depends on [VOLUMEID]
+   inherited [VOLUMEID]
+  }
+  config FEATURE_VOLUMEID_LINUXSWAP boolean {
+   prompt "linux swap filesystem" if [VOLUMEID]
+   default [y] if [VOLUMEID]
+   depends on [VOLUMEID]
+   inherited [VOLUMEID]
+  }
+  config FEATURE_VOLUMEID_CRAMFS boolean {
+   prompt "cramfs filesystem" if [VOLUMEID]
+   default [y] if [VOLUMEID]
+   depends on [VOLUMEID]
+   inherited [VOLUMEID]
+  }
+  config FEATURE_VOLUMEID_ROMFS boolean {
+   prompt "romfs filesystem" if [VOLUMEID]
+   default [y] if [VOLUMEID]
+   depends on [VOLUMEID]
+   inherited [VOLUMEID]
+  }
+  config FEATURE_VOLUMEID_SYSV boolean {
+   prompt "sysv filesystem" if [VOLUMEID]
+   default [y] if [VOLUMEID]
+   depends on [VOLUMEID]
+   inherited [VOLUMEID]
+  }
+  config FEATURE_VOLUMEID_OCFS2 boolean {
+   prompt "ocfs2 filesystem" if [VOLUMEID]
+   default [y] if [VOLUMEID]
+   depends on [VOLUMEID]
+   inherited [VOLUMEID]
+  }
+  config FEATURE_VOLUMEID_LINUXRAID boolean {
+   prompt "linuxraid" if [VOLUMEID]
+   default [y] if [VOLUMEID]
+   depends on [VOLUMEID]
+   inherited [VOLUMEID]
+  }
+ }
+}
+menu "Miscellaneous Utilities" {
+ config CONSPY boolean {
+  prompt "conspy" if [PLATFORM_LINUX]
+  default [n] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config NANDWRITE boolean {
+  prompt "nandwrite" if [PLATFORM_LINUX]
+  default [n] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config NANDDUMP boolean {
+  prompt "nanddump" if [PLATFORM_LINUX]
+  default [n] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config UBIATTACH boolean {
+  prompt "ubiattach" if [PLATFORM_LINUX]
+  default [n] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config UBIDETACH boolean {
+  prompt "ubidetach" if [PLATFORM_LINUX]
+  default [n] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config ADJTIMEX boolean {
+  prompt "adjtimex" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config BBCONFIG boolean {
+  prompt "bbconfig" if []
+  default [n] if []
+  config FEATURE_COMPRESS_BBCONFIG boolean {
+   prompt "Compress bbconfig data" if [BBCONFIG]
+   default [y] if [BBCONFIG]
+   depends on [BBCONFIG]
+   inherited [BBCONFIG]
+  }
+ }
+ config BEEP boolean {
+  prompt "beep" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+  config FEATURE_BEEP_FREQ integer {
+   prompt "default frequency" if [BEEP]
+   range [0 2147483647] if [BEEP]
+   default [4000] if [BEEP]
+   depends on [BEEP]
+   inherited [BEEP]
+  }
+  config FEATURE_BEEP_LENGTH_MS integer {
+   prompt "default length" if [BEEP]
+   range [0 2147483647] if [BEEP]
+   default [30] if [BEEP]
+   depends on [BEEP]
+   inherited [BEEP]
+  }
+ }
+ config CHAT boolean {
+  prompt "chat" if []
+  default [y] if []
+  config FEATURE_CHAT_NOFAIL boolean {
+   prompt "Enable NOFAIL expect strings" if [CHAT]
+   depends on [CHAT]
+   default [y] if [CHAT]
+   inherited [CHAT]
+  }
+  config FEATURE_CHAT_TTY_HIFI boolean {
+   prompt "Force STDIN to be a TTY" if [CHAT]
+   depends on [CHAT]
+   default [n] if [CHAT]
+   inherited [CHAT]
+  }
+  config FEATURE_CHAT_IMPLICIT_CR boolean {
+   prompt "Enable implicit Carriage Return" if [CHAT]
+   depends on [CHAT]
+   default [y] if [CHAT]
+   inherited [CHAT]
+  }
+  config FEATURE_CHAT_SWALLOW_OPTS boolean {
+   prompt "Swallow options" if [CHAT]
+   depends on [CHAT]
+   default [y] if [CHAT]
+   inherited [CHAT]
+  }
+  config FEATURE_CHAT_SEND_ESCAPES boolean {
+   prompt "Support weird SEND escapes" if [CHAT]
+   depends on [CHAT]
+   default [y] if [CHAT]
+   inherited [CHAT]
+  }
+  config FEATURE_CHAT_VAR_ABORT_LEN boolean {
+   prompt "Support variable-length ABORT conditions" if [CHAT]
+   depends on [CHAT]
+   default [y] if [CHAT]
+   inherited [CHAT]
+  }
+  config FEATURE_CHAT_CLR_ABORT boolean {
+   prompt "Support revoking of ABORT conditions" if [CHAT]
+   depends on [CHAT]
+   default [y] if [CHAT]
+   inherited [CHAT]
+  }
+ }
+ config CHRT boolean {
+  prompt "chrt" if []
+  default [y] if []
+ }
+ config CROND boolean {
+  prompt "crond" if []
+  default [y] if []
+  select FEATURE_SYSLOG if []
+  config FEATURE_CROND_D boolean {
+   prompt "Support option -d to redirect output to stderr" if [CROND]
+   depends on [CROND]
+   default [y] if [CROND]
+   inherited [CROND]
+  }
+  config FEATURE_CROND_CALL_SENDMAIL boolean {
+   prompt "Report command output via email (using sendmail)" if [CROND]
+   default [y] if [CROND]
+   depends on [CROND]
+   inherited [CROND]
+  }
+  config FEATURE_CROND_DIR string {
+   prompt "crond spool directory" if [CROND || CRONTAB]
+   default ["/var/spool/cron"] if [CROND || CRONTAB]
+   depends on [CROND || CRONTAB]
+   inherited [CROND || CRONTAB]
+  }
+ }
+ config CRONTAB boolean {
+  prompt "crontab" if []
+  default [y] if []
+  select FEATURE_SUID if []
+ }
+ config DC boolean {
+  prompt "dc" if []
+  default [y] if []
+  config FEATURE_DC_LIBM boolean {
+   prompt "Enable power and exp functions (requires libm)" if [DC]
+   default [y] if [DC]
+   depends on [DC]
+   inherited [DC]
+  }
+ }
+ config DEVFSD boolean {
+  prompt "devfsd (obsolete)" if [PLATFORM_LINUX]
+  default [n] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  select FEATURE_SYSLOG if [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+  config DEVFSD_MODLOAD boolean {
+   prompt "Adds support for MODLOAD keyword in devsfd.conf" if [DEVFSD]
+   default [y] if [DEVFSD]
+   depends on [DEVFSD]
+   inherited [DEVFSD]
+  }
+  config DEVFSD_FG_NP boolean {
+   prompt "Enables the -fg and -np options" if [DEVFSD]
+   default [y] if [DEVFSD]
+   depends on [DEVFSD]
+   inherited [DEVFSD]
+  }
+  config DEVFSD_VERBOSE boolean {
+   prompt "Increases logging (and size)" if [DEVFSD]
+   default [y] if [DEVFSD]
+   depends on [DEVFSD]
+   inherited [DEVFSD]
+  }
+ }
+ config FEATURE_DEVFS boolean {
+  prompt "Use devfs names for all devices (obsolete)" if [PLATFORM_LINUX]
+  default [n] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config DEVMEM boolean {
+  prompt "devmem" if []
+  default [y] if []
+ }
+ config EJECT boolean {
+  prompt "eject" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+  config FEATURE_EJECT_SCSI boolean {
+   prompt "SCSI support" if [EJECT]
+   default [y] if [EJECT]
+   depends on [EJECT]
+   inherited [EJECT]
+  }
+ }
+ config FBSPLASH boolean {
+  prompt "fbsplash" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config FLASHCP boolean {
+  prompt "flashcp" if []
+  default [n] if []
+ }
+ config FLASH_LOCK boolean {
+  prompt "flash_lock" if []
+  default [n] if []
+ }
+ config FLASH_UNLOCK boolean {
+  prompt "flash_unlock" if []
+  default [n] if []
+ }
+ config FLASH_ERASEALL boolean {
+  prompt "flash_eraseall" if []
+  default [n] if []
+ }
+ config IONICE boolean {
+  prompt "ionice" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config INOTIFYD boolean {
+  prompt "inotifyd" if []
+  default [n] if []
+ }
+ config LAST boolean {
+  prompt "last" if [FEATURE_WTMP]
+  default [y] if [FEATURE_WTMP]
+  depends on [FEATURE_WTMP]
+  inherited [FEATURE_WTMP]
+  choice boolean {
+   prompt "Choose last implementation" if [LAST]
+   depends on [LAST]
+   default [FEATURE_LAST_FANCY] if [LAST]
+   config FEATURE_LAST_SMALL boolean {
+    prompt "small" if [<choice>]
+    inherited [<choice>]
+   }
+   config FEATURE_LAST_FANCY boolean {
+    prompt "huge" if [<choice>]
+    inherited [<choice>]
+   }
+  }
+ }
+ config LESS boolean {
+  prompt "less" if []
+  default [y] if []
+  config FEATURE_LESS_MAXLINES integer {
+   prompt "Max number of input lines less will try to eat" if [LESS]
+   default [9999999] if [LESS]
+   depends on [LESS]
+   inherited [LESS]
+  }
+  config FEATURE_LESS_BRACKETS boolean {
+   prompt "Enable bracket searching" if [LESS]
+   default [y] if [LESS]
+   depends on [LESS]
+   inherited [LESS]
+  }
+  config FEATURE_LESS_FLAGS boolean {
+   prompt "Enable extra flags" if [LESS]
+   default [y] if [LESS]
+   depends on [LESS]
+   inherited [LESS]
+  }
+  config FEATURE_LESS_MARKS boolean {
+   prompt "Enable marks" if [LESS]
+   default [y] if [LESS]
+   depends on [LESS]
+   inherited [LESS]
+  }
+  config FEATURE_LESS_REGEXP boolean {
+   prompt "Enable regular expressions" if [LESS]
+   default [y] if [LESS]
+   depends on [LESS]
+   inherited [LESS]
+  }
+  config FEATURE_LESS_WINCH boolean {
+   prompt "Enable automatic resizing on window size changes" if [LESS]
+   default [y] if [LESS]
+   depends on [LESS]
+   inherited [LESS]
+  }
+  config FEATURE_LESS_DASHCMD boolean {
+   prompt "Enable flag changes ('-' command)" if [LESS]
+   default [y] if [LESS]
+   depends on [LESS]
+   inherited [LESS]
+   config FEATURE_LESS_LINENUMS boolean {
+    prompt "Enable dynamic switching of line numbers" if [FEATURE_LESS_DASHCMD]
+    default [y] if [FEATURE_LESS_DASHCMD]
+    depends on [FEATURE_LESS_DASHCMD]
+    inherited [FEATURE_LESS_DASHCMD]
+   }
+  }
+ }
+ config HDPARM boolean {
+  prompt "hdparm" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+  config FEATURE_HDPARM_GET_IDENTITY boolean {
+   prompt "Support obtaining detailed information directly from drives" if [HDPARM]
+   default [y] if [HDPARM]
+   depends on [HDPARM]
+   inherited [HDPARM]
+  }
+  config FEATURE_HDPARM_HDIO_SCAN_HWIF boolean {
+   prompt "Register an IDE interface (DANGEROUS)" if [HDPARM]
+   default [y] if [HDPARM]
+   depends on [HDPARM]
+   inherited [HDPARM]
+  }
+  config FEATURE_HDPARM_HDIO_UNREGISTER_HWIF boolean {
+   prompt "Un-register an IDE interface (DANGEROUS)" if [HDPARM]
+   default [y] if [HDPARM]
+   depends on [HDPARM]
+   inherited [HDPARM]
+  }
+  config FEATURE_HDPARM_HDIO_DRIVE_RESET boolean {
+   prompt "Perform device reset (DANGEROUS)" if [HDPARM]
+   default [y] if [HDPARM]
+   depends on [HDPARM]
+   inherited [HDPARM]
+  }
+  config FEATURE_HDPARM_HDIO_TRISTATE_HWIF boolean {
+   prompt "Tristate device for hotswap (DANGEROUS)" if [HDPARM]
+   default [y] if [HDPARM]
+   depends on [HDPARM]
+   inherited [HDPARM]
+  }
+  config FEATURE_HDPARM_HDIO_GETSET_DMA boolean {
+   prompt "Get/set using_dma flag" if [HDPARM]
+   default [y] if [HDPARM]
+   depends on [HDPARM]
+   inherited [HDPARM]
+  }
+ }
+ config MAKEDEVS boolean {
+  prompt "makedevs" if []
+  default [y] if []
+  choice boolean {
+   prompt "Choose makedevs behaviour" if [MAKEDEVS]
+   depends on [MAKEDEVS]
+   default [FEATURE_MAKEDEVS_TABLE] if [MAKEDEVS]
+   config FEATURE_MAKEDEVS_LEAF boolean {
+    prompt "leaf" if [<choice>]
+    inherited [<choice>]
+   }
+   config FEATURE_MAKEDEVS_TABLE boolean {
+    prompt "table" if [<choice>]
+    inherited [<choice>]
+   }
+  }
+ }
+ config MAN boolean {
+  prompt "man" if []
+  default [y] if []
+ }
+ config MICROCOM boolean {
+  prompt "microcom" if []
+  default [y] if []
+ }
+ config MOUNTPOINT boolean {
+  prompt "mountpoint" if []
+  default [y] if []
+ }
+ config MT boolean {
+  prompt "mt" if []
+  default [y] if []
+ }
+ config RAIDAUTORUN boolean {
+  prompt "raidautorun" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config READAHEAD boolean {
+  prompt "readahead" if [LFS && PLATFORM_LINUX]
+  default [y] if [LFS && PLATFORM_LINUX]
+  depends on [LFS && PLATFORM_LINUX]
+  inherited [LFS && PLATFORM_LINUX]
+ }
+ config RFKILL boolean {
+  prompt "rfkill" if [PLATFORM_LINUX]
+  default [n] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config RUNLEVEL boolean {
+  prompt "runlevel" if []
+  default [y] if []
+ }
+ config RX boolean {
+  prompt "rx" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config SETSID boolean {
+  prompt "setsid" if []
+  default [y] if []
+ }
+ config STRINGS boolean {
+  prompt "strings" if []
+  default [y] if []
+ }
+ config TASKSET boolean {
+  prompt "taskset" if []
+  default [n] if []
+  config FEATURE_TASKSET_FANCY boolean {
+   prompt "Fancy output" if [TASKSET]
+   default [y] if [TASKSET]
+   depends on [TASKSET]
+   inherited [TASKSET]
+  }
+ }
+ config TIME boolean {
+  prompt "time" if []
+  default [y] if []
+ }
+ config TIMEOUT boolean {
+  prompt "timeout" if []
+  default [y] if []
+ }
+ config TTYSIZE boolean {
+  prompt "ttysize" if []
+  default [y] if []
+ }
+ config VOLNAME boolean {
+  prompt "volname" if []
+  default [y] if []
+ }
+ config WALL boolean {
+  prompt "wall" if []
+  default [y] if []
+ }
+ config WATCHDOG boolean {
+  prompt "watchdog" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+}
+menu "Networking Utilities" {
+ config NBDCLIENT boolean {
+  prompt "nbd-client" if []
+  default [y] if []
+ }
+ config NC boolean {
+  prompt "nc" if []
+  default [y] if []
+  config NC_SERVER boolean {
+   prompt "Netcat server options (-l)" if [NC]
+   default [y] if [NC]
+   depends on [NC]
+   inherited [NC]
+  }
+  config NC_EXTRA boolean {
+   prompt "Netcat extensions (-eiw and filename)" if [NC]
+   default [y] if [NC]
+   depends on [NC]
+   inherited [NC]
+  }
+  config NC_110_COMPAT boolean {
+   prompt "Netcat 1.10 compatibility (+2.5k)" if [NC]
+   default [n] if [NC]
+   depends on [NC]
+   inherited [NC]
+  }
+ }
+ config FEATURE_IPV6 boolean {
+  prompt "Enable IPv6 support" if []
+  default [y] if []
+ }
+ config FEATURE_UNIX_LOCAL boolean {
+  prompt "Enable Unix domain socket support (usually not needed)" if []
+  default [n] if []
+ }
+ config FEATURE_PREFER_IPV4_ADDRESS boolean {
+  prompt "Prefer IPv4 addresses from DNS queries" if [FEATURE_IPV6]
+  default [y] if [FEATURE_IPV6]
+  depends on [FEATURE_IPV6]
+  inherited [FEATURE_IPV6]
+ }
+ config VERBOSE_RESOLUTION_ERRORS boolean {
+  prompt "Verbose resolution errors" if []
+  default [n] if []
+ }
+ config ARP boolean {
+  prompt "arp" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config ARPING boolean {
+  prompt "arping" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config BRCTL boolean {
+  prompt "brctl" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+  config FEATURE_BRCTL_FANCY boolean {
+   prompt "Fancy options" if [BRCTL]
+   default [y] if [BRCTL]
+   depends on [BRCTL]
+   inherited [BRCTL]
+   config FEATURE_BRCTL_SHOW boolean {
+    prompt "Support show, showmac and showstp" if [BRCTL && FEATURE_BRCTL_FANCY]
+    default [y] if [BRCTL && FEATURE_BRCTL_FANCY]
+    depends on [BRCTL && FEATURE_BRCTL_FANCY]
+    inherited [BRCTL && FEATURE_BRCTL_FANCY]
+   }
+  }
+ }
+ config DNSD boolean {
+  prompt "dnsd" if []
+  default [y] if []
+ }
+ config ETHER_WAKE boolean {
+  prompt "ether-wake" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config FAKEIDENTD boolean {
+  prompt "fakeidentd" if []
+  default [y] if []
+  select FEATURE_SYSLOG if []
+ }
+ config FTPD boolean {
+  prompt "ftpd" if []
+  default [y] if []
+  config FEATURE_FTP_WRITE boolean {
+   prompt "Enable upload commands" if [FTPD]
+   default [y] if [FTPD]
+   depends on [FTPD]
+   inherited [FTPD]
+  }
+  config FEATURE_FTPD_ACCEPT_BROKEN_LIST boolean {
+   prompt "Enable workaround for RFC-violating clients" if [FTPD]
+   default [y] if [FTPD]
+   depends on [FTPD]
+   inherited [FTPD]
+  }
+ }
+ config FTPGET boolean {
+  prompt "ftpget" if []
+  default [y] if []
+ }
+ config FTPPUT boolean {
+  prompt "ftpput" if []
+  default [y] if []
+  config FEATURE_FTPGETPUT_LONG_OPTIONS boolean {
+   prompt "Enable long options in ftpget/ftpput" if [LONG_OPTS && (FTPGET || FTPPUT)]
+   default [y] if [LONG_OPTS && (FTPGET || FTPPUT)]
+   depends on [LONG_OPTS && (FTPGET || FTPPUT)]
+   inherited [LONG_OPTS && (FTPGET || FTPPUT)]
+  }
+ }
+ config HOSTNAME boolean {
+  prompt "hostname" if []
+  default [y] if []
+ }
+ config HTTPD boolean {
+  prompt "httpd" if []
+  default [y] if []
+  config FEATURE_HTTPD_RANGES boolean {
+   prompt "Support 'Ranges:' header" if [HTTPD]
+   default [y] if [HTTPD]
+   depends on [HTTPD]
+   inherited [HTTPD]
+  }
+  config FEATURE_HTTPD_USE_SENDFILE boolean {
+   prompt "Use sendfile system call" if [HTTPD]
+   default [y] if [HTTPD]
+   depends on [HTTPD]
+   inherited [HTTPD]
+  }
+  config FEATURE_HTTPD_SETUID boolean {
+   prompt "Enable -u <user> option" if [HTTPD]
+   default [y] if [HTTPD]
+   depends on [HTTPD]
+   inherited [HTTPD]
+  }
+  config FEATURE_HTTPD_BASIC_AUTH boolean {
+   prompt "Enable Basic http Authentication" if [HTTPD]
+   default [y] if [HTTPD]
+   depends on [HTTPD]
+   inherited [HTTPD]
+   config FEATURE_HTTPD_AUTH_MD5 boolean {
+    prompt "Support MD5 crypted passwords for http Authentication" if [FEATURE_HTTPD_BASIC_AUTH]
+    default [y] if [FEATURE_HTTPD_BASIC_AUTH]
+    depends on [FEATURE_HTTPD_BASIC_AUTH]
+    inherited [FEATURE_HTTPD_BASIC_AUTH]
+   }
+  }
+  config FEATURE_HTTPD_CGI boolean {
+   prompt "Support Common Gateway Interface (CGI)" if [HTTPD]
+   default [y] if [HTTPD]
+   depends on [HTTPD]
+   inherited [HTTPD]
+   config FEATURE_HTTPD_CONFIG_WITH_SCRIPT_INTERPR boolean {
+    prompt "Support for running scripts through an interpreter" if [FEATURE_HTTPD_CGI]
+    default [y] if [FEATURE_HTTPD_CGI]
+    depends on [FEATURE_HTTPD_CGI]
+    inherited [FEATURE_HTTPD_CGI]
+   }
+   config FEATURE_HTTPD_SET_REMOTE_PORT_TO_ENV boolean {
+    prompt "Set REMOTE_PORT environment variable for CGI" if [FEATURE_HTTPD_CGI]
+    default [y] if [FEATURE_HTTPD_CGI]
+    depends on [FEATURE_HTTPD_CGI]
+    inherited [FEATURE_HTTPD_CGI]
+   }
+  }
+  config FEATURE_HTTPD_ENCODE_URL_STR boolean {
+   prompt "Enable -e option (useful for CGIs written as shell scripts)" if [HTTPD]
+   default [y] if [HTTPD]
+   depends on [HTTPD]
+   inherited [HTTPD]
+  }
+  config FEATURE_HTTPD_ERROR_PAGES boolean {
+   prompt "Support for custom error pages" if [HTTPD]
+   default [y] if [HTTPD]
+   depends on [HTTPD]
+   inherited [HTTPD]
+  }
+  config FEATURE_HTTPD_PROXY boolean {
+   prompt "Support for reverse proxy" if [HTTPD]
+   default [y] if [HTTPD]
+   depends on [HTTPD]
+   inherited [HTTPD]
+  }
+  config FEATURE_HTTPD_GZIP boolean {
+   prompt "Support for GZIP content encoding" if [HTTPD]
+   default [y] if [HTTPD]
+   depends on [HTTPD]
+   inherited [HTTPD]
+  }
+ }
+ config IFCONFIG boolean {
+  prompt "ifconfig" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+  config FEATURE_IFCONFIG_STATUS boolean {
+   prompt "Enable status reporting output (+7k)" if [IFCONFIG]
+   default [y] if [IFCONFIG]
+   depends on [IFCONFIG]
+   inherited [IFCONFIG]
+  }
+  config FEATURE_IFCONFIG_SLIP boolean {
+   prompt "Enable slip-specific options \"keepalive\" and \"outfill\"" if [IFCONFIG]
+   default [y] if [IFCONFIG]
+   depends on [IFCONFIG]
+   inherited [IFCONFIG]
+  }
+  config FEATURE_IFCONFIG_MEMSTART_IOADDR_IRQ boolean {
+   prompt "Enable options \"mem_start\", \"io_addr\", and \"irq\"" if [IFCONFIG]
+   default [y] if [IFCONFIG]
+   depends on [IFCONFIG]
+   inherited [IFCONFIG]
+  }
+  config FEATURE_IFCONFIG_HW boolean {
+   prompt "Enable option \"hw\" (ether only)" if [IFCONFIG]
+   default [y] if [IFCONFIG]
+   depends on [IFCONFIG]
+   inherited [IFCONFIG]
+  }
+  config FEATURE_IFCONFIG_BROADCAST_PLUS boolean {
+   prompt "Set the broadcast automatically" if [IFCONFIG]
+   default [y] if [IFCONFIG]
+   depends on [IFCONFIG]
+   inherited [IFCONFIG]
+  }
+ }
+ config IFENSLAVE boolean {
+  prompt "ifenslave" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config IFPLUGD boolean {
+  prompt "ifplugd" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config IFUPDOWN boolean {
+  prompt "ifupdown" if []
+  default [y] if []
+  config IFUPDOWN_IFSTATE_PATH string {
+   prompt "Absolute path to ifstate file" if [IFUPDOWN]
+   default ["/var/run/ifstate"] if [IFUPDOWN]
+   depends on [IFUPDOWN]
+   inherited [IFUPDOWN]
+  }
+  config FEATURE_IFUPDOWN_IP boolean {
+   prompt "Use ip applet" if [IFUPDOWN]
+   default [y] if [IFUPDOWN]
+   depends on [IFUPDOWN]
+   inherited [IFUPDOWN]
+   config FEATURE_IFUPDOWN_IP_BUILTIN boolean {
+    prompt "Use busybox ip applet" if [FEATURE_IFUPDOWN_IP && PLATFORM_LINUX]
+    default [y] if [FEATURE_IFUPDOWN_IP && PLATFORM_LINUX]
+    depends on [FEATURE_IFUPDOWN_IP && PLATFORM_LINUX]
+    select IP if [FEATURE_IFUPDOWN_IP && PLATFORM_LINUX]
+    select FEATURE_IP_ADDRESS if [FEATURE_IFUPDOWN_IP && PLATFORM_LINUX]
+    select FEATURE_IP_LINK if [FEATURE_IFUPDOWN_IP && PLATFORM_LINUX]
+    select FEATURE_IP_ROUTE if [FEATURE_IFUPDOWN_IP && PLATFORM_LINUX]
+    inherited [FEATURE_IFUPDOWN_IP && PLATFORM_LINUX]
+   }
+   config FEATURE_IFUPDOWN_IFCONFIG_BUILTIN boolean {
+    prompt "Use busybox ifconfig and route applets" if [IFUPDOWN && !FEATURE_IFUPDOWN_IP]
+    default [n] if [IFUPDOWN && !FEATURE_IFUPDOWN_IP]
+    depends on [IFUPDOWN && !FEATURE_IFUPDOWN_IP]
+    select IFCONFIG if [IFUPDOWN && !FEATURE_IFUPDOWN_IP]
+    select ROUTE if [IFUPDOWN && !FEATURE_IFUPDOWN_IP]
+    inherited [IFUPDOWN && !FEATURE_IFUPDOWN_IP]
+   }
+  }
+  config FEATURE_IFUPDOWN_IPV4 boolean {
+   prompt "Support for IPv4" if [IFUPDOWN]
+   default [y] if [IFUPDOWN]
+   depends on [IFUPDOWN]
+   inherited [IFUPDOWN]
+  }
+  config FEATURE_IFUPDOWN_IPV6 boolean {
+   prompt "Support for IPv6" if [IFUPDOWN && FEATURE_IPV6]
+   default [y] if [IFUPDOWN && FEATURE_IPV6]
+   depends on [IFUPDOWN && FEATURE_IPV6]
+   inherited [IFUPDOWN && FEATURE_IPV6]
+  }
+  config FEATURE_IFUPDOWN_MAPPING boolean {
+   prompt "Enable mapping support" if [IFUPDOWN]
+   default [y] if [IFUPDOWN]
+   depends on [IFUPDOWN]
+   inherited [IFUPDOWN]
+  }
+  config FEATURE_IFUPDOWN_EXTERNAL_DHCP boolean {
+   prompt "Support for external dhcp clients" if [IFUPDOWN]
+   default [n] if [IFUPDOWN]
+   depends on [IFUPDOWN]
+   inherited [IFUPDOWN]
+  }
+ }
+ config INETD boolean {
+  prompt "inetd" if []
+  default [y] if []
+  select FEATURE_SYSLOG if []
+  config FEATURE_INETD_SUPPORT_BUILTIN_ECHO boolean {
+   prompt "Support echo service" if [INETD]
+   default [y] if [INETD]
+   depends on [INETD]
+   inherited [INETD]
+  }
+  config FEATURE_INETD_SUPPORT_BUILTIN_DISCARD boolean {
+   prompt "Support discard service" if [INETD]
+   default [y] if [INETD]
+   depends on [INETD]
+   inherited [INETD]
+  }
+  config FEATURE_INETD_SUPPORT_BUILTIN_TIME boolean {
+   prompt "Support time service" if [INETD]
+   default [y] if [INETD]
+   depends on [INETD]
+   inherited [INETD]
+  }
+  config FEATURE_INETD_SUPPORT_BUILTIN_DAYTIME boolean {
+   prompt "Support daytime service" if [INETD]
+   default [y] if [INETD]
+   depends on [INETD]
+   inherited [INETD]
+  }
+  config FEATURE_INETD_SUPPORT_BUILTIN_CHARGEN boolean {
+   prompt "Support chargen service" if [INETD]
+   default [y] if [INETD]
+   depends on [INETD]
+   inherited [INETD]
+  }
+  config FEATURE_INETD_RPC boolean {
+   prompt "Support RPC services" if [INETD]
+   default [y] if [INETD]
+   depends on [INETD]
+   select FEATURE_HAVE_RPC if [INETD]
+   inherited [INETD]
+  }
+ }
+ config IP boolean {
+  prompt "ip" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+  config FEATURE_IP_ADDRESS boolean {
+   prompt "ip address" if [IP]
+   default [y] if [IP]
+   depends on [IP]
+   inherited [IP]
+  }
+  config FEATURE_IP_LINK boolean {
+   prompt "ip link" if [IP]
+   default [y] if [IP]
+   depends on [IP]
+   inherited [IP]
+  }
+  config FEATURE_IP_ROUTE boolean {
+   prompt "ip route" if [IP]
+   default [y] if [IP]
+   depends on [IP]
+   inherited [IP]
+  }
+  config FEATURE_IP_TUNNEL boolean {
+   prompt "ip tunnel" if [IP]
+   default [y] if [IP]
+   depends on [IP]
+   inherited [IP]
+  }
+  config FEATURE_IP_RULE boolean {
+   prompt "ip rule" if [IP]
+   default [y] if [IP]
+   depends on [IP]
+   inherited [IP]
+  }
+  config FEATURE_IP_SHORT_FORMS boolean {
+   prompt "Support short forms of ip commands" if [IP]
+   default [y] if [IP]
+   depends on [IP]
+   inherited [IP]
+  }
+  config FEATURE_IP_RARE_PROTOCOLS boolean {
+   prompt "Support displaying rarely used link types" if [IP]
+   default [n] if [IP]
+   depends on [IP]
+   inherited [IP]
+  }
+ }
+ config IPADDR boolean {
+  default [y] if [FEATURE_IP_SHORT_FORMS && FEATURE_IP_ADDRESS]
+  depends on [FEATURE_IP_SHORT_FORMS && FEATURE_IP_ADDRESS]
+  inherited [FEATURE_IP_SHORT_FORMS && FEATURE_IP_ADDRESS]
+ }
+ config IPLINK boolean {
+  default [y] if [FEATURE_IP_SHORT_FORMS && FEATURE_IP_LINK]
+  depends on [FEATURE_IP_SHORT_FORMS && FEATURE_IP_LINK]
+  inherited [FEATURE_IP_SHORT_FORMS && FEATURE_IP_LINK]
+ }
+ config IPROUTE boolean {
+  default [y] if [FEATURE_IP_SHORT_FORMS && FEATURE_IP_ROUTE]
+  depends on [FEATURE_IP_SHORT_FORMS && FEATURE_IP_ROUTE]
+  inherited [FEATURE_IP_SHORT_FORMS && FEATURE_IP_ROUTE]
+ }
+ config IPTUNNEL boolean {
+  default [y] if [FEATURE_IP_SHORT_FORMS && FEATURE_IP_TUNNEL]
+  depends on [FEATURE_IP_SHORT_FORMS && FEATURE_IP_TUNNEL]
+  inherited [FEATURE_IP_SHORT_FORMS && FEATURE_IP_TUNNEL]
+ }
+ config IPRULE boolean {
+  default [y] if [FEATURE_IP_SHORT_FORMS && FEATURE_IP_RULE]
+  depends on [FEATURE_IP_SHORT_FORMS && FEATURE_IP_RULE]
+  inherited [FEATURE_IP_SHORT_FORMS && FEATURE_IP_RULE]
+ }
+ config IPCALC boolean {
+  prompt "ipcalc" if []
+  default [y] if []
+  config FEATURE_IPCALC_FANCY boolean {
+   prompt "Fancy IPCALC, more options, adds 1 kbyte" if [IPCALC]
+   default [y] if [IPCALC]
+   depends on [IPCALC]
+   inherited [IPCALC]
+  }
+  config FEATURE_IPCALC_LONG_OPTIONS boolean {
+   prompt "Enable long options" if [IPCALC && LONG_OPTS]
+   default [y] if [IPCALC && LONG_OPTS]
+   depends on [IPCALC && LONG_OPTS]
+   inherited [IPCALC && LONG_OPTS]
+  }
+ }
+ config NAMEIF boolean {
+  prompt "nameif" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  select FEATURE_SYSLOG if [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+  config FEATURE_NAMEIF_EXTENDED boolean {
+   prompt "Extended nameif" if [NAMEIF]
+   default [y] if [NAMEIF]
+   depends on [NAMEIF]
+   inherited [NAMEIF]
+  }
+ }
+ config NETSTAT boolean {
+  prompt "netstat" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+  config FEATURE_NETSTAT_WIDE boolean {
+   prompt "Enable wide netstat output" if [NETSTAT]
+   default [y] if [NETSTAT]
+   depends on [NETSTAT]
+   inherited [NETSTAT]
+  }
+  config FEATURE_NETSTAT_PRG boolean {
+   prompt "Enable PID/Program name output" if [NETSTAT]
+   default [y] if [NETSTAT]
+   depends on [NETSTAT]
+   inherited [NETSTAT]
+  }
+ }
+ config NSLOOKUP boolean {
+  prompt "nslookup" if []
+  default [y] if []
+ }
+ config NTPD boolean {
+  prompt "ntpd" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+  config FEATURE_NTPD_SERVER boolean {
+   prompt "Make ntpd usable as a NTP server" if [NTPD]
+   default [y] if [NTPD]
+   depends on [NTPD]
+   inherited [NTPD]
+  }
+ }
+ config PING boolean {
+  prompt "ping" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+  config PING6 boolean {
+   prompt "ping6" if [FEATURE_IPV6 && PING]
+   default [y] if [FEATURE_IPV6 && PING]
+   depends on [FEATURE_IPV6 && PING]
+   inherited [FEATURE_IPV6 && PING]
+  }
+  config FEATURE_FANCY_PING boolean {
+   prompt "Enable fancy ping output" if [PING]
+   default [y] if [PING]
+   depends on [PING]
+   inherited [PING]
+  }
+ }
+ config PSCAN boolean {
+  prompt "pscan" if []
+  default [y] if []
+ }
+ config ROUTE boolean {
+  prompt "route" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config SLATTACH boolean {
+  prompt "slattach" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config TCPSVD boolean {
+  prompt "tcpsvd" if []
+  default [y] if []
+ }
+ config TELNET boolean {
+  prompt "telnet" if []
+  default [y] if []
+  config FEATURE_TELNET_TTYPE boolean {
+   prompt "Pass TERM type to remote host" if [TELNET]
+   default [y] if [TELNET]
+   depends on [TELNET]
+   inherited [TELNET]
+  }
+  config FEATURE_TELNET_AUTOLOGIN boolean {
+   prompt "Pass USER type to remote host" if [TELNET]
+   default [y] if [TELNET]
+   depends on [TELNET]
+   inherited [TELNET]
+  }
+ }
+ config TELNETD boolean {
+  prompt "telnetd" if []
+  default [y] if []
+  select FEATURE_SYSLOG if []
+  config FEATURE_TELNETD_STANDALONE boolean {
+   prompt "Support standalone telnetd (not inetd only)" if [TELNETD]
+   default [y] if [TELNETD]
+   depends on [TELNETD]
+   inherited [TELNETD]
+   config FEATURE_TELNETD_INETD_WAIT boolean {
+    prompt "Support -w SEC option (inetd wait mode)" if [FEATURE_TELNETD_STANDALONE]
+    default [y] if [FEATURE_TELNETD_STANDALONE]
+    depends on [FEATURE_TELNETD_STANDALONE]
+    inherited [FEATURE_TELNETD_STANDALONE]
+   }
+  }
+ }
+ config TFTP boolean {
+  prompt "tftp" if []
+  default [y] if []
+ }
+ config TFTPD boolean {
+  prompt "tftpd" if []
+  default [y] if []
+  config FEATURE_TFTP_GET boolean {
+   prompt "Enable 'tftp get' and/or tftpd upload code" if [TFTP || TFTPD]
+   default [y] if [TFTP || TFTPD]
+   depends on [TFTP || TFTPD]
+   inherited [TFTP || TFTPD]
+  }
+  config FEATURE_TFTP_PUT boolean {
+   prompt "Enable 'tftp put' and/or tftpd download code" if [TFTP || TFTPD]
+   default [y] if [TFTP || TFTPD]
+   depends on [TFTP || TFTPD]
+   inherited [TFTP || TFTPD]
+  }
+  config FEATURE_TFTP_BLOCKSIZE boolean {
+   prompt "Enable 'blksize' and 'tsize' protocol options" if [TFTP || TFTPD]
+   default [y] if [TFTP || TFTPD]
+   depends on [TFTP || TFTPD]
+   inherited [TFTP || TFTPD]
+   config FEATURE_TFTP_PROGRESS_BAR boolean {
+    prompt "Enable tftp progress meter" if [TFTP && FEATURE_TFTP_BLOCKSIZE]
+    default [y] if [TFTP && FEATURE_TFTP_BLOCKSIZE]
+    depends on [TFTP && FEATURE_TFTP_BLOCKSIZE]
+    inherited [TFTP && FEATURE_TFTP_BLOCKSIZE]
+   }
+  }
+  config TFTP_DEBUG boolean {
+   prompt "Enable debug" if [TFTP || TFTPD]
+   default [n] if [TFTP || TFTPD]
+   depends on [TFTP || TFTPD]
+   inherited [TFTP || TFTPD]
+  }
+ }
+ config TRACEROUTE boolean {
+  prompt "traceroute" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+  config TRACEROUTE6 boolean {
+   prompt "traceroute6" if [FEATURE_IPV6 && TRACEROUTE]
+   default [y] if [FEATURE_IPV6 && TRACEROUTE]
+   depends on [FEATURE_IPV6 && TRACEROUTE]
+   inherited [FEATURE_IPV6 && TRACEROUTE]
+  }
+  config FEATURE_TRACEROUTE_VERBOSE boolean {
+   prompt "Enable verbose output" if [TRACEROUTE]
+   default [y] if [TRACEROUTE]
+   depends on [TRACEROUTE]
+   inherited [TRACEROUTE]
+  }
+  config FEATURE_TRACEROUTE_SOURCE_ROUTE boolean {
+   prompt "Enable loose source route" if [TRACEROUTE]
+   default [n] if [TRACEROUTE]
+   depends on [TRACEROUTE]
+   inherited [TRACEROUTE]
+  }
+  config FEATURE_TRACEROUTE_USE_ICMP boolean {
+   prompt "Use ICMP instead of UDP" if [TRACEROUTE]
+   default [n] if [TRACEROUTE]
+   depends on [TRACEROUTE]
+   inherited [TRACEROUTE]
+  }
+ }
+ config TUNCTL boolean {
+  prompt "tunctl" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+  config FEATURE_TUNCTL_UG boolean {
+   prompt "Support owner:group assignment" if [TUNCTL]
+   default [y] if [TUNCTL]
+   depends on [TUNCTL]
+   inherited [TUNCTL]
+  }
+ }
+ config UDHCPD boolean {
+  prompt "udhcp server (udhcpd)" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+  config DHCPRELAY boolean {
+   prompt "dhcprelay" if [UDHCPD]
+   default [y] if [UDHCPD]
+   depends on [UDHCPD]
+   inherited [UDHCPD]
+  }
+  config DUMPLEASES boolean {
+   prompt "Lease display utility (dumpleases)" if [UDHCPD]
+   default [y] if [UDHCPD]
+   depends on [UDHCPD]
+   inherited [UDHCPD]
+  }
+  config FEATURE_UDHCPD_WRITE_LEASES_EARLY boolean {
+   prompt "Rewrite the lease file at every new acknowledge" if [UDHCPD]
+   default [y] if [UDHCPD]
+   depends on [UDHCPD]
+   inherited [UDHCPD]
+  }
+  config DHCPD_LEASES_FILE string {
+   prompt "Absolute path to lease file" if [UDHCPD]
+   default ["/var/lib/misc/udhcpd.leases"] if [UDHCPD]
+   depends on [UDHCPD]
+   inherited [UDHCPD]
+  }
+ }
+ config UDHCPC boolean {
+  prompt "udhcp client (udhcpc)" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+  config FEATURE_UDHCPC_ARPING boolean {
+   prompt "Verify that the offered address is free, using ARP ping" if [UDHCPC]
+   default [y] if [UDHCPC]
+   depends on [UDHCPC]
+   inherited [UDHCPC]
+  }
+ }
+ config FEATURE_UDHCP_PORT boolean {
+  prompt "Enable '-P port' option for udhcpd and udhcpc" if [UDHCPD || UDHCPC]
+  default [y] if [UDHCPD || UDHCPC]
+  depends on [UDHCPD || UDHCPC]
+  inherited [UDHCPD || UDHCPC]
+ }
+ config UDHCP_DEBUG integer {
+  prompt "Maximum verbosity level for udhcp applets (0..9)" if [UDHCPD || UDHCPC || DHCPRELAY]
+  default [9] if [UDHCPD || UDHCPC || DHCPRELAY]
+  range [0 9] if [UDHCPD || UDHCPC || DHCPRELAY]
+  depends on [UDHCPD || UDHCPC || DHCPRELAY]
+  inherited [UDHCPD || UDHCPC || DHCPRELAY]
+ }
+ config FEATURE_UDHCP_RFC3397 boolean {
+  prompt "Support for RFC3397 domain search (experimental)" if [UDHCPD || UDHCPC]
+  default [y] if [UDHCPD || UDHCPC]
+  depends on [UDHCPD || UDHCPC]
+  inherited [UDHCPD || UDHCPC]
+ }
+ config UDHCPC_DEFAULT_SCRIPT string {
+  prompt "Absolute path to config script" if [UDHCPC]
+  default ["/usr/share/udhcpc/default.script"] if [UDHCPC]
+  depends on [UDHCPC]
+  inherited [UDHCPC]
+ }
+ config UDHCPC_SLACK_FOR_BUGGY_SERVERS integer {
+  prompt "DHCP options slack buffer size" if [UDHCPD || UDHCPC]
+  default [80] if [UDHCPD || UDHCPC]
+  range [0 924] if [UDHCPD || UDHCPC]
+  depends on [UDHCPD || UDHCPC]
+  inherited [UDHCPD || UDHCPC]
+ }
+ config IFUPDOWN_UDHCPC_CMD_OPTIONS string {
+  prompt "ifup udhcpc command line options" if [IFUPDOWN && UDHCPC]
+  default ["-R -n"] if [IFUPDOWN && UDHCPC]
+  depends on [IFUPDOWN && UDHCPC]
+  inherited [IFUPDOWN && UDHCPC]
+ }
+ config UDPSVD boolean {
+  prompt "udpsvd" if []
+  default [y] if []
+ }
+ config VCONFIG boolean {
+  prompt "vconfig" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config WGET boolean {
+  prompt "wget" if []
+  default [y] if []
+  config FEATURE_WGET_STATUSBAR boolean {
+   prompt "Enable a nifty process meter (+2k)" if [WGET]
+   default [y] if [WGET]
+   depends on [WGET]
+   inherited [WGET]
+  }
+  config FEATURE_WGET_AUTHENTICATION boolean {
+   prompt "Enable HTTP authentication" if [WGET]
+   default [y] if [WGET]
+   depends on [WGET]
+   inherited [WGET]
+  }
+  config FEATURE_WGET_LONG_OPTIONS boolean {
+   prompt "Enable long options" if [WGET && LONG_OPTS]
+   default [y] if [WGET && LONG_OPTS]
+   depends on [WGET && LONG_OPTS]
+   inherited [WGET && LONG_OPTS]
+  }
+  config FEATURE_WGET_TIMEOUT boolean {
+   prompt "Enable read timeout option -T SEC" if [WGET]
+   default [y] if [WGET]
+   depends on [WGET]
+   inherited [WGET]
+  }
+ }
+ config ZCIP boolean {
+  prompt "zcip" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  select FEATURE_SYSLOG if [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+}
+menu "Print Utilities" {
+ config LPD boolean {
+  prompt "lpd" if []
+  default [y] if []
+ }
+ config LPR boolean {
+  prompt "lpr" if []
+  default [y] if []
+ }
+ config LPQ boolean {
+  prompt "lpq" if []
+  default [y] if []
+ }
+}
+menu "Mail Utilities" {
+ config MAKEMIME boolean {
+  prompt "makemime" if []
+  default [y] if []
+  config FEATURE_MIME_CHARSET string {
+   prompt "Default charset" if [MAKEMIME || REFORMIME || SENDMAIL]
+   default ["us-ascii"] if [MAKEMIME || REFORMIME || SENDMAIL]
+   depends on [MAKEMIME || REFORMIME || SENDMAIL]
+   inherited [MAKEMIME || REFORMIME || SENDMAIL]
+  }
+ }
+ config POPMAILDIR boolean {
+  prompt "popmaildir" if []
+  default [y] if []
+  config FEATURE_POPMAILDIR_DELIVERY boolean {
+   prompt "Allow message filters and custom delivery program" if [POPMAILDIR]
+   default [y] if [POPMAILDIR]
+   depends on [POPMAILDIR]
+   inherited [POPMAILDIR]
+  }
+ }
+ config REFORMIME boolean {
+  prompt "reformime" if []
+  default [y] if []
+  config FEATURE_REFORMIME_COMPAT boolean {
+   prompt "Accept and ignore options other than -x and -X" if [REFORMIME]
+   default [y] if [REFORMIME]
+   depends on [REFORMIME]
+   inherited [REFORMIME]
+  }
+ }
+ config SENDMAIL boolean {
+  prompt "sendmail" if []
+  default [y] if []
+ }
+}
+menu "Process Utilities" {
+ config IOSTAT boolean {
+  prompt "iostat" if []
+  default [y] if []
+ }
+ config MPSTAT boolean {
+  prompt "mpstat" if []
+  default [y] if []
+ }
+ config PMAP boolean {
+  prompt "pmap" if []
+  default [y] if []
+ }
+ config POWERTOP boolean {
+  prompt "powertop" if []
+  default [y] if []
+ }
+ config SMEMCAP boolean {
+  prompt "smemcap" if []
+  default [y] if []
+ }
+ config FREE boolean {
+  prompt "free" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config FUSER boolean {
+  prompt "fuser" if []
+  default [y] if []
+ }
+ config KILL boolean {
+  prompt "kill" if []
+  default [y] if []
+  config KILLALL boolean {
+   prompt "killall" if [KILL]
+   default [y] if [KILL]
+   depends on [KILL]
+   inherited [KILL]
+  }
+  config KILLALL5 boolean {
+   prompt "killall5" if [KILL]
+   default [y] if [KILL]
+   depends on [KILL]
+   inherited [KILL]
+  }
+ }
+ config NMETER boolean {
+  prompt "nmeter" if []
+  default [y] if []
+ }
+ config PGREP boolean {
+  prompt "pgrep" if []
+  default [y] if []
+ }
+ config PIDOF boolean {
+  prompt "pidof" if []
+  default [y] if []
+  config FEATURE_PIDOF_SINGLE boolean {
+   prompt "Enable argument for single shot (-s)" if [PIDOF]
+   default [y] if [PIDOF]
+   depends on [PIDOF]
+   inherited [PIDOF]
+  }
+  config FEATURE_PIDOF_OMIT boolean {
+   prompt "Enable argument for omitting pids (-o)" if [PIDOF]
+   default [y] if [PIDOF]
+   depends on [PIDOF]
+   inherited [PIDOF]
+  }
+ }
+ config PKILL boolean {
+  prompt "pkill" if []
+  default [y] if []
+ }
+ config PS boolean {
+  prompt "ps" if []
+  default [y] if []
+  config FEATURE_PS_WIDE boolean {
+   prompt "Enable wide output option (-w)" if [PS]
+   default [y] if [PS]
+   depends on [PS]
+   inherited [PS]
+  }
+  config FEATURE_PS_TIME boolean {
+   prompt "Enable time and elapsed time output" if [PS && DESKTOP && PLATFORM_LINUX]
+   default [y] if [PS && DESKTOP && PLATFORM_LINUX]
+   depends on [PS && DESKTOP && PLATFORM_LINUX]
+   inherited [PS && DESKTOP && PLATFORM_LINUX]
+  }
+  config FEATURE_PS_ADDITIONAL_COLUMNS boolean {
+   prompt "Enable additional ps columns" if [PS && DESKTOP]
+   default [y] if [PS && DESKTOP]
+   depends on [PS && DESKTOP]
+   inherited [PS && DESKTOP]
+  }
+ }
+ config FEATURE_PS_UNUSUAL_SYSTEMS boolean {
+  prompt "Support Linux prior to 2.4.0 and non-ELF systems" if [FEATURE_PS_TIME]
+  default [n] if [FEATURE_PS_TIME]
+  depends on [FEATURE_PS_TIME]
+  inherited [FEATURE_PS_TIME]
+ }
+ config RENICE boolean {
+  prompt "renice" if []
+  default [y] if []
+ }
+ config BB_SYSCTL boolean {
+  prompt "sysctl" if []
+  default [y] if []
+ }
+ config TOP boolean {
+  prompt "top" if []
+  default [y] if []
+  config FEATURE_TOP_CPU_USAGE_PERCENTAGE boolean {
+   prompt "Show CPU per-process usage percentage" if [TOP]
+   default [y] if [TOP]
+   depends on [TOP]
+   inherited [TOP]
+   config FEATURE_TOP_CPU_GLOBAL_PERCENTS boolean {
+    prompt "Show CPU global usage percentage" if [FEATURE_TOP_CPU_USAGE_PERCENTAGE]
+    default [y] if [FEATURE_TOP_CPU_USAGE_PERCENTAGE]
+    depends on [FEATURE_TOP_CPU_USAGE_PERCENTAGE]
+    inherited [FEATURE_TOP_CPU_USAGE_PERCENTAGE]
+    config FEATURE_TOP_SMP_CPU boolean {
+     prompt "SMP CPU usage display ('c' key)" if [FEATURE_TOP_CPU_GLOBAL_PERCENTS]
+     default [y] if [FEATURE_TOP_CPU_GLOBAL_PERCENTS]
+     depends on [FEATURE_TOP_CPU_GLOBAL_PERCENTS]
+     inherited [FEATURE_TOP_CPU_GLOBAL_PERCENTS]
+    }
+   }
+   config FEATURE_TOP_DECIMALS boolean {
+    prompt "Show 1/10th of a percent in CPU/mem statistics" if [FEATURE_TOP_CPU_USAGE_PERCENTAGE]
+    default [y] if [FEATURE_TOP_CPU_USAGE_PERCENTAGE]
+    depends on [FEATURE_TOP_CPU_USAGE_PERCENTAGE]
+    inherited [FEATURE_TOP_CPU_USAGE_PERCENTAGE]
+   }
+  }
+  config FEATURE_TOP_SMP_PROCESS boolean {
+   prompt "Show CPU process runs on ('j' field)" if [TOP]
+   default [y] if [TOP]
+   depends on [TOP]
+   inherited [TOP]
+  }
+  config FEATURE_TOPMEM boolean {
+   prompt "Topmem command ('s' key)" if [TOP]
+   default [y] if [TOP]
+   depends on [TOP]
+   inherited [TOP]
+  }
+  config FEATURE_SHOW_THREADS boolean {
+   prompt "Support for showing threads in ps/top" if [PS || TOP]
+   default [y] if [PS || TOP]
+   depends on [PS || TOP]
+   inherited [PS || TOP]
+  }
+ }
+ config UPTIME boolean {
+  prompt "uptime" if [PLATFORM_LINUX]
+  default [y] if [PLATFORM_LINUX]
+  depends on [PLATFORM_LINUX]
+  inherited [PLATFORM_LINUX]
+ }
+ config WATCH boolean {
+  prompt "watch" if []
+  default [y] if []
+ }
+}
+menu "Runit Utilities" {
+ config RUNSV boolean {
+  prompt "runsv" if []
+  default [y] if []
+ }
+ config RUNSVDIR boolean {
+  prompt "runsvdir" if []
+  default [y] if []
+  config FEATURE_RUNSVDIR_LOG boolean {
+   prompt "Enable scrolling argument log" if [RUNSVDIR]
+   depends on [RUNSVDIR]
+   default [n] if [RUNSVDIR]
+   inherited [RUNSVDIR]
+  }
+ }
+ config SV boolean {
+  prompt "sv" if []
+  default [y] if []
+  config SV_DEFAULT_SERVICE_DIR string {
+   prompt "Default directory for services" if [SV]
+   default ["/var/service"] if [SV]
+   depends on [SV]
+   inherited [SV]
+  }
+ }
+ config SVLOGD boolean {
+  prompt "svlogd" if []
+  default [y] if []
+ }
+ config CHPST boolean {
+  prompt "chpst" if []
+  default [y] if []
+ }
+ config SETUIDGID boolean {
+  prompt "setuidgid" if []
+  default [y] if []
+ }
+ config ENVUIDGID boolean {
+  prompt "envuidgid" if []
+  default [y] if []
+ }
+ config ENVDIR boolean {
+  prompt "envdir" if []
+  default [y] if []
+ }
+ config SOFTLIMIT boolean {
+  prompt "softlimit" if []
+  default [y] if []
+ }
+}
+menu "SELinux Utilities" {
+ depends on [SELINUX]
+ config CHCON boolean {
+  prompt "chcon" if [SELINUX]
+  default [n] if [SELINUX]
+  depends on [SELINUX]
+  inherited [SELINUX]
+  config FEATURE_CHCON_LONG_OPTIONS boolean {
+   prompt "Enable long options" if [SELINUX && CHCON && LONG_OPTS]
+   default [y] if [SELINUX && CHCON && LONG_OPTS]
+   depends on [CHCON && LONG_OPTS]
+   inherited [SELINUX && CHCON && LONG_OPTS]
+  }
+ }
+ config GETENFORCE boolean {
+  prompt "getenforce" if [SELINUX]
+  default [n] if [SELINUX]
+  depends on [SELINUX]
+  inherited [SELINUX]
+ }
+ config GETSEBOOL boolean {
+  prompt "getsebool" if [SELINUX]
+  default [n] if [SELINUX]
+  depends on [SELINUX]
+  inherited [SELINUX]
+ }
+ config LOAD_POLICY boolean {
+  prompt "load_policy" if [SELINUX]
+  default [n] if [SELINUX]
+  depends on [SELINUX]
+  inherited [SELINUX]
+ }
+ config MATCHPATHCON boolean {
+  prompt "matchpathcon" if [SELINUX]
+  default [n] if [SELINUX]
+  depends on [SELINUX]
+  inherited [SELINUX]
+ }
+ config RESTORECON boolean {
+  prompt "restorecon" if [SELINUX]
+  default [n] if [SELINUX]
+  depends on [SELINUX]
+  inherited [SELINUX]
+ }
+ config RUNCON boolean {
+  prompt "runcon" if [SELINUX]
+  default [n] if [SELINUX]
+  depends on [SELINUX]
+  inherited [SELINUX]
+  config FEATURE_RUNCON_LONG_OPTIONS boolean {
+   prompt "Enable long options" if [SELINUX && RUNCON && LONG_OPTS]
+   default [y] if [SELINUX && RUNCON && LONG_OPTS]
+   depends on [RUNCON && LONG_OPTS]
+   inherited [SELINUX && RUNCON && LONG_OPTS]
+  }
+ }
+ config SELINUXENABLED boolean {
+  prompt "selinuxenabled" if [SELINUX]
+  default [n] if [SELINUX]
+  depends on [SELINUX]
+  inherited [SELINUX]
+ }
+ config SETENFORCE boolean {
+  prompt "setenforce" if [SELINUX]
+  default [n] if [SELINUX]
+  depends on [SELINUX]
+  inherited [SELINUX]
+ }
+ config SETFILES boolean {
+  prompt "setfiles" if [SELINUX]
+  default [n] if [SELINUX]
+  depends on [SELINUX]
+  inherited [SELINUX]
+  config FEATURE_SETFILES_CHECK_OPTION boolean {
+   prompt "Enable check option" if [SELINUX && SETFILES]
+   default [n] if [SELINUX && SETFILES]
+   depends on [SETFILES]
+   inherited [SELINUX && SETFILES]
+  }
+ }
+ config SETSEBOOL boolean {
+  prompt "setsebool" if [SELINUX]
+  default [n] if [SELINUX]
+  depends on [SELINUX]
+  inherited [SELINUX]
+ }
+ config SESTATUS boolean {
+  prompt "sestatus" if [SELINUX]
+  default [n] if [SELINUX]
+  depends on [SELINUX]
+  inherited [SELINUX]
+ }
+}
+menu "Shells" {
+ config ASH boolean {
+  prompt "ash" if [!NOMMU]
+  default [y] if [!NOMMU]
+  depends on [!NOMMU]
+  inherited [!NOMMU]
+  config ASH_BASH_COMPAT boolean {
+   prompt "bash-compatible extensions" if [ASH]
+   default [y] if [ASH]
+   depends on [ASH]
+   inherited [ASH]
+  }
+  config ASH_JOB_CONTROL boolean {
+   prompt "Job control" if [ASH]
+   default [y] if [ASH]
+   depends on [ASH]
+   inherited [ASH]
+  }
+  config ASH_ALIAS boolean {
+   prompt "alias support" if [ASH]
+   default [y] if [ASH]
+   depends on [ASH]
+   inherited [ASH]
+  }
+  config ASH_GETOPTS boolean {
+   prompt "Builtin getopt to parse positional parameters" if [ASH]
+   default [y] if [ASH]
+   depends on [ASH]
+   inherited [ASH]
+  }
+  config ASH_BUILTIN_ECHO boolean {
+   prompt "Builtin version of 'echo'" if [ASH]
+   default [y] if [ASH]
+   depends on [ASH]
+   inherited [ASH]
+  }
+  config ASH_BUILTIN_PRINTF boolean {
+   prompt "Builtin version of 'printf'" if [ASH]
+   default [y] if [ASH]
+   depends on [ASH]
+   inherited [ASH]
+  }
+  config ASH_BUILTIN_TEST boolean {
+   prompt "Builtin version of 'test'" if [ASH]
+   default [y] if [ASH]
+   depends on [ASH]
+   inherited [ASH]
+  }
+  config ASH_CMDCMD boolean {
+   prompt "'command' command to override shell builtins" if [ASH]
+   default [y] if [ASH]
+   depends on [ASH]
+   inherited [ASH]
+  }
+  config ASH_MAIL boolean {
+   prompt "Check for new mail on interactive shells" if [ASH]
+   default [n] if [ASH]
+   depends on [ASH]
+   inherited [ASH]
+  }
+  config ASH_OPTIMIZE_FOR_SIZE boolean {
+   prompt "Optimize for size instead of speed" if [ASH]
+   default [y] if [ASH]
+   depends on [ASH]
+   inherited [ASH]
+  }
+  config ASH_RANDOM_SUPPORT boolean {
+   prompt "Pseudorandom generator and $RANDOM variable" if [ASH]
+   default [y] if [ASH]
+   depends on [ASH]
+   inherited [ASH]
+  }
+  config ASH_EXPAND_PRMT boolean {
+   prompt "Expand prompt string" if [ASH]
+   default [y] if [ASH]
+   depends on [ASH]
+   inherited [ASH]
+  }
+ }
+ config CTTYHACK boolean {
+  prompt "cttyhack" if []
+  default [y] if []
+ }
+ config HUSH boolean {
+  prompt "hush" if []
+  default [y] if []
+  config HUSH_BASH_COMPAT boolean {
+   prompt "bash-compatible extensions" if [HUSH]
+   default [y] if [HUSH]
+   depends on [HUSH]
+   inherited [HUSH]
+   config HUSH_BRACE_EXPANSION boolean {
+    prompt "Brace expansion" if [HUSH_BASH_COMPAT]
+    default [y] if [HUSH_BASH_COMPAT]
+    depends on [HUSH_BASH_COMPAT]
+    inherited [HUSH_BASH_COMPAT]
+   }
+  }
+  config HUSH_HELP boolean {
+   prompt "help builtin" if [HUSH]
+   default [y] if [HUSH]
+   depends on [HUSH]
+   inherited [HUSH]
+  }
+  config HUSH_INTERACTIVE boolean {
+   prompt "Interactive mode" if [HUSH]
+   default [y] if [HUSH]
+   depends on [HUSH]
+   inherited [HUSH]
+   config HUSH_SAVEHISTORY boolean {
+    prompt "Save command history to .hush_history" if [HUSH_INTERACTIVE && FEATURE_EDITING_SAVEHISTORY]
+    default [y] if [HUSH_INTERACTIVE && FEATURE_EDITING_SAVEHISTORY]
+    depends on [HUSH_INTERACTIVE && FEATURE_EDITING_SAVEHISTORY]
+    inherited [HUSH_INTERACTIVE && FEATURE_EDITING_SAVEHISTORY]
+   }
+   config HUSH_JOB boolean {
+    prompt "Job control" if [HUSH_INTERACTIVE]
+    default [y] if [HUSH_INTERACTIVE]
+    depends on [HUSH_INTERACTIVE]
+    inherited [HUSH_INTERACTIVE]
+   }
+  }
+  config HUSH_TICK boolean {
+   prompt "Process substitution" if [HUSH]
+   default [y] if [HUSH]
+   depends on [HUSH]
+   inherited [HUSH]
+  }
+  config HUSH_IF boolean {
+   prompt "Support if/then/elif/else/fi" if [HUSH]
+   default [y] if [HUSH]
+   depends on [HUSH]
+   inherited [HUSH]
+  }
+  config HUSH_LOOPS boolean {
+   prompt "Support for, while and until loops" if [HUSH]
+   default [y] if [HUSH]
+   depends on [HUSH]
+   inherited [HUSH]
+  }
+  config HUSH_CASE boolean {
+   prompt "Support case ... esac statement" if [HUSH]
+   default [y] if [HUSH]
+   depends on [HUSH]
+   inherited [HUSH]
+  }
+  config HUSH_FUNCTIONS boolean {
+   prompt "Support funcname() { commands; } syntax" if [HUSH]
+   default [y] if [HUSH]
+   depends on [HUSH]
+   inherited [HUSH]
+   config HUSH_LOCAL boolean {
+    prompt "Support local builtin" if [HUSH_FUNCTIONS]
+    default [y] if [HUSH_FUNCTIONS]
+    depends on [HUSH_FUNCTIONS]
+    inherited [HUSH_FUNCTIONS]
+   }
+  }
+  config HUSH_RANDOM_SUPPORT boolean {
+   prompt "Pseudorandom generator and $RANDOM variable" if [HUSH]
+   default [y] if [HUSH]
+   depends on [HUSH]
+   inherited [HUSH]
+  }
+  config HUSH_EXPORT_N boolean {
+   prompt "Support 'export -n' option" if [HUSH]
+   default [y] if [HUSH]
+   depends on [HUSH]
+   inherited [HUSH]
+  }
+  config HUSH_MODE_X boolean {
+   prompt "Support 'hush -x' option and 'set -x' command" if [HUSH]
+   default [y] if [HUSH]
+   depends on [HUSH]
+   inherited [HUSH]
+  }
+ }
+ config MSH boolean {
+  prompt "msh (deprecated: aliased to hush)" if []
+  default [n] if []
+  select HUSH if []
+ }
+ choice boolean {
+  prompt "Choose which shell is aliased to 'sh' name" if []
+  default [FEATURE_SH_IS_ASH] if []
+  config FEATURE_SH_IS_ASH boolean {
+   depends on [ASH]
+   prompt "ash" if [<choice> && ASH && !NOMMU]
+   depends on [!NOMMU]
+   inherited [<choice> && ASH && !NOMMU]
+  }
+  config FEATURE_SH_IS_HUSH boolean {
+   depends on [HUSH]
+   prompt "hush" if [<choice> && HUSH]
+   inherited [<choice> && HUSH]
+  }
+  config FEATURE_SH_IS_NONE boolean {
+   prompt "none" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Choose which shell is aliased to 'bash' name" if []
+  default [FEATURE_BASH_IS_NONE] if []
+  config FEATURE_BASH_IS_ASH boolean {
+   depends on [ASH]
+   prompt "ash" if [<choice> && ASH && !NOMMU]
+   depends on [!NOMMU]
+   inherited [<choice> && ASH && !NOMMU]
+  }
+  config FEATURE_BASH_IS_HUSH boolean {
+   depends on [HUSH]
+   prompt "hush" if [<choice> && HUSH]
+   inherited [<choice> && HUSH]
+  }
+  config FEATURE_BASH_IS_NONE boolean {
+   prompt "none" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ config SH_MATH_SUPPORT boolean {
+  prompt "POSIX math support" if [ASH || HUSH]
+  default [y] if [ASH || HUSH]
+  depends on [ASH || HUSH]
+  inherited [ASH || HUSH]
+  config SH_MATH_SUPPORT_64 boolean {
+   prompt "Extend POSIX math support to 64 bit" if [SH_MATH_SUPPORT]
+   default [y] if [SH_MATH_SUPPORT]
+   depends on [SH_MATH_SUPPORT]
+   inherited [SH_MATH_SUPPORT]
+  }
+ }
+ config FEATURE_SH_EXTRA_QUIET boolean {
+  prompt "Hide message on interactive shell startup" if [HUSH || ASH]
+  default [y] if [HUSH || ASH]
+  depends on [HUSH || ASH]
+  inherited [HUSH || ASH]
+ }
+ config FEATURE_SH_STANDALONE boolean {
+  prompt "Standalone shell" if [(HUSH || ASH) && FEATURE_PREFER_APPLETS]
+  default [n] if [(HUSH || ASH) && FEATURE_PREFER_APPLETS]
+  depends on [(HUSH || ASH) && FEATURE_PREFER_APPLETS]
+  inherited [(HUSH || ASH) && FEATURE_PREFER_APPLETS]
+ }
+ config FEATURE_SH_NOFORK boolean {
+  prompt "Run 'nofork' applets directly" if [(HUSH || ASH) && FEATURE_PREFER_APPLETS]
+  default [n] if [(HUSH || ASH) && FEATURE_PREFER_APPLETS]
+  depends on [(HUSH || ASH) && FEATURE_PREFER_APPLETS]
+  inherited [(HUSH || ASH) && FEATURE_PREFER_APPLETS]
+ }
+}
+menu "System Logging Utilities" {
+ config SYSLOGD boolean {
+  prompt "syslogd" if []
+  default [y] if []
+  config FEATURE_ROTATE_LOGFILE boolean {
+   prompt "Rotate message files" if [SYSLOGD]
+   default [y] if [SYSLOGD]
+   depends on [SYSLOGD]
+   inherited [SYSLOGD]
+  }
+  config FEATURE_REMOTE_LOG boolean {
+   prompt "Remote Log support" if [SYSLOGD]
+   default [y] if [SYSLOGD]
+   depends on [SYSLOGD]
+   inherited [SYSLOGD]
+  }
+  config FEATURE_SYSLOGD_DUP boolean {
+   prompt "Support -D (drop dups) option" if [SYSLOGD]
+   default [y] if [SYSLOGD]
+   depends on [SYSLOGD]
+   inherited [SYSLOGD]
+  }
+  config FEATURE_SYSLOGD_READ_BUFFER_SIZE integer {
+   prompt "Read buffer size in bytes" if [SYSLOGD]
+   default [256] if [SYSLOGD]
+   range [256 20000] if [SYSLOGD]
+   depends on [SYSLOGD]
+   inherited [SYSLOGD]
+  }
+  config FEATURE_IPC_SYSLOG boolean {
+   prompt "Circular Buffer support" if [SYSLOGD]
+   default [y] if [SYSLOGD]
+   depends on [SYSLOGD]
+   inherited [SYSLOGD]
+   config FEATURE_IPC_SYSLOG_BUFFER_SIZE integer {
+    prompt "Circular buffer size in Kbytes (minimum 4KB)" if [FEATURE_IPC_SYSLOG]
+    default [16] if [FEATURE_IPC_SYSLOG]
+    range [4 2147483647] if [FEATURE_IPC_SYSLOG]
+    depends on [FEATURE_IPC_SYSLOG]
+    inherited [FEATURE_IPC_SYSLOG]
+   }
+   config LOGREAD boolean {
+    prompt "logread" if [FEATURE_IPC_SYSLOG]
+    default [y] if [FEATURE_IPC_SYSLOG]
+    depends on [FEATURE_IPC_SYSLOG]
+    inherited [FEATURE_IPC_SYSLOG]
+    config FEATURE_LOGREAD_REDUCED_LOCKING boolean {
+     prompt "Double buffering" if [LOGREAD]
+     default [y] if [LOGREAD]
+     depends on [LOGREAD]
+     inherited [LOGREAD]
+    }
+   }
+  }
+ }
+ config KLOGD boolean {
+  prompt "klogd" if []
+  default [y] if []
+  config FEATURE_KLOGD_KLOGCTL boolean {
+   prompt "Use the klogctl() interface" if [KLOGD && PLATFORM_LINUX]
+   default [y] if [KLOGD && PLATFORM_LINUX]
+   depends on [KLOGD && PLATFORM_LINUX]
+   inherited [KLOGD && PLATFORM_LINUX]
+  }
+ }
+ config LOGGER boolean {
+  prompt "logger" if []
+  default [y] if []
+  select FEATURE_SYSLOG if []
+ }
+}

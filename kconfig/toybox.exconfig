@@ -1,0 +1,322 @@
+menu "Global settings" {
+ config TOYBOX boolean {
+  default [n] if []
+ }
+ config TOYBOX_FREE boolean {
+  prompt "Free memory unnecessarily" if []
+  default [n] if []
+ }
+ config TOYBOX_DEBUG boolean {
+  prompt "Debugging tests" if []
+  default [n] if []
+ }
+}
+menu "Toys" {
+ config BASENAME boolean {
+  prompt "basename" if []
+  default [y] if []
+ }
+ config BZCAT boolean {
+  prompt "bzcat" if []
+  default [y] if []
+ }
+ config CAT boolean {
+  prompt "cat" if []
+  default [y] if []
+ }
+ config CATV boolean {
+  prompt "catv" if []
+  default [y] if []
+ }
+ config CHROOT boolean {
+  prompt "chroot" if []
+  default [y] if []
+ }
+ config CHVT boolean {
+  prompt "chvt" if []
+  default [y] if []
+ }
+ config CKSUM boolean {
+  prompt "cksum" if []
+  default [y] if []
+ }
+ config COUNT boolean {
+  prompt "count" if []
+  default [y] if []
+ }
+ config CP boolean {
+  prompt "cp" if []
+  default [y] if []
+ }
+ config DF boolean {
+  prompt "df (disk free)" if []
+  default [y] if []
+  config DF_PEDANTIC boolean {
+   prompt "options -P and -k" if [DF]
+   default [y] if [DF]
+   depends on [DF]
+   inherited [DF]
+  }
+ }
+ config DIRNAME boolean {
+  prompt "dirname" if []
+  default [y] if []
+ }
+ config DMESG boolean {
+  prompt "dmesg" if []
+  default [y] if []
+ }
+ config ECHO boolean {
+  prompt "echo" if []
+  default [y] if []
+ }
+ config FALSE boolean {
+  prompt "false" if []
+  default [y] if []
+ }
+ config HELLO boolean {
+  prompt "hello" if []
+  default [n] if []
+ }
+ config HELP boolean {
+  prompt "help" if []
+  default [y] if []
+  config HELP_LONG boolean {
+   prompt "Verbose help text" if [HELP]
+   default [y] if [HELP]
+   depends on [HELP]
+   inherited [HELP]
+  }
+ }
+ config MDEV boolean {
+  prompt "mdev" if []
+  default [y] if []
+  config MDEV_CONF boolean {
+   prompt "Configuration file for mdev" if [MDEV]
+   default [y] if [MDEV]
+   depends on [MDEV]
+   inherited [MDEV]
+  }
+ }
+ config MKE2FS boolean {
+  prompt "mke2fs" if []
+  default [n] if []
+  config MKE2FS_JOURNAL boolean {
+   prompt "Journaling support (ext3)" if [MKE2FS]
+   default [n] if [MKE2FS]
+   depends on [MKE2FS]
+   inherited [MKE2FS]
+  }
+  config MKE2FS_GEN boolean {
+   prompt "Generate (gene2fs)" if [MKE2FS]
+   default [n] if [MKE2FS]
+   depends on [MKE2FS]
+   inherited [MKE2FS]
+  }
+  config MKE2FS_LABEL boolean {
+   prompt "Label support" if [MKE2FS]
+   default [n] if [MKE2FS]
+   depends on [MKE2FS]
+   inherited [MKE2FS]
+  }
+  config MKE2FS_EXTENDED boolean {
+   prompt "Extended options" if [MKE2FS]
+   default [n] if [MKE2FS]
+   depends on [MKE2FS]
+   inherited [MKE2FS]
+  }
+ }
+ config MKFIFO boolean {
+  prompt "mkfifo" if []
+  default [y] if []
+ }
+ config MKSWAP boolean {
+  prompt "mkswap" if []
+  default [y] if []
+ }
+ config NETCAT boolean {
+  prompt "netcat" if []
+  default [y] if []
+  config NETCAT_LISTEN boolean {
+   prompt "netcat sever options (-let)" if [NETCAT]
+   default [y] if [NETCAT]
+   depends on [NETCAT]
+   inherited [NETCAT]
+  }
+ }
+ config ONEIT boolean {
+  prompt "oneit" if []
+  default [y] if []
+ }
+ config PATCH boolean {
+  prompt "patch" if []
+  default [y] if []
+ }
+ config PWD boolean {
+  prompt "pwd" if []
+  default [y] if []
+ }
+ config READLINK boolean {
+  prompt "readlink" if []
+  default [n] if []
+  config READLINK_F boolean {
+   prompt "readlink -f" if [READLINK]
+   default [n] if [READLINK]
+   depends on [READLINK]
+   inherited [READLINK]
+  }
+ }
+ config RMDIR boolean {
+  prompt "rmdir" if []
+  default [y] if []
+ }
+ config SED boolean {
+  prompt "sed" if []
+  default [n] if []
+ }
+ config SEQ boolean {
+  prompt "seq" if []
+  default [y] if []
+ }
+ config SHA1SUM boolean {
+  prompt "sha1sum" if []
+  default [y] if []
+ }
+ config SLEEP boolean {
+  prompt "sleep" if []
+  default [y] if []
+ }
+ config SORT boolean {
+  prompt "sort" if []
+  default [y] if []
+  config SORT_BIG boolean {
+   prompt "all SuSv3 options (Support -ktcsbdfiozgM)" if [SORT]
+   default [y] if [SORT]
+   depends on [SORT]
+   inherited [SORT]
+  }
+ }
+ config SYNC boolean {
+  prompt "sync" if []
+  default [y] if []
+ }
+ config TEE boolean {
+  prompt "tee" if []
+  default [y] if []
+ }
+ config TOUCH boolean {
+  prompt "touch" if []
+  default [y] if []
+ }
+ config TOYSH boolean {
+  prompt "sh (toysh)" if []
+  default [y] if []
+  config TOYSH_TTY boolean {
+   prompt "Interactive shell (terminal control)" if [TOYSH]
+   default [n] if [TOYSH]
+   depends on [TOYSH]
+   inherited [TOYSH]
+   config TOYSH_PROFILE boolean {
+    prompt "Profile support" if [TOYSH_TTY]
+    default [n] if [TOYSH_TTY]
+    depends on [TOYSH_TTY]
+    inherited [TOYSH_TTY]
+   }
+   config TOYSH_JOBCTL boolean {
+    prompt "Job Control (fg, bg, jobs)" if [TOYSH_TTY]
+    default [n] if [TOYSH_TTY]
+    depends on [TOYSH_TTY]
+    inherited [TOYSH_TTY]
+   }
+  }
+  config TOYSH_FLOWCTL boolean {
+   prompt "Flow control (if, while, for, functions)" if [TOYSH]
+   default [n] if [TOYSH]
+   depends on [TOYSH]
+   inherited [TOYSH]
+  }
+  config TOYSH_QUOTES boolean {
+   prompt "Smarter argument parsing (quotes)" if [TOYSH]
+   default [n] if [TOYSH]
+   depends on [TOYSH]
+   inherited [TOYSH]
+   config TOYSH_WILDCARDS boolean {
+    prompt "Wildcards ( ?*{,} )" if [TOYSH_QUOTES]
+    default [n] if [TOYSH_QUOTES]
+    depends on [TOYSH_QUOTES]
+    inherited [TOYSH_QUOTES]
+   }
+   config TOYSH_PROCARGS boolean {
+    prompt "Executable arguments ( `` and $() )" if [TOYSH_QUOTES]
+    default [n] if [TOYSH_QUOTES]
+    depends on [TOYSH_QUOTES]
+    inherited [TOYSH_QUOTES]
+   }
+   config TOYSH_ENVVARS boolean {
+    prompt "Environment variable support" if [TOYSH_QUOTES]
+    default [n] if [TOYSH_QUOTES]
+    depends on [TOYSH_QUOTES]
+    inherited [TOYSH_QUOTES]
+    config TOYSH_LOCALS boolean {
+     prompt "Local variables" if [TOYSH_ENVVARS]
+     default [n] if [TOYSH_ENVVARS]
+     depends on [TOYSH_ENVVARS]
+     inherited [TOYSH_ENVVARS]
+     config TOYSH_ARRAYS boolean {
+      prompt "Array variables" if [TOYSH_LOCALS]
+      default [n] if [TOYSH_LOCALS]
+      depends on [TOYSH_LOCALS]
+      inherited [TOYSH_LOCALS]
+     }
+    }
+   }
+  }
+  config TOYSH_PIPES boolean {
+   prompt "Pipes and redirects ( | > >> < << & && | || () ; )" if [TOYSH]
+   default [n] if [TOYSH]
+   depends on [TOYSH]
+   inherited [TOYSH]
+  }
+  config TOYSH_BUILTINS boolean {
+   prompt "Builtin commands" if [TOYSH]
+   default [n] if [TOYSH]
+   depends on [TOYSH]
+   inherited [TOYSH]
+  }
+  config EXIT boolean {
+   default [n] if [TOYSH]
+   depends on [TOYSH]
+   inherited [TOYSH]
+  }
+  config CD boolean {
+   default [n] if [TOYSH]
+   depends on [TOYSH]
+   inherited [TOYSH]
+  }
+  config CD_P boolean {
+   default [n] if [TOYSH]
+   depends on [TOYSH]
+   inherited [TOYSH]
+  }
+ }
+ config TRUE boolean {
+  prompt "true" if []
+  default [y] if []
+ }
+ config TTY boolean {
+  prompt "tty" if []
+  default [y] if []
+ }
+ config UNAME boolean {
+  prompt "uname" if []
+  default [y] if []
+ }
+ config WHICH boolean {
+  prompt "which" if []
+  default [y] if []
+ }
+ config YES boolean {
+  prompt "yes" if []
+  default [y] if []
+ }
+}

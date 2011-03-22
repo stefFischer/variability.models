@@ -1,0 +1,515 @@
+config HAVE_DOT_CONFIG boolean {
+ default [y] if []
+}
+choice boolean {
+ prompt "Platform" if []
+ default [CONFIG_PLATFORM_LINUX] if []
+ config CONFIG_PLATFORM_LINUX boolean {
+  prompt "Linux" if [<choice>]
+  inherited [<choice>]
+ }
+ config CONFIG_PLATFORM_CYGWIN boolean {
+  prompt "Cygwin" if [<choice>]
+  inherited [<choice>]
+ }
+ config CONFIG_PLATFORM_WIN32 boolean {
+  prompt "Win32" if [<choice>]
+  inherited [<choice>]
+ }
+}
+menu "General Configuration" {
+ config PREFIX string {
+  prompt "axTLS installation prefix" if [!CONFIG_PLATFORM_WIN32]
+  depends on [!CONFIG_PLATFORM_WIN32]
+  default ["/usr/local"] if [!CONFIG_PLATFORM_WIN32]
+  inherited [!CONFIG_PLATFORM_WIN32]
+ }
+ config CONFIG_DEBUG boolean {
+  prompt "Build axTLS with Debugging symbols" if []
+  default [n] if []
+  config CONFIG_STRIP_UNWANTED_SECTIONS boolean {
+   depends on [!CONFIG_PLATFORM_WIN32 && !CONFIG_DEBUG]
+   prompt "Strip unwanted sections from elf binaries" if [!CONFIG_PLATFORM_WIN32 && !CONFIG_DEBUG]
+   default [y] if [!CONFIG_PLATFORM_WIN32 && !CONFIG_DEBUG]
+   inherited [!CONFIG_PLATFORM_WIN32 && !CONFIG_DEBUG]
+  }
+ }
+ menu "Microsoft Compiler Options" {
+  depends on [CONFIG_PLATFORM_WIN32]
+  choice boolean {
+   prompt "Compiler" if [CONFIG_PLATFORM_WIN32]
+   depends on [CONFIG_PLATFORM_WIN32]
+   default [CONFIG_VISUAL_STUDIO_7_0] if [CONFIG_PLATFORM_WIN32]
+   config CONFIG_VISUAL_STUDIO_7_0 boolean {
+    prompt "Visual Studio 7.0 (2003)" if [<choice>]
+    inherited [<choice>]
+   }
+   config CONFIG_VISUAL_STUDIO_8_0 boolean {
+    prompt "Visual Studio 8.0 (2005)" if [<choice>]
+    inherited [<choice>]
+   }
+  }
+  config CONFIG_VISUAL_STUDIO_7_0_BASE string {
+   prompt "Base" if [CONFIG_PLATFORM_WIN32 && CONFIG_VISUAL_STUDIO_7_0]
+   depends on [CONFIG_VISUAL_STUDIO_7_0]
+   default ["c:\Program Files\Microsoft Visual Studio .NET 2003"] if [CONFIG_PLATFORM_WIN32 && CONFIG_VISUAL_STUDIO_7_0]
+   inherited [CONFIG_PLATFORM_WIN32 && CONFIG_VISUAL_STUDIO_7_0]
+  }
+  config CONFIG_VISUAL_STUDIO_8_0_BASE string {
+   prompt "Base" if [CONFIG_PLATFORM_WIN32 && CONFIG_VISUAL_STUDIO_8_0]
+   depends on [CONFIG_VISUAL_STUDIO_8_0]
+   default ["c:\Program Files\Microsoft Visual Studio 8"] if [CONFIG_PLATFORM_WIN32 && CONFIG_VISUAL_STUDIO_8_0]
+   inherited [CONFIG_PLATFORM_WIN32 && CONFIG_VISUAL_STUDIO_8_0]
+  }
+ }
+ config CONFIG_EXTRA_CFLAGS_OPTIONS string {
+  prompt "Any extra CFLAGS options for the compiler?" if []
+ }
+ config CONFIG_EXTRA_LDFLAGS_OPTIONS string {
+  prompt "Any extra LDFLAGS options for the compiler?" if []
+ }
+}
+menu "SSL Library" {
+ choice boolean {
+  prompt "Mode" if []
+  default [CONFIG_SSL_FULL_MODE] if []
+  config CONFIG_SSL_SERVER_ONLY boolean {
+   prompt "Server only - no verification" if [<choice>]
+   inherited [<choice>]
+  }
+  config CONFIG_SSL_CERT_VERIFICATION boolean {
+   prompt "Server only - with verification" if [<choice>]
+   inherited [<choice>]
+  }
+  config CONFIG_SSL_ENABLE_CLIENT boolean {
+   prompt "Client/Server enabled" if [<choice>]
+   inherited [<choice>]
+  }
+  config CONFIG_SSL_FULL_MODE boolean {
+   prompt "Client/Server enabled with diagnostics" if [<choice>]
+   inherited [<choice>]
+  }
+  config CONFIG_SSL_SKELETON_MODE boolean {
+   prompt "Skeleton mode - the smallest server mode" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ choice boolean {
+  prompt "Protocol Preference" if [!CONFIG_SSL_SKELETON_MODE]
+  depends on [!CONFIG_SSL_SKELETON_MODE]
+  default [CONFIG_SSL_PROT_MEDIUM] if [!CONFIG_SSL_SKELETON_MODE]
+  config CONFIG_SSL_PROT_LOW boolean {
+   prompt "Low" if [<choice>]
+   inherited [<choice>]
+  }
+  config CONFIG_SSL_PROT_MEDIUM boolean {
+   prompt "Medium" if [<choice>]
+   inherited [<choice>]
+  }
+  config CONFIG_SSL_PROT_HIGH boolean {
+   prompt "High" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ config CONFIG_SSL_USE_DEFAULT_KEY boolean {
+  prompt "Enable default key" if [!CONFIG_SSL_SKELETON_MODE]
+  depends on [!CONFIG_SSL_SKELETON_MODE]
+  default [y] if [!CONFIG_SSL_SKELETON_MODE]
+  inherited [!CONFIG_SSL_SKELETON_MODE]
+  config CONFIG_SSL_PRIVATE_KEY_LOCATION string {
+   prompt "Private key file location" if [!CONFIG_SSL_USE_DEFAULT_KEY && !CONFIG_SSL_SKELETON_MODE]
+   depends on [!CONFIG_SSL_USE_DEFAULT_KEY && !CONFIG_SSL_SKELETON_MODE]
+   inherited [!CONFIG_SSL_USE_DEFAULT_KEY && !CONFIG_SSL_SKELETON_MODE]
+  }
+ }
+ config CONFIG_SSL_PRIVATE_KEY_PASSWORD string {
+  prompt "Private key password" if [!CONFIG_SSL_USE_DEFAULT_KEY && CONFIG_SSL_HAS_PEM]
+  depends on [!CONFIG_SSL_USE_DEFAULT_KEY && CONFIG_SSL_HAS_PEM]
+  inherited [!CONFIG_SSL_USE_DEFAULT_KEY && CONFIG_SSL_HAS_PEM]
+ }
+ config CONFIG_SSL_X509_CERT_LOCATION string {
+  prompt "X.509 certificate file location" if [!CONFIG_SSL_GENERATE_X509_CERT && !CONFIG_SSL_USE_DEFAULT_KEY && !CONFIG_SSL_SKELETON_MODE]
+  depends on [!CONFIG_SSL_GENERATE_X509_CERT && !CONFIG_SSL_USE_DEFAULT_KEY && !CONFIG_SSL_SKELETON_MODE]
+  inherited [!CONFIG_SSL_GENERATE_X509_CERT && !CONFIG_SSL_USE_DEFAULT_KEY && !CONFIG_SSL_SKELETON_MODE]
+ }
+ config CONFIG_SSL_GENERATE_X509_CERT boolean {
+  prompt "Generate X.509 Certificate" if []
+  default [n] if []
+  config CONFIG_SSL_X509_COMMON_NAME string {
+   prompt "X.509 Common Name" if [CONFIG_SSL_GENERATE_X509_CERT]
+   depends on [CONFIG_SSL_GENERATE_X509_CERT]
+   inherited [CONFIG_SSL_GENERATE_X509_CERT]
+  }
+  config CONFIG_SSL_X509_ORGANIZATION_NAME string {
+   prompt "X.509 Organization Name" if [CONFIG_SSL_GENERATE_X509_CERT]
+   depends on [CONFIG_SSL_GENERATE_X509_CERT]
+   inherited [CONFIG_SSL_GENERATE_X509_CERT]
+  }
+  config CONFIG_SSL_X509_ORGANIZATION_UNIT_NAME string {
+   prompt "X.509 Organization Unit Name" if [CONFIG_SSL_GENERATE_X509_CERT]
+   depends on [CONFIG_SSL_GENERATE_X509_CERT]
+   inherited [CONFIG_SSL_GENERATE_X509_CERT]
+  }
+ }
+ config CONFIG_SSL_ENABLE_V23_HANDSHAKE boolean {
+  prompt "Enable v23 Handshake" if []
+  default [y] if []
+ }
+ config CONFIG_SSL_HAS_PEM boolean {
+  prompt "Enable PEM" if [!CONFIG_SSL_SKELETON_MODE]
+  default [n] if [!CONFIG_SSL_SKELETON_MODE && !CONFIG_SSL_FULL_MODE]
+  default [y] if [!CONFIG_SSL_SKELETON_MODE && CONFIG_SSL_FULL_MODE]
+  depends on [!CONFIG_SSL_SKELETON_MODE]
+  inherited [!CONFIG_SSL_SKELETON_MODE]
+ }
+ config CONFIG_SSL_USE_PKCS12 boolean {
+  prompt "Use PKCS8/PKCS12" if [!CONFIG_SSL_SERVER_ONLY && !CONFIG_SSL_SKELETON_MODE]
+  default [n] if [!CONFIG_SSL_SERVER_ONLY && !CONFIG_SSL_SKELETON_MODE && !CONFIG_SSL_FULL_MODE]
+  default [y] if [!CONFIG_SSL_SERVER_ONLY && !CONFIG_SSL_SKELETON_MODE && CONFIG_SSL_FULL_MODE]
+  depends on [!CONFIG_SSL_SERVER_ONLY && !CONFIG_SSL_SKELETON_MODE]
+  inherited [!CONFIG_SSL_SERVER_ONLY && !CONFIG_SSL_SKELETON_MODE]
+ }
+ config CONFIG_SSL_EXPIRY_TIME integer {
+  prompt "Session expiry time (in hours)" if [!CONFIG_SSL_SKELETON_MODE]
+  depends on [!CONFIG_SSL_SKELETON_MODE]
+  default [24] if [!CONFIG_SSL_SKELETON_MODE]
+  inherited [!CONFIG_SSL_SKELETON_MODE]
+ }
+ config CONFIG_X509_MAX_CA_CERTS integer {
+  prompt "Maximum number of certificate authorites" if [!CONFIG_SSL_SERVER_ONLY && !CONFIG_SSL_SKELETON_MODE]
+  default [4] if [!CONFIG_SSL_SERVER_ONLY && !CONFIG_SSL_SKELETON_MODE]
+  depends on [!CONFIG_SSL_SERVER_ONLY && !CONFIG_SSL_SKELETON_MODE]
+  inherited [!CONFIG_SSL_SERVER_ONLY && !CONFIG_SSL_SKELETON_MODE]
+ }
+ config CONFIG_SSL_MAX_CERTS integer {
+  prompt "Maximum number of chained certificates" if []
+  default [2] if []
+ }
+ config CONFIG_SSL_CTX_MUTEXING boolean {
+  prompt "Enable SSL_CTX mutexing" if []
+  default [n] if []
+ }
+ config CONFIG_USE_DEV_URANDOM boolean {
+  prompt "Use /dev/urandom" if [!CONFIG_PLATFORM_WIN32]
+  default [y] if [!CONFIG_PLATFORM_WIN32]
+  depends on [!CONFIG_PLATFORM_WIN32]
+  inherited [!CONFIG_PLATFORM_WIN32]
+ }
+ config CONFIG_WIN32_USE_CRYPTO_LIB boolean {
+  prompt "Use Win32 Crypto Library" if [CONFIG_PLATFORM_WIN32]
+  depends on [CONFIG_PLATFORM_WIN32]
+  inherited [CONFIG_PLATFORM_WIN32]
+ }
+ config CONFIG_OPENSSL_COMPATIBLE boolean {
+  prompt "Enable openssl API compatibility" if []
+  default [n] if []
+ }
+ config CONFIG_PERFORMANCE_TESTING boolean {
+  prompt "Build the bigint performance test tool" if []
+  default [n] if []
+ }
+ config CONFIG_SSL_TEST boolean {
+  prompt "Build the SSL testing tool" if [CONFIG_SSL_FULL_MODE && !CONFIG_SSL_GENERATE_X509_CERT]
+  default [n] if [CONFIG_SSL_FULL_MODE && !CONFIG_SSL_GENERATE_X509_CERT]
+  depends on [CONFIG_SSL_FULL_MODE && !CONFIG_SSL_GENERATE_X509_CERT]
+  inherited [CONFIG_SSL_FULL_MODE && !CONFIG_SSL_GENERATE_X509_CERT]
+ }
+}
+config CONFIG_AXHTTPD boolean {
+ prompt "Enable HTTP/HTTPS Web Server" if []
+ default [y] if []
+}
+config CONFIG_AXTLSWRAP boolean {
+ depends on [!CONFIG_PLATFORM_WIN32]
+ prompt "Enable axtlswrap" if [!CONFIG_PLATFORM_WIN32]
+ default [n] if [!CONFIG_PLATFORM_WIN32]
+ inherited [!CONFIG_PLATFORM_WIN32]
+}
+menu "Axhttpd Configuration" {
+ depends on [CONFIG_AXHTTPD]
+ config CONFIG_HTTP_STATIC_BUILD boolean {
+  prompt "Static Build" if [CONFIG_AXHTTPD]
+  default [n] if [CONFIG_AXHTTPD]
+  inherited [CONFIG_AXHTTPD]
+ }
+ config CONFIG_HTTP_PORT integer {
+  prompt "HTTP port" if [CONFIG_AXHTTPD]
+  default [80] if [CONFIG_AXHTTPD]
+  inherited [CONFIG_AXHTTPD]
+ }
+ config CONFIG_HTTP_HTTPS_PORT integer {
+  prompt "HTTPS port" if [CONFIG_AXHTTPD]
+  default [443] if [CONFIG_AXHTTPD]
+  inherited [CONFIG_AXHTTPD]
+ }
+ config CONFIG_HTTP_SESSION_CACHE_SIZE integer {
+  prompt "SSL session cache size" if [CONFIG_AXHTTPD]
+  default [5] if [CONFIG_AXHTTPD]
+  inherited [CONFIG_AXHTTPD]
+ }
+ config CONFIG_HTTP_WEBROOT string {
+  prompt "Web root location" if [CONFIG_AXHTTPD]
+  default ["../www"] if [CONFIG_AXHTTPD && !CONFIG_PLATFORM_WIN32]
+  default ["..\www"] if [CONFIG_AXHTTPD && CONFIG_PLATFORM_WIN32]
+  inherited [CONFIG_AXHTTPD]
+ }
+ config CONFIG_HTTP_TIMEOUT integer {
+  prompt "Timeout" if [CONFIG_AXHTTPD]
+  default [300] if [CONFIG_AXHTTPD]
+  inherited [CONFIG_AXHTTPD]
+ }
+ menu "CGI" {
+  depends on [CONFIG_AXHTTPD && !CONFIG_PLATFORM_WIN32]
+  config CONFIG_HTTP_HAS_CGI boolean {
+   prompt "Enable CGI" if [CONFIG_AXHTTPD && !CONFIG_PLATFORM_WIN32]
+   default [y] if [CONFIG_AXHTTPD && !CONFIG_PLATFORM_WIN32]
+   depends on [!CONFIG_PLATFORM_WIN32]
+   inherited [CONFIG_AXHTTPD && !CONFIG_PLATFORM_WIN32]
+   config CONFIG_HTTP_CGI_EXTENSIONS string {
+    prompt "CGI File Extension(s)" if [CONFIG_AXHTTPD && !CONFIG_PLATFORM_WIN32 && CONFIG_HTTP_HAS_CGI]
+    default [".lua,.lp"] if [CONFIG_AXHTTPD && !CONFIG_PLATFORM_WIN32 && CONFIG_HTTP_HAS_CGI]
+    depends on [CONFIG_HTTP_HAS_CGI]
+    inherited [CONFIG_AXHTTPD && !CONFIG_PLATFORM_WIN32 && CONFIG_HTTP_HAS_CGI]
+   }
+   config CONFIG_HTTP_ENABLE_LUA boolean {
+    prompt "Enable Lua" if [CONFIG_AXHTTPD && !CONFIG_PLATFORM_WIN32 && CONFIG_HTTP_HAS_CGI]
+    default [y] if [CONFIG_AXHTTPD && !CONFIG_PLATFORM_WIN32 && CONFIG_HTTP_HAS_CGI]
+    depends on [CONFIG_HTTP_HAS_CGI]
+    inherited [CONFIG_AXHTTPD && !CONFIG_PLATFORM_WIN32 && CONFIG_HTTP_HAS_CGI]
+    config CONFIG_HTTP_LUA_PREFIX string {
+     prompt "Lua's Installation Prefix" if [CONFIG_AXHTTPD && !CONFIG_PLATFORM_WIN32 && CONFIG_HTTP_ENABLE_LUA]
+     default ["/usr/local"] if [CONFIG_AXHTTPD && !CONFIG_PLATFORM_WIN32 && CONFIG_HTTP_ENABLE_LUA]
+     depends on [CONFIG_HTTP_ENABLE_LUA]
+     inherited [CONFIG_AXHTTPD && !CONFIG_PLATFORM_WIN32 && CONFIG_HTTP_ENABLE_LUA]
+    }
+    config CONFIG_HTTP_LUA_CGI_LAUNCHER string {
+     prompt "CGI launcher location" if [CONFIG_AXHTTPD && !CONFIG_PLATFORM_WIN32 && CONFIG_HTTP_ENABLE_LUA]
+     default ["/bin/cgi.exe"] if [CONFIG_AXHTTPD && !CONFIG_PLATFORM_WIN32 && CONFIG_HTTP_ENABLE_LUA && CONFIG_PLATFORM_CYGWIN]
+     default ["/bin/cgi"] if [CONFIG_AXHTTPD && !CONFIG_PLATFORM_WIN32 && CONFIG_HTTP_ENABLE_LUA && !CONFIG_PLATFORM_CYGWIN]
+     depends on [CONFIG_HTTP_ENABLE_LUA]
+     inherited [CONFIG_AXHTTPD && !CONFIG_PLATFORM_WIN32 && CONFIG_HTTP_ENABLE_LUA]
+    }
+    config CONFIG_HTTP_BUILD_LUA boolean {
+     prompt "Build Lua" if [CONFIG_AXHTTPD && !CONFIG_PLATFORM_WIN32 && CONFIG_HTTP_ENABLE_LUA]
+     default [n] if [CONFIG_AXHTTPD && !CONFIG_PLATFORM_WIN32 && CONFIG_HTTP_ENABLE_LUA]
+     depends on [CONFIG_HTTP_ENABLE_LUA]
+     inherited [CONFIG_AXHTTPD && !CONFIG_PLATFORM_WIN32 && CONFIG_HTTP_ENABLE_LUA]
+    }
+   }
+  }
+ }
+ config CONFIG_HTTP_DIRECTORIES boolean {
+  prompt "Enable Directory Listing" if [CONFIG_AXHTTPD]
+  default [y] if [CONFIG_AXHTTPD]
+  inherited [CONFIG_AXHTTPD]
+ }
+ config CONFIG_HTTP_HAS_AUTHORIZATION boolean {
+  prompt "Enable authorization" if [CONFIG_AXHTTPD]
+  default [y] if [CONFIG_AXHTTPD]
+  inherited [CONFIG_AXHTTPD]
+ }
+ config CONFIG_HTTP_HAS_IPV6 boolean {
+  prompt "Enable IPv6" if [CONFIG_AXHTTPD && !CONFIG_PLATFORM_WIN32]
+  default [n] if [CONFIG_AXHTTPD && !CONFIG_PLATFORM_WIN32]
+  depends on [!CONFIG_PLATFORM_WIN32]
+  inherited [CONFIG_AXHTTPD && !CONFIG_PLATFORM_WIN32]
+ }
+ config CONFIG_HTTP_ENABLE_DIFFERENT_USER boolean {
+  prompt "Enable different user" if [CONFIG_AXHTTPD && !CONFIG_PLATFORM_WIN32]
+  default [n] if [CONFIG_AXHTTPD && !CONFIG_PLATFORM_WIN32]
+  depends on [!CONFIG_PLATFORM_WIN32]
+  inherited [CONFIG_AXHTTPD && !CONFIG_PLATFORM_WIN32]
+  config CONFIG_HTTP_USER string {
+   prompt "As User" if [CONFIG_AXHTTPD && CONFIG_HTTP_ENABLE_DIFFERENT_USER]
+   default ["nobody"] if [CONFIG_AXHTTPD && CONFIG_HTTP_ENABLE_DIFFERENT_USER]
+   depends on [CONFIG_HTTP_ENABLE_DIFFERENT_USER]
+   inherited [CONFIG_AXHTTPD && CONFIG_HTTP_ENABLE_DIFFERENT_USER]
+  }
+ }
+ config CONFIG_HTTP_VERBOSE boolean {
+  prompt "Verbose Mode" if [CONFIG_AXHTTPD]
+  default [y] if [CONFIG_AXHTTPD && CONFIG_SSL_FULL_MODE]
+  default [n] if [CONFIG_AXHTTPD && !CONFIG_SSL_FULL_MODE]
+  inherited [CONFIG_AXHTTPD]
+ }
+ config CONFIG_HTTP_IS_DAEMON boolean {
+  prompt "Run as a daemon" if [CONFIG_AXHTTPD && !CONFIG_PLATFORM_WIN32]
+  default [n] if [CONFIG_AXHTTPD && !CONFIG_PLATFORM_WIN32]
+  depends on [!CONFIG_PLATFORM_WIN32]
+  inherited [CONFIG_AXHTTPD && !CONFIG_PLATFORM_WIN32]
+ }
+}
+menu "Language Bindings" {
+ config CONFIG_BINDINGS boolean {
+  prompt "Create language bindings" if []
+  default [n] if []
+  config CONFIG_CSHARP_BINDINGS boolean {
+   prompt "Create C# bindings" if [CONFIG_BINDINGS]
+   default [n] if [CONFIG_BINDINGS]
+   depends on [CONFIG_BINDINGS]
+   inherited [CONFIG_BINDINGS]
+  }
+  config CONFIG_VBNET_BINDINGS boolean {
+   prompt "Create VB.NET bindings" if [CONFIG_BINDINGS]
+   default [n] if [CONFIG_BINDINGS]
+   depends on [CONFIG_BINDINGS]
+   inherited [CONFIG_BINDINGS]
+  }
+ }
+ menu ".Net Framework" {
+  depends on [CONFIG_CSHARP_BINDINGS || CONFIG_VBNET_BINDINGS]
+  config CONFIG_DOT_NET_FRAMEWORK_BASE string {
+   prompt "Location of .NET Framework" if [CONFIG_CSHARP_BINDINGS || CONFIG_VBNET_BINDINGS]
+   default ["c:\WINDOWS\Microsoft.NET\Framework\v2.0.50727"] if [CONFIG_CSHARP_BINDINGS || CONFIG_VBNET_BINDINGS]
+   inherited [CONFIG_CSHARP_BINDINGS || CONFIG_VBNET_BINDINGS]
+  }
+ }
+ config CONFIG_JAVA_BINDINGS boolean {
+  prompt "Create Java bindings" if [CONFIG_BINDINGS]
+  default [n] if [CONFIG_BINDINGS]
+  depends on [CONFIG_BINDINGS]
+  inherited [CONFIG_BINDINGS]
+  menu "Java Home" {
+   depends on [CONFIG_JAVA_BINDINGS]
+   config CONFIG_JAVA_HOME string {
+    prompt "Location of JDK" if [CONFIG_JAVA_BINDINGS]
+    default ["c:\Program Files\Java\jdk1.5.0_06"] if [CONFIG_JAVA_BINDINGS && (CONFIG_PLATFORM_WIN32 || CONFIG_PLATFORM_CYGWIN)]
+    default ["/usr/local/jdk142"] if [CONFIG_JAVA_BINDINGS && !CONFIG_PLATFORM_WIN32 && !CONFIG_PLATFORM_CYGWIN]
+    depends on [CONFIG_JAVA_BINDINGS]
+    inherited [CONFIG_JAVA_BINDINGS]
+   }
+  }
+ }
+ config CONFIG_PERL_BINDINGS boolean {
+  prompt "Create Perl bindings" if [CONFIG_BINDINGS]
+  default [n] if [CONFIG_BINDINGS]
+  depends on [CONFIG_BINDINGS]
+  inherited [CONFIG_BINDINGS]
+  menu "Perl Home" {
+   depends on [CONFIG_PERL_BINDINGS && CONFIG_PLATFORM_WIN32]
+   config CONFIG_PERL_CORE string {
+    prompt "Location of Perl CORE" if [CONFIG_PERL_BINDINGS && CONFIG_PLATFORM_WIN32]
+    default ["c:\perl\lib\CORE"] if [CONFIG_PERL_BINDINGS && CONFIG_PLATFORM_WIN32]
+    inherited [CONFIG_PERL_BINDINGS && CONFIG_PLATFORM_WIN32]
+   }
+   config CONFIG_PERL_LIB string {
+    prompt "Name of Perl Library" if [CONFIG_PERL_BINDINGS && CONFIG_PLATFORM_WIN32]
+    default ["perl58.lib"] if [CONFIG_PERL_BINDINGS && CONFIG_PLATFORM_WIN32]
+    inherited [CONFIG_PERL_BINDINGS && CONFIG_PLATFORM_WIN32]
+   }
+  }
+ }
+ config CONFIG_LUA_BINDINGS boolean {
+  prompt "Create Lua bindings" if [CONFIG_BINDINGS && !CONFIG_PLATFORM_WIN32]
+  default [n] if [CONFIG_BINDINGS && !CONFIG_PLATFORM_WIN32]
+  depends on [CONFIG_BINDINGS && !CONFIG_PLATFORM_WIN32]
+  inherited [CONFIG_BINDINGS && !CONFIG_PLATFORM_WIN32]
+  menu "Lua Home" {
+   depends on [CONFIG_LUA_BINDINGS]
+   config CONFIG_LUA_CORE string {
+    prompt "Location of Lua CORE" if [CONFIG_LUA_BINDINGS]
+    default ["/usr/local"] if [CONFIG_LUA_BINDINGS]
+    inherited [CONFIG_LUA_BINDINGS]
+   }
+  }
+ }
+}
+menu "Samples" {
+ config CONFIG_SAMPLES boolean {
+  prompt "Create Samples" if []
+  default [y] if []
+  config CONFIG_C_SAMPLES boolean {
+   prompt "axssl - C version" if [CONFIG_SAMPLES]
+   default [y] if [CONFIG_SAMPLES]
+   depends on [CONFIG_SAMPLES]
+   inherited [CONFIG_SAMPLES]
+  }
+  config CONFIG_CSHARP_SAMPLES boolean {
+   prompt "axssl - C# version" if [CONFIG_SAMPLES && CONFIG_CSHARP_BINDINGS]
+   default [y] if [CONFIG_SAMPLES && CONFIG_CSHARP_BINDINGS]
+   depends on [CONFIG_SAMPLES && CONFIG_CSHARP_BINDINGS]
+   inherited [CONFIG_SAMPLES && CONFIG_CSHARP_BINDINGS]
+  }
+  config CONFIG_VBNET_SAMPLES boolean {
+   prompt "axssl - VB.NET version" if [CONFIG_SAMPLES && CONFIG_VBNET_BINDINGS]
+   default [y] if [CONFIG_SAMPLES && CONFIG_VBNET_BINDINGS]
+   depends on [CONFIG_SAMPLES && CONFIG_VBNET_BINDINGS]
+   inherited [CONFIG_SAMPLES && CONFIG_VBNET_BINDINGS]
+  }
+  config CONFIG_JAVA_SAMPLES boolean {
+   prompt "axssl - Java version" if [CONFIG_SAMPLES && CONFIG_JAVA_BINDINGS]
+   default [y] if [CONFIG_SAMPLES && CONFIG_JAVA_BINDINGS]
+   depends on [CONFIG_SAMPLES && CONFIG_JAVA_BINDINGS]
+   inherited [CONFIG_SAMPLES && CONFIG_JAVA_BINDINGS]
+  }
+  config CONFIG_PERL_SAMPLES boolean {
+   prompt "axssl - Perl version" if [CONFIG_SAMPLES && CONFIG_PERL_BINDINGS]
+   default [y] if [CONFIG_SAMPLES && CONFIG_PERL_BINDINGS]
+   depends on [CONFIG_SAMPLES && CONFIG_PERL_BINDINGS]
+   inherited [CONFIG_SAMPLES && CONFIG_PERL_BINDINGS]
+  }
+  config CONFIG_LUA_SAMPLES boolean {
+   prompt "axssl - Lua version" if [CONFIG_SAMPLES && CONFIG_LUA_BINDINGS]
+   default [y] if [CONFIG_SAMPLES && CONFIG_LUA_BINDINGS]
+   depends on [CONFIG_SAMPLES && CONFIG_LUA_BINDINGS]
+   inherited [CONFIG_SAMPLES && CONFIG_LUA_BINDINGS]
+  }
+ }
+}
+menu "BigInt Options" {
+ depends on [!CONFIG_SSL_SKELETON_MODE]
+ choice boolean {
+  prompt "Reduction Algorithm" if [!CONFIG_SSL_SKELETON_MODE]
+  default [CONFIG_BIGINT_BARRETT] if [!CONFIG_SSL_SKELETON_MODE]
+  config CONFIG_BIGINT_CLASSICAL boolean {
+   prompt "Classical" if [<choice>]
+   inherited [<choice>]
+  }
+  config CONFIG_BIGINT_MONTGOMERY boolean {
+   prompt "Montgomery" if [<choice>]
+   inherited [<choice>]
+  }
+  config CONFIG_BIGINT_BARRETT boolean {
+   prompt "Barrett" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+ config CONFIG_BIGINT_CRT boolean {
+  prompt "Chinese Remainder Theorem (CRT)" if [!CONFIG_SSL_SKELETON_MODE]
+  default [y] if [!CONFIG_SSL_SKELETON_MODE]
+  inherited [!CONFIG_SSL_SKELETON_MODE]
+ }
+ config CONFIG_BIGINT_KARATSUBA boolean {
+  prompt "Karatsuba Multiplication" if [!CONFIG_SSL_SKELETON_MODE]
+  default [n] if [!CONFIG_SSL_SKELETON_MODE]
+  inherited [!CONFIG_SSL_SKELETON_MODE]
+  config MUL_KARATSUBA_THRESH integer {
+   prompt "Karatsuba Multiplication Theshold" if [!CONFIG_SSL_SKELETON_MODE && CONFIG_BIGINT_KARATSUBA]
+   default [20] if [!CONFIG_SSL_SKELETON_MODE && CONFIG_BIGINT_KARATSUBA]
+   depends on [CONFIG_BIGINT_KARATSUBA]
+   inherited [!CONFIG_SSL_SKELETON_MODE && CONFIG_BIGINT_KARATSUBA]
+  }
+  config SQU_KARATSUBA_THRESH integer {
+   prompt "Karatsuba Square Threshold" if [!CONFIG_SSL_SKELETON_MODE && CONFIG_BIGINT_KARATSUBA && CONFIG_BIGINT_SQUARE]
+   default [40] if [!CONFIG_SSL_SKELETON_MODE && CONFIG_BIGINT_KARATSUBA && CONFIG_BIGINT_SQUARE]
+   depends on [CONFIG_BIGINT_KARATSUBA && CONFIG_BIGINT_SQUARE]
+   inherited [!CONFIG_SSL_SKELETON_MODE && CONFIG_BIGINT_KARATSUBA && CONFIG_BIGINT_SQUARE]
+  }
+ }
+ config CONFIG_BIGINT_SLIDING_WINDOW boolean {
+  prompt "Sliding Window Exponentiation" if [!CONFIG_SSL_SKELETON_MODE]
+  default [y] if [!CONFIG_SSL_SKELETON_MODE]
+  inherited [!CONFIG_SSL_SKELETON_MODE]
+ }
+ config CONFIG_BIGINT_SQUARE boolean {
+  prompt "Square Algorithm" if [!CONFIG_SSL_SKELETON_MODE]
+  default [y] if [!CONFIG_SSL_SKELETON_MODE]
+  inherited [!CONFIG_SSL_SKELETON_MODE]
+ }
+ config CONFIG_BIGINT_CHECK_ON boolean {
+  prompt "BigInt Integrity Checking" if [!CONFIG_SSL_SKELETON_MODE]
+  default [n] if [!CONFIG_SSL_SKELETON_MODE && !CONFIG_DEBUG]
+  default [y] if [!CONFIG_SSL_SKELETON_MODE && CONFIG_DEBUG]
+  inherited [!CONFIG_SSL_SKELETON_MODE]
+ }
+}
