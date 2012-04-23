@@ -1,0 +1,1044 @@
+config KERNELVERSION string {
+ env KERNELVERSION if []
+}
+config INCLUDE_PPC32 boolean {
+ env INCLUDE_PPC32 if []
+}
+menu "Target configuration" {
+ choice boolean {
+  prompt "Architecture" if []
+  default [IA32] if []
+  config IA32 boolean {
+   prompt "Intel IA-32 processor family" if [<choice>]
+   inherited [<choice>]
+  }
+  config AMD64 boolean {
+   prompt "AMD64 processor family" if [<choice>]
+   select CONTEXT_4K if [<choice>]
+   inherited [<choice>]
+  }
+  config ARM boolean {
+   prompt "ARM processor family" if [<choice>]
+   inherited [<choice>]
+  }
+  config PPC32 boolean {
+   prompt "PowerPC 32 processor family (Caution: INCOMPLETE!)" if [<choice> && EXPERIMENTAL && INCLUDE_PPC32]
+   depends on [EXPERIMENTAL && INCLUDE_PPC32]
+   select CONTEXT_4K if [<choice> && EXPERIMENTAL && INCLUDE_PPC32]
+   select BIG_ENDIAN if [<choice> && EXPERIMENTAL && INCLUDE_PPC32]
+   inherited [<choice> && EXPERIMENTAL && INCLUDE_PPC32]
+  }
+ }
+ config BIG_ENDIAN boolean {
+ }
+ choice boolean {
+  prompt "Platform" if []
+  default [PF_INTEGRATOR] if [ARM]
+  default [PF_PC] if [IA32]
+  default [PF_PC] if [AMD64]
+  default [PF_MP52CXX] if [PPC32]
+  config PF_PC boolean {
+   prompt "PC platform" if [<choice> && (IA32 || AMD64)]
+   depends on [IA32 || AMD64]
+   inherited [<choice> && (IA32 || AMD64)]
+  }
+  config PF_UX boolean {
+   prompt "Linux Usermode Platform" if [<choice> && IA32]
+   depends on [IA32]
+   select JDB if [<choice> && IA32]
+   inherited [<choice> && IA32]
+  }
+  config PF_REALVIEW boolean {
+   prompt "ARM RealView Platform" if [<choice> && ARM]
+   depends on [ARM]
+   inherited [<choice> && ARM]
+  }
+  config PF_IMX boolean {
+   prompt "Freescale i.MX" if [<choice> && ARM]
+   depends on [ARM]
+   inherited [<choice> && ARM]
+  }
+  config PF_S3C2410 boolean {
+   prompt "Samsung S3C2410 Platform" if [<choice> && ARM]
+   depends on [ARM]
+   select CAN_ARM_CPU_920T if [<choice> && ARM]
+   inherited [<choice> && ARM]
+  }
+  config PF_TEGRA2 boolean {
+   prompt "NVIDIA Tegra 2xx platform" if [<choice> && ARM]
+   depends on [ARM]
+   select CAN_ARM_CPU_CORTEX_A9 if [<choice> && ARM]
+   select CAN_ARM_CACHE_L2CXX0 if [<choice> && ARM]
+   inherited [<choice> && ARM]
+  }
+  config PF_MPC52XX boolean {
+   prompt "Freescale MPC52xx (POWER2/G2/603e) platform" if [<choice> && PPC32]
+   depends on [PPC32]
+   inherited [<choice> && PPC32]
+  }
+  config PF_OMAP boolean {
+   prompt "TI OMAP" if [<choice> && ARM]
+   depends on [ARM]
+   inherited [<choice> && ARM]
+  }
+  config PF_SA1100 boolean {
+   prompt "Intel StrongARM" if [<choice> && ARM]
+   depends on [ARM]
+   select CAN_ARM_CPU_SA1100 if [<choice> && ARM]
+   inherited [<choice> && ARM]
+  }
+  config PF_XSCALE boolean {
+   prompt "Intel XScale Platform" if [<choice> && ARM]
+   depends on [ARM]
+   select CAN_ARM_CPU_XSCALE if [<choice> && ARM]
+   inherited [<choice> && ARM]
+  }
+  config PF_KIRKWOOD boolean {
+   prompt "Marvell Kirkwood platform" if [<choice> && ARM]
+   depends on [ARM]
+   select CAN_ARM_CPU_926 if [<choice> && ARM]
+   inherited [<choice> && ARM]
+  }
+  config PF_INTEGRATOR boolean {
+   prompt "ARM Integrator Platform" if [<choice> && ARM]
+   depends on [ARM]
+   select CAN_ARM_CPU_926 if [<choice> && ARM]
+   select CAN_ARM_CPU_1176 if [<choice> && ARM]
+   inherited [<choice> && ARM]
+  }
+  config PF_QEMU boolean {
+   prompt "Qemu platform (testing)" if [<choice> && PPC32]
+   depends on [PPC32]
+   inherited [<choice> && PPC32]
+  }
+ }
+ if [PF_REALVIEW] {
+  config BSP_NAME string {
+   depends on [PF_REALVIEW]
+   default ["realview"] if [PF_REALVIEW]
+   depends on [PF_IMX]
+   default ["imx"] if [PF_IMX]
+   depends on [PF_S3C2410]
+   default ["s3c"] if [PF_S3C2410]
+   depends on [PF_TEGRA2]
+   default ["tegra2"] if [PF_TEGRA2]
+   depends on [PF_MPC52XX]
+   default ["mpc52xx"] if [PF_MPC52XX]
+   depends on [PF_OMAP]
+   default ["omap3"] if [PF_OMAP]
+   depends on [PF_SA1100]
+   default ["sa1100"] if [PF_SA1100]
+   depends on [PF_XSCALE]
+   default ["pxa"] if [PF_XSCALE]
+   depends on [PF_KIRKWOOD]
+   default ["kirkwood"] if [PF_KIRKWOOD]
+   depends on [PF_INTEGRATOR]
+   default ["integrator"] if [PF_INTEGRATOR]
+   depends on [PF_QEMU]
+   default ["qemu"] if [PF_QEMU]
+   inherited [PF_REALVIEW]
+  }
+  choice boolean {
+   prompt "Realview Platform" if [PF_REALVIEW]
+   default [PF_REALVIEW_EB] if [PF_REALVIEW]
+   config PF_REALVIEW_EB boolean {
+    prompt "Emulation Baseboard (EB)" if [<choice> && PF_REALVIEW]
+    depends on [PF_REALVIEW]
+    select CAN_ARM_CPU_926 if [<choice> && PF_REALVIEW]
+    select CAN_ARM_CPU_1176 if [<choice> && PF_REALVIEW]
+    select CAN_ARM_CPU_MPCORE if [<choice> && PF_REALVIEW]
+    select CAN_ARM_CPU_CORTEX_A8 if [<choice> && PF_REALVIEW]
+    select CAN_ARM_CPU_CORTEX_A9 if [<choice> && PF_REALVIEW]
+    select CAN_ARM_CACHE_L2CXX0 if [<choice> && PF_REALVIEW && ARM_MPCORE]
+    inherited [<choice> && PF_REALVIEW]
+   }
+   config PF_REALVIEW_PB11MP boolean {
+    prompt "PB11MP" if [<choice> && PF_REALVIEW]
+    depends on [PF_REALVIEW]
+    select CAN_ARM_CPU_MPCORE if [<choice> && PF_REALVIEW]
+    select CAN_ARM_CACHE_L2CXX0 if [<choice> && PF_REALVIEW]
+    inherited [<choice> && PF_REALVIEW]
+   }
+   config PF_REALVIEW_PBX boolean {
+    prompt "PBX" if [<choice> && PF_REALVIEW]
+    depends on [PF_REALVIEW]
+    select CAN_ARM_CPU_CORTEX_A9 if [<choice> && PF_REALVIEW]
+    select CAN_ARM_CACHE_L2CXX0 if [<choice> && PF_REALVIEW]
+    inherited [<choice> && PF_REALVIEW]
+   }
+   config PF_REALVIEW_VEXPRESS boolean {
+    prompt "Versatile Express" if [<choice> && PF_REALVIEW]
+    depends on [PF_REALVIEW]
+    select CAN_ARM_CPU_CORTEX_A9 if [<choice> && PF_REALVIEW]
+    inherited [<choice> && PF_REALVIEW]
+   }
+  }
+  choice boolean {
+   prompt "Start of RAM (physical address)" if [PF_REALVIEW && !PF_REALVIEW_EB]
+   default [PF_REALVIEW_RAM_PHYS_BASE_0x0] if [PF_REALVIEW]
+   config PF_REALVIEW_RAM_PHYS_BASE_0x0 boolean {
+    prompt "0x00000000" if [<choice>]
+    inherited [<choice>]
+   }
+   config PF_REALVIEW_RAM_PHYS_BASE_0x2 boolean {
+    prompt "0x20000000" if [<choice> && PF_REALVIEW_PBX]
+    depends on [PF_REALVIEW_PBX]
+    inherited [<choice> && PF_REALVIEW_PBX]
+   }
+   config PF_REALVIEW_RAM_PHYS_BASE_0x6 boolean {
+    prompt "0x60000000" if [<choice> && PF_REALVIEW_VEXPRESS]
+    depends on [PF_REALVIEW_VEXPRESS]
+    inherited [<choice> && PF_REALVIEW_VEXPRESS]
+   }
+   config PF_REALVIEW_RAM_PHYS_BASE_0x7 boolean {
+    prompt "0x70000000" if [<choice> && (PF_REALVIEW_PBX || PF_REALVIEW_PB11MP)]
+    depends on [PF_REALVIEW_PBX || PF_REALVIEW_PB11MP]
+    inherited [<choice> && (PF_REALVIEW_PBX || PF_REALVIEW_PB11MP)]
+   }
+  }
+  config PF_REALVIEW_RAM_PHYS_BASE hex {
+   default [0x0] if [PF_REALVIEW && !PF_REALVIEW_RAM_PHYS_BASE_0x2 && !PF_REALVIEW_RAM_PHYS_BASE_0x6 && !PF_REALVIEW_RAM_PHYS_BASE_0x7]
+   default [0x20000000] if [PF_REALVIEW && PF_REALVIEW_RAM_PHYS_BASE_0x2]
+   default [0x60000000] if [PF_REALVIEW && PF_REALVIEW_RAM_PHYS_BASE_0x6]
+   default [0x70000000] if [PF_REALVIEW && PF_REALVIEW_RAM_PHYS_BASE_0x7]
+   inherited [PF_REALVIEW]
+  }
+ }
+ if [PF_IMX] {
+  config BSP_NAME string {
+   depends on [PF_REALVIEW]
+   default ["realview"] if [PF_REALVIEW]
+   depends on [PF_IMX]
+   default ["imx"] if [PF_IMX]
+   depends on [PF_S3C2410]
+   default ["s3c"] if [PF_S3C2410]
+   depends on [PF_TEGRA2]
+   default ["tegra2"] if [PF_TEGRA2]
+   depends on [PF_MPC52XX]
+   default ["mpc52xx"] if [PF_MPC52XX]
+   depends on [PF_OMAP]
+   default ["omap3"] if [PF_OMAP]
+   depends on [PF_SA1100]
+   default ["sa1100"] if [PF_SA1100]
+   depends on [PF_XSCALE]
+   default ["pxa"] if [PF_XSCALE]
+   depends on [PF_KIRKWOOD]
+   default ["kirkwood"] if [PF_KIRKWOOD]
+   depends on [PF_INTEGRATOR]
+   default ["integrator"] if [PF_INTEGRATOR]
+   depends on [PF_QEMU]
+   default ["qemu"] if [PF_QEMU]
+   inherited [PF_IMX]
+  }
+  choice boolean {
+   prompt "Freescale i.MX" if [PF_IMX]
+   default [PF_IMX_51] if [PF_IMX]
+   config PF_IMX_21 boolean {
+    prompt "i.MX21" if [<choice> && PF_IMX]
+    depends on [PF_IMX]
+    select CAN_ARM_CPU_926 if [<choice> && PF_IMX]
+    inherited [<choice> && PF_IMX]
+   }
+   config PF_IMX_35 boolean {
+    prompt "i.MX35" if [<choice> && PF_IMX]
+    depends on [PF_IMX]
+    select CAN_ARM_CPU_1136 if [<choice> && PF_IMX]
+    inherited [<choice> && PF_IMX]
+   }
+   config PF_IMX_51 boolean {
+    prompt "i.MX51" if [<choice> && PF_IMX]
+    depends on [PF_IMX]
+    select CAN_ARM_CPU_CORTEX_A8 if [<choice> && PF_IMX]
+    inherited [<choice> && PF_IMX]
+   }
+  }
+  config PF_IMX_RAM_PHYS_BASE hex {
+   default [0xc0000000] if [PF_IMX && PF_IMX_21]
+   default [0x80000000] if [PF_IMX && PF_IMX_35]
+   default [0x90000000] if [PF_IMX && PF_IMX_51]
+   inherited [PF_IMX]
+  }
+ }
+ if [PF_S3C2410] {
+  config BSP_NAME string {
+   depends on [PF_REALVIEW]
+   default ["realview"] if [PF_REALVIEW]
+   depends on [PF_IMX]
+   default ["imx"] if [PF_IMX]
+   depends on [PF_S3C2410]
+   default ["s3c"] if [PF_S3C2410]
+   depends on [PF_TEGRA2]
+   default ["tegra2"] if [PF_TEGRA2]
+   depends on [PF_MPC52XX]
+   default ["mpc52xx"] if [PF_MPC52XX]
+   depends on [PF_OMAP]
+   default ["omap3"] if [PF_OMAP]
+   depends on [PF_SA1100]
+   default ["sa1100"] if [PF_SA1100]
+   depends on [PF_XSCALE]
+   default ["pxa"] if [PF_XSCALE]
+   depends on [PF_KIRKWOOD]
+   default ["kirkwood"] if [PF_KIRKWOOD]
+   depends on [PF_INTEGRATOR]
+   default ["integrator"] if [PF_INTEGRATOR]
+   depends on [PF_QEMU]
+   default ["qemu"] if [PF_QEMU]
+   inherited [PF_S3C2410]
+  }
+ }
+ if [PF_TEGRA2] {
+  config BSP_NAME string {
+   depends on [PF_REALVIEW]
+   default ["realview"] if [PF_REALVIEW]
+   depends on [PF_IMX]
+   default ["imx"] if [PF_IMX]
+   depends on [PF_S3C2410]
+   default ["s3c"] if [PF_S3C2410]
+   depends on [PF_TEGRA2]
+   default ["tegra2"] if [PF_TEGRA2]
+   depends on [PF_MPC52XX]
+   default ["mpc52xx"] if [PF_MPC52XX]
+   depends on [PF_OMAP]
+   default ["omap3"] if [PF_OMAP]
+   depends on [PF_SA1100]
+   default ["sa1100"] if [PF_SA1100]
+   depends on [PF_XSCALE]
+   default ["pxa"] if [PF_XSCALE]
+   depends on [PF_KIRKWOOD]
+   default ["kirkwood"] if [PF_KIRKWOOD]
+   depends on [PF_INTEGRATOR]
+   default ["integrator"] if [PF_INTEGRATOR]
+   depends on [PF_QEMU]
+   default ["qemu"] if [PF_QEMU]
+   inherited [PF_TEGRA2]
+  }
+ }
+ if [PF_MPC52XX] {
+  config BSP_NAME string {
+   depends on [PF_REALVIEW]
+   default ["realview"] if [PF_REALVIEW]
+   depends on [PF_IMX]
+   default ["imx"] if [PF_IMX]
+   depends on [PF_S3C2410]
+   default ["s3c"] if [PF_S3C2410]
+   depends on [PF_TEGRA2]
+   default ["tegra2"] if [PF_TEGRA2]
+   depends on [PF_MPC52XX]
+   default ["mpc52xx"] if [PF_MPC52XX]
+   depends on [PF_OMAP]
+   default ["omap3"] if [PF_OMAP]
+   depends on [PF_SA1100]
+   default ["sa1100"] if [PF_SA1100]
+   depends on [PF_XSCALE]
+   default ["pxa"] if [PF_XSCALE]
+   depends on [PF_KIRKWOOD]
+   default ["kirkwood"] if [PF_KIRKWOOD]
+   depends on [PF_INTEGRATOR]
+   default ["integrator"] if [PF_INTEGRATOR]
+   depends on [PF_QEMU]
+   default ["qemu"] if [PF_QEMU]
+   inherited [PF_MPC52XX]
+  }
+ }
+ if [PF_OMAP] {
+  config BSP_NAME string {
+   depends on [PF_REALVIEW]
+   default ["realview"] if [PF_REALVIEW]
+   depends on [PF_IMX]
+   default ["imx"] if [PF_IMX]
+   depends on [PF_S3C2410]
+   default ["s3c"] if [PF_S3C2410]
+   depends on [PF_TEGRA2]
+   default ["tegra2"] if [PF_TEGRA2]
+   depends on [PF_MPC52XX]
+   default ["mpc52xx"] if [PF_MPC52XX]
+   depends on [PF_OMAP]
+   default ["omap3"] if [PF_OMAP]
+   depends on [PF_SA1100]
+   default ["sa1100"] if [PF_SA1100]
+   depends on [PF_XSCALE]
+   default ["pxa"] if [PF_XSCALE]
+   depends on [PF_KIRKWOOD]
+   default ["kirkwood"] if [PF_KIRKWOOD]
+   depends on [PF_INTEGRATOR]
+   default ["integrator"] if [PF_INTEGRATOR]
+   depends on [PF_QEMU]
+   default ["qemu"] if [PF_QEMU]
+   inherited [PF_OMAP]
+  }
+  choice boolean {
+   prompt "OMAP Platform" if [PF_OMAP]
+   default [PF_OMAP3_EVM] if [PF_OMAP]
+   config PF_OMAP3_EVM boolean {
+    prompt "TI OMAP3EVM" if [<choice> && PF_OMAP]
+    depends on [PF_OMAP]
+    select CAN_ARM_CPU_CORTEX_A8 if [<choice> && PF_OMAP]
+    inherited [<choice> && PF_OMAP]
+   }
+   config PF_OMAP3_BEAGLEBOARD boolean {
+    prompt "Beagle Board" if [<choice> && PF_OMAP]
+    depends on [PF_OMAP]
+    select CAN_ARM_CPU_CORTEX_A8 if [<choice> && PF_OMAP]
+    inherited [<choice> && PF_OMAP]
+   }
+   config PF_OMAP4_PANDABOARD boolean {
+    prompt "Pandaboard" if [<choice> && PF_OMAP]
+    depends on [PF_OMAP]
+    select CAN_ARM_CPU_CORTEX_A9 if [<choice> && PF_OMAP]
+    inherited [<choice> && PF_OMAP]
+   }
+  }
+ }
+ if [PF_SA1100] {
+  config BSP_NAME string {
+   depends on [PF_REALVIEW]
+   default ["realview"] if [PF_REALVIEW]
+   depends on [PF_IMX]
+   default ["imx"] if [PF_IMX]
+   depends on [PF_S3C2410]
+   default ["s3c"] if [PF_S3C2410]
+   depends on [PF_TEGRA2]
+   default ["tegra2"] if [PF_TEGRA2]
+   depends on [PF_MPC52XX]
+   default ["mpc52xx"] if [PF_MPC52XX]
+   depends on [PF_OMAP]
+   default ["omap3"] if [PF_OMAP]
+   depends on [PF_SA1100]
+   default ["sa1100"] if [PF_SA1100]
+   depends on [PF_XSCALE]
+   default ["pxa"] if [PF_XSCALE]
+   depends on [PF_KIRKWOOD]
+   default ["kirkwood"] if [PF_KIRKWOOD]
+   depends on [PF_INTEGRATOR]
+   default ["integrator"] if [PF_INTEGRATOR]
+   depends on [PF_QEMU]
+   default ["qemu"] if [PF_QEMU]
+   inherited [PF_SA1100]
+  }
+ }
+ if [PF_XSCALE] {
+  config BSP_NAME string {
+   depends on [PF_REALVIEW]
+   default ["realview"] if [PF_REALVIEW]
+   depends on [PF_IMX]
+   default ["imx"] if [PF_IMX]
+   depends on [PF_S3C2410]
+   default ["s3c"] if [PF_S3C2410]
+   depends on [PF_TEGRA2]
+   default ["tegra2"] if [PF_TEGRA2]
+   depends on [PF_MPC52XX]
+   default ["mpc52xx"] if [PF_MPC52XX]
+   depends on [PF_OMAP]
+   default ["omap3"] if [PF_OMAP]
+   depends on [PF_SA1100]
+   default ["sa1100"] if [PF_SA1100]
+   depends on [PF_XSCALE]
+   default ["pxa"] if [PF_XSCALE]
+   depends on [PF_KIRKWOOD]
+   default ["kirkwood"] if [PF_KIRKWOOD]
+   depends on [PF_INTEGRATOR]
+   default ["integrator"] if [PF_INTEGRATOR]
+   depends on [PF_QEMU]
+   default ["qemu"] if [PF_QEMU]
+   inherited [PF_XSCALE]
+  }
+ }
+ if [PF_KIRKWOOD] {
+  config BSP_NAME string {
+   depends on [PF_REALVIEW]
+   default ["realview"] if [PF_REALVIEW]
+   depends on [PF_IMX]
+   default ["imx"] if [PF_IMX]
+   depends on [PF_S3C2410]
+   default ["s3c"] if [PF_S3C2410]
+   depends on [PF_TEGRA2]
+   default ["tegra2"] if [PF_TEGRA2]
+   depends on [PF_MPC52XX]
+   default ["mpc52xx"] if [PF_MPC52XX]
+   depends on [PF_OMAP]
+   default ["omap3"] if [PF_OMAP]
+   depends on [PF_SA1100]
+   default ["sa1100"] if [PF_SA1100]
+   depends on [PF_XSCALE]
+   default ["pxa"] if [PF_XSCALE]
+   depends on [PF_KIRKWOOD]
+   default ["kirkwood"] if [PF_KIRKWOOD]
+   depends on [PF_INTEGRATOR]
+   default ["integrator"] if [PF_INTEGRATOR]
+   depends on [PF_QEMU]
+   default ["qemu"] if [PF_QEMU]
+   inherited [PF_KIRKWOOD]
+  }
+ }
+ if [PF_INTEGRATOR] {
+  config BSP_NAME string {
+   depends on [PF_REALVIEW]
+   default ["realview"] if [PF_REALVIEW]
+   depends on [PF_IMX]
+   default ["imx"] if [PF_IMX]
+   depends on [PF_S3C2410]
+   default ["s3c"] if [PF_S3C2410]
+   depends on [PF_TEGRA2]
+   default ["tegra2"] if [PF_TEGRA2]
+   depends on [PF_MPC52XX]
+   default ["mpc52xx"] if [PF_MPC52XX]
+   depends on [PF_OMAP]
+   default ["omap3"] if [PF_OMAP]
+   depends on [PF_SA1100]
+   default ["sa1100"] if [PF_SA1100]
+   depends on [PF_XSCALE]
+   default ["pxa"] if [PF_XSCALE]
+   depends on [PF_KIRKWOOD]
+   default ["kirkwood"] if [PF_KIRKWOOD]
+   depends on [PF_INTEGRATOR]
+   default ["integrator"] if [PF_INTEGRATOR]
+   depends on [PF_QEMU]
+   default ["qemu"] if [PF_QEMU]
+   inherited [PF_INTEGRATOR]
+  }
+ }
+ if [PF_QEMU] {
+  config BSP_NAME string {
+   depends on [PF_REALVIEW]
+   default ["realview"] if [PF_REALVIEW]
+   depends on [PF_IMX]
+   default ["imx"] if [PF_IMX]
+   depends on [PF_S3C2410]
+   default ["s3c"] if [PF_S3C2410]
+   depends on [PF_TEGRA2]
+   default ["tegra2"] if [PF_TEGRA2]
+   depends on [PF_MPC52XX]
+   default ["mpc52xx"] if [PF_MPC52XX]
+   depends on [PF_OMAP]
+   default ["omap3"] if [PF_OMAP]
+   depends on [PF_SA1100]
+   default ["sa1100"] if [PF_SA1100]
+   depends on [PF_XSCALE]
+   default ["pxa"] if [PF_XSCALE]
+   depends on [PF_KIRKWOOD]
+   default ["kirkwood"] if [PF_KIRKWOOD]
+   depends on [PF_INTEGRATOR]
+   default ["integrator"] if [PF_INTEGRATOR]
+   depends on [PF_QEMU]
+   default ["qemu"] if [PF_QEMU]
+   inherited [PF_QEMU]
+  }
+ }
+ config ABI_VF boolean {
+  default [y] if []
+ }
+ config PF_ARM_MP_CAPABLE boolean {
+  default [y] if [ARM_MPCORE || ARM_CORTEX_A9]
+ }
+ config CAN_ARM_CPU_SA1100 boolean {
+ }
+ config CAN_ARM_CPU_XSCALE boolean {
+ }
+ config CAN_ARM_CPU_920T boolean {
+ }
+ config CAN_ARM_CPU_926 boolean {
+ }
+ config CAN_ARM_CPU_1136 boolean {
+ }
+ config CAN_ARM_CPU_1176 boolean {
+ }
+ config CAN_ARM_CPU_MPCORE boolean {
+ }
+ config CAN_ARM_CPU_CORTEX_A8 boolean {
+ }
+ config CAN_ARM_CPU_CORTEX_A9 boolean {
+ }
+ config CAN_ARM_CACHE_L2CXX0 boolean {
+ }
+ choice boolean {
+  prompt "CPU" if []
+  default [IA32_686] if [IA32]
+  default [ARM_926] if [ARM]
+  default [AMD64_K8] if [AMD64]
+  default [PPC32_603e] if [PPC32]
+  config ARM_PXA boolean {
+   prompt "Intel XScale" if [<choice> && PF_XSCALE]
+   depends on [PF_XSCALE]
+   inherited [<choice> && PF_XSCALE]
+  }
+  config ARM_SA boolean {
+   prompt "Intel StrongARM" if [<choice> && PF_SA1100]
+   depends on [PF_SA1100]
+   inherited [<choice> && PF_SA1100]
+  }
+  config ARM_920T boolean {
+   prompt "ARM 920T Processor" if [<choice> && PF_S3C2410]
+   depends on [PF_S3C2410]
+   inherited [<choice> && PF_S3C2410]
+  }
+  config ARM_926 boolean {
+   prompt "ARM 926 Processor" if [<choice> && CAN_ARM_CPU_926]
+   depends on [CAN_ARM_CPU_926]
+   inherited [<choice> && CAN_ARM_CPU_926]
+  }
+  config ARM_1136 boolean {
+   prompt "ARM 1136 CPU" if [<choice> && CAN_ARM_CPU_1136]
+   depends on [CAN_ARM_CPU_1136]
+   inherited [<choice> && CAN_ARM_CPU_1136]
+  }
+  config ARM_1176 boolean {
+   prompt "ARM 1176 CPU" if [<choice> && CAN_ARM_CPU_1176]
+   depends on [CAN_ARM_CPU_1176]
+   inherited [<choice> && CAN_ARM_CPU_1176]
+  }
+  config ARM_MPCORE boolean {
+   prompt "ARM MPCore CPU" if [<choice> && CAN_ARM_CPU_MPCORE]
+   depends on [CAN_ARM_CPU_MPCORE]
+   inherited [<choice> && CAN_ARM_CPU_MPCORE]
+  }
+  config ARM_CORTEX_A8 boolean {
+   prompt "ARM Cortex-A8 CPU" if [<choice> && CAN_ARM_CPU_CORTEX_A8]
+   depends on [CAN_ARM_CPU_CORTEX_A8]
+   inherited [<choice> && CAN_ARM_CPU_CORTEX_A8]
+  }
+  config ARM_CORTEX_A9 boolean {
+   prompt "ARM Cortex-A9 CPU" if [<choice> && CAN_ARM_CPU_CORTEX_A9]
+   depends on [CAN_ARM_CPU_CORTEX_A9]
+   inherited [<choice> && CAN_ARM_CPU_CORTEX_A9]
+  }
+  config IA32_486 boolean {
+   prompt "Intel 80486" if [<choice> && IA32]
+   depends on [IA32]
+   inherited [<choice> && IA32]
+  }
+  config IA32_586 boolean {
+   prompt "Intel Pentium / AMD K5" if [<choice> && IA32]
+   depends on [IA32]
+   inherited [<choice> && IA32]
+  }
+  config IA32_686 boolean {
+   prompt "Intel Pentium Pro" if [<choice> && IA32]
+   depends on [IA32]
+   inherited [<choice> && IA32]
+  }
+  config IA32_P2 boolean {
+   prompt "Intel Pentium II / Celeron II" if [<choice> && IA32]
+   depends on [IA32]
+   inherited [<choice> && IA32]
+  }
+  config IA32_P3 boolean {
+   prompt "Intel Pentium III / Celeron III" if [<choice> && IA32]
+   depends on [IA32]
+   inherited [<choice> && IA32]
+  }
+  config IA32_P4 boolean {
+   prompt "Intel Pentium 4 / Celeron 4" if [<choice> && IA32]
+   depends on [IA32]
+   inherited [<choice> && IA32]
+  }
+  config IA32_PM boolean {
+   prompt "Intel Pentium M" if [<choice> && IA32]
+   depends on [IA32]
+   inherited [<choice> && IA32]
+  }
+  config IA32_CORE2 boolean {
+   prompt "Intel Core 2" if [<choice> && IA32]
+   depends on [IA32]
+   inherited [<choice> && IA32]
+  }
+  config IA32_ATOM boolean {
+   prompt "Intel Atom" if [<choice> && IA32]
+   depends on [IA32]
+   inherited [<choice> && IA32]
+  }
+  config IA32_K6 boolean {
+   prompt "AMD K6 / K6-II / K6-III" if [<choice> && IA32]
+   depends on [IA32]
+   inherited [<choice> && IA32]
+  }
+  config IA32_K7 boolean {
+   prompt "AMD Athlon / Duron" if [<choice> && IA32]
+   depends on [IA32]
+   inherited [<choice> && IA32]
+  }
+  config IA32_K8 boolean {
+   prompt "AMD Opteron / Athlon64" if [<choice> && IA32]
+   depends on [IA32]
+   inherited [<choice> && IA32]
+  }
+  config IA32_K10 boolean {
+   prompt "AMD Barcelona (K10)" if [<choice> && IA32]
+   depends on [IA32]
+   inherited [<choice> && IA32]
+  }
+  config AMD64_K8 boolean {
+   prompt "AMD Opteron / Athlon64" if [<choice> && AMD64]
+   depends on [AMD64]
+   inherited [<choice> && AMD64]
+  }
+  config AMD64_CORE2 boolean {
+   prompt "Intel Core 2" if [<choice> && AMD64]
+   depends on [AMD64]
+   inherited [<choice> && AMD64]
+  }
+  config AMD64_ATOM boolean {
+   prompt "Intel Atom" if [<choice> && AMD64]
+   depends on [AMD64]
+   inherited [<choice> && AMD64]
+  }
+  config AMD64_K10 boolean {
+   prompt "AMD Barcelona (K10)" if [<choice> && AMD64]
+   depends on [AMD64]
+   inherited [<choice> && AMD64]
+  }
+  config PPC32_603e boolean {
+   prompt "PowerPC 603e" if [<choice> && PPC32]
+   depends on [PPC32]
+   inherited [<choice> && PPC32]
+  }
+ }
+ config CPU_VIRT boolean {
+  prompt "Enable CPU virtualization (SVM and VT)" if [PF_PC]
+  depends on [PF_PC]
+  inherited [PF_PC]
+ }
+ config ARM_ALIGNMENT_CHECK boolean {
+  prompt "Enable alignment check" if [ARM]
+  depends on [ARM]
+  inherited [ARM]
+ }
+ config ARM_TZ boolean {
+  prompt "Enable ARM TrustZone support" if [(ARM_1176 || ARM_CORTEX_A8 || ARM_CORTEX_A9) && EXPERIMENTAL]
+  depends on [(ARM_1176 || ARM_CORTEX_A8 || ARM_CORTEX_A9) && EXPERIMENTAL]
+  inherited [(ARM_1176 || ARM_CORTEX_A8 || ARM_CORTEX_A9) && EXPERIMENTAL]
+ }
+ config ARM_CA9_ENABLE_SWP boolean {
+  prompt "Enable the deprecated 'swp' instruction" if [ARM_CORTEX_A9]
+  depends on [ARM_CORTEX_A9]
+  inherited [ARM_CORTEX_A9]
+ }
+ config ARM_CACHE_L2CXX0 boolean {
+  prompt "Enable L2 Cache" if [CAN_ARM_CACHE_L2CXX0]
+  default [y] if [CAN_ARM_CACHE_L2CXX0]
+  depends on [CAN_ARM_CACHE_L2CXX0]
+  inherited [CAN_ARM_CACHE_L2CXX0]
+ }
+ choice boolean {
+  prompt "Timer tick source" if [PF_PC || PF_UX]
+  depends on [PF_PC || PF_UX]
+  default [SCHED_PIT] if [PF_PC || PF_UX]
+  config SCHED_PIT boolean {
+   prompt "Use PIT for scheduling" if [<choice> && (PF_PC || PF_UX) && !MP]
+   depends on [(PF_PC || PF_UX) && !MP]
+   inherited [<choice> && (PF_PC || PF_UX) && !MP]
+  }
+  config SCHED_RTC boolean {
+   prompt "Use RTC for scheduling" if [<choice> && PF_PC && !MP]
+   depends on [PF_PC && !MP]
+   inherited [<choice> && PF_PC && !MP]
+  }
+  config SCHED_APIC boolean {
+   prompt "Use APIC timer for scheduling" if [<choice> && PF_PC]
+   depends on [PF_PC]
+   inherited [<choice> && PF_PC]
+  }
+  config SCHED_HPET boolean {
+   prompt "Use HPET timer for scheduling (EXPERIMENTAL)" if [<choice> && PF_PC && !MP && EXPERIMENTAL]
+   depends on [PF_PC && !MP && EXPERIMENTAL]
+   inherited [<choice> && PF_PC && !MP && EXPERIMENTAL]
+  }
+ }
+ config WORKAROUND_AMD_FPU_LEAK boolean {
+  prompt "Enables workaroud for AMD FPU security leak" if [PF_PC]
+  depends on [PF_PC]
+  inherited [PF_PC]
+ }
+ config REGPARM3 boolean {
+  prompt "Compile with regparm=3" if [IA32 && PF_PC]
+  default [y] if [IA32 && PF_PC]
+  depends on [IA32 && PF_PC]
+  inherited [IA32 && PF_PC]
+ }
+ config FPU boolean {
+  prompt "Enable FPU co-processor" if [ARM]
+  depends on [ARM]
+  inherited [ARM]
+ }
+ config ARM_1176_CACHE_ALIAS_FIX boolean {
+  prompt "Use cache restriction to supress aliasing issue on ARM1176" if [ARM_1176]
+  depends on [ARM_1176]
+  inherited [ARM_1176]
+ }
+}
+menu "Kernel options" {
+ config MP boolean {
+  prompt "Enable multi processor support" if [EXPERIMENTAL && (PF_PC || PF_UX || PF_ARM_MP_CAPABLE)]
+  depends on [EXPERIMENTAL && (PF_PC || PF_UX || PF_ARM_MP_CAPABLE)]
+  inherited [EXPERIMENTAL && (PF_PC || PF_UX || PF_ARM_MP_CAPABLE)]
+  config MP_MAX_CPUS integer {
+   prompt "Maximal supported number of CPUs" if [MP]
+   depends on [MP]
+   range [1 128] if [MP]
+   default [4] if [MP]
+   inherited [MP]
+  }
+ }
+ config CONTEXT_4K boolean {
+  default [y] if []
+ }
+ config IO_PROT boolean {
+  prompt "Enable I/O port protection" if [PF_PC]
+  default [y] if [PF_PC]
+  depends on [PF_PC]
+  inherited [PF_PC]
+  config IO_PROT_IOPL_3 boolean {
+   prompt "Enable CLI/STI (IOPL 3)" if [PF_PC && IO_PROT]
+   depends on [PF_PC && IO_PROT]
+   inherited [PF_PC && IO_PROT]
+  }
+ }
+ config SLOW_RTC boolean {
+  prompt "Use RTC with 100 ticks per second" if [SCHED_RTC]
+  depends on [SCHED_RTC]
+  inherited [SCHED_RTC]
+ }
+ config ONE_SHOT boolean {
+  prompt "Use scheduling timer in one-shot mode" if [SCHED_APIC && SYNC_TSC]
+  depends on [SCHED_APIC && SYNC_TSC]
+  inherited [SCHED_APIC && SYNC_TSC]
+ }
+ config SYNC_TSC boolean {
+  prompt "Use time-stamp counter for KIP and scheduling accounting" if [PF_PC && IA32]
+  depends on [PF_PC && IA32]
+  inherited [PF_PC && IA32]
+ }
+ config FINE_GRAINED_CPUTIME boolean {
+  prompt "Fine-grained CPU time" if []
+ }
+ config UX_CON boolean {
+  prompt "Graphical console (requires SDL library!)" if [PF_UX]
+  depends on [PF_UX]
+  inherited [PF_UX]
+ }
+ config UX_NET boolean {
+  prompt "Network support" if [PF_UX]
+  depends on [PF_UX]
+  inherited [PF_UX]
+ }
+ choice boolean {
+  prompt "Scheduler" if []
+  default [FIXED_PRIO] if []
+  config SCHED_FIXED_PRIO boolean {
+   prompt "Fixed priority scheduler" if [<choice>]
+   inherited [<choice>]
+  }
+  config SCHED_WFQ boolean {
+   prompt "Weighted fair queueing scheduler" if [<choice> && EXPERIMENTAL]
+   depends on [EXPERIMENTAL]
+   inherited [<choice> && EXPERIMENTAL]
+  }
+  config SCHED_FP_WFQ boolean {
+   prompt "Combined fixed priority RT and WFQ scheduler" if [<choice> && EXPERIMENTAL]
+   depends on [EXPERIMENTAL]
+   inherited [<choice> && EXPERIMENTAL]
+  }
+ }
+ config DISABLE_VIRT_OBJ_SPACE boolean {
+  prompt "No virtually mapped array for cap tables" if [(PF_PC || ARM) && EXPERIMENTAL]
+  depends on [(PF_PC || ARM) && EXPERIMENTAL]
+  default [n] if [(PF_PC || ARM) && EXPERIMENTAL]
+  inherited [(PF_PC || ARM) && EXPERIMENTAL]
+ }
+}
+menu "Debugging" {
+ config INLINE boolean {
+  prompt "Generate inline code" if []
+  default [y] if []
+ }
+ config NDEBUG boolean {
+  prompt "Do not compile assertions" if []
+ }
+ config PROFILE boolean {
+  depends on [EXPERIMENTAL && PF_PC && IA32 && !ASSEMBLER_IPC_SHORTCUT && SCHED_RTC && !NO_FRAME_PTR]
+  inherited [EXPERIMENTAL && PF_PC && IA32 && !ASSEMBLER_IPC_SHORTCUT && SCHED_RTC && !NO_FRAME_PTR]
+ }
+ config NO_FRAME_PTR boolean {
+  prompt "Compile without frame pointer" if []
+  default [y] if []
+ }
+ config STACK_DEPTH boolean {
+  prompt "Measure stack depth of threads" if []
+ }
+ config ALLOW_RO_TEXT boolean {
+  prompt "Read-Only Kernel Text and Data" if [IA32 || AMD64]
+  default [false] if [IA32 || AMD64]
+  depends on [IA32 || AMD64]
+  inherited [IA32 || AMD64]
+ }
+ config LIST_ALLOC_SANITY boolean {
+  prompt "Sanity checks in low level allocator" if []
+ }
+ config BEFORE_IRET_SANITY boolean {
+  prompt "Sanity checks at syscall entry/exit" if [PF_PC]
+  depends on [PF_PC]
+  inherited [PF_PC]
+ }
+ config GSTABS boolean {
+  prompt "Compile with gstabs+ debugging information" if [n]
+  depends on [n]
+  inherited [n]
+ }
+ config IRQ_SPINNER boolean {
+  prompt "Display IRQ activity on VGA screen" if [PF_PC]
+  depends on [PF_PC]
+  inherited [PF_PC]
+ }
+ config WATCHDOG boolean {
+  prompt "Enable Watchdog support" if [PF_PC]
+  default [y] if [PF_PC]
+  depends on [PF_PC]
+  inherited [PF_PC]
+ }
+ config SERIAL boolean {
+  prompt "Support for debugging over serial line" if [PF_PC || ARM || PPC32]
+  depends on [PF_PC || ARM || PPC32]
+  default [y] if [PF_PC || ARM || PPC32]
+  inherited [PF_PC || ARM || PPC32]
+ }
+ menuconfig JDB boolean {
+  prompt "JDB kernel debugger" if []
+  default [y] if []
+  if [JDB] {
+   config JDB_LOGGING boolean {
+    prompt "JDB extended logging" if [JDB]
+    inherited [JDB]
+   }
+   config JDB_DISASM boolean {
+    prompt "JDB disassembler" if [JDB]
+    default [n] if [JDB && ARM]
+    default [y] if [JDB]
+    inherited [JDB]
+   }
+   config JDB_GZIP boolean {
+    prompt "GZIP compressed dumps" if [JDB]
+    default [n] if [JDB && ARM]
+    default [y] if [JDB]
+    inherited [JDB]
+   }
+   config JDB_ACCOUNTING boolean {
+    prompt "JDB accounting" if [JDB && IA32]
+    depends on [IA32]
+    inherited [JDB && IA32]
+   }
+   config JDB_MISC boolean {
+    prompt "Miscellaneous JDB modules" if [JDB && (PF_UX || PF_PC)]
+    depends on [PF_UX || PF_PC]
+    inherited [JDB && (PF_UX || PF_PC)]
+   }
+  }
+ }
+ config VMEM_ALLOC_TEST boolean {
+  prompt "Run test for Vmem_alloc allocator" if [ARM]
+  depends on [ARM]
+  inherited [ARM]
+ }
+ config DEBUG_KERNEL_PAGE_FAULTS boolean {
+  prompt "Debugging of kernel page-faults" if [ARM]
+  depends on [ARM]
+  inherited [ARM]
+ }
+ config POWERSAVE_GETCHAR boolean {
+  prompt "Save power in getchar()" if [PF_PC]
+  default [y] if [PF_PC]
+  depends on [PF_PC]
+  inherited [PF_PC]
+ }
+ choice boolean {
+  prompt "Warn levels" if []
+  default [WARN_WARNING] if []
+  config WARN_NONE boolean {
+   prompt "Do not show show any kernel warning" if [<choice>]
+   inherited [<choice>]
+  }
+  config WARN_WARNING boolean {
+   prompt "Show messages of warning level" if [<choice>]
+   inherited [<choice>]
+  }
+  config WARN_ANY boolean {
+   prompt "Show all kernel warnings" if [<choice>]
+   inherited [<choice>]
+  }
+ }
+}
+menu "Compiling" {
+ config CC string {
+  prompt "C compiler" if []
+  default ["gcc"] if []
+ }
+ config CXX string {
+  prompt "C++ compiler" if []
+  default ["g++"] if []
+ }
+ config HOST_CC string {
+  prompt "C host compiler" if []
+  default ["gcc"] if []
+ }
+ config HOST_CXX string {
+  prompt "C++ host compiler" if []
+  default ["g++"] if []
+ }
+ config VERBOSE boolean {
+  prompt "Verbose build process" if []
+ }
+ config MAINTAINER_MODE boolean {
+  prompt "Do additional checks at build time" if []
+ }
+ config LABEL string {
+  prompt "Configuration label" if []
+ }
+}
+config EXPERIMENTAL boolean {
+ prompt "Prompt for experimental features" if []
+}
+config PERF_CNT boolean {
+ default [y] if [JDB && (IA32 || AMD64 || ARM)]
+}
+config BIT32 boolean {
+ default [y] if [ARM || IA32 || PPC32]
+}
+config BIT64 boolean {
+ default [y] if [AMD64]
+}
+config ARM_V6 boolean {
+ default [y] if [ARM_1136 || ARM_1176 || ARM_MPCORE]
+}
+config ARM_V7 boolean {
+ default [y] if [ARM_CORTEX_A8 || ARM_CORTEX_A9]
+}
+config ARM_V6PLUS boolean {
+ default [y] if [ARM_V6 || ARM_V7]
+}
+config WARN_LEVEL integer {
+ default [2] if [WARN_ANY]
+ default [1] if [WARN_WARNING]
+ default [0] if [WARN_NONE]
+}
+config XARCH string {
+ default ["arm"] if [ARM]
+ default ["ux"] if [PF_UX]
+ default ["amd64"] if [AMD64 && PF_PC]
+ default ["ia32"] if [IA32 && PF_PC]
+ default ["ppc32"] if [PPC32]
+}
+config IA32_TARGET string {
+ default ["Intel 80486"] if [IA32_486]
+ default ["Intel Pentium"] if [IA32_586]
+ default ["Intel Pentium Pro"] if [IA32_686]
+ default ["Intel Pentium II"] if [IA32_P2]
+ default ["Intel Pentium III"] if [IA32_P3]
+ default ["Intel Pentium 4"] if [IA32_P4]
+ default ["Pentium M"] if [IA32_PM]
+ default ["AMD K6"] if [IA32_K6]
+ default ["AMD Athlon"] if [IA32_K7]
+ default ["Intel Core2"] if [IA32_CORE2 || AMD64_CORE2]
+ default ["Intel Atom"] if [IA32_ATOM || AMD64_ATOM]
+ default ["AMD Opteron"] if [IA32_K8 || AMD64_K8 || AMD64_K10 || IA32_K10]
+}
+config ABI string {
+ default ["vf"] if []
+}
